@@ -1001,6 +1001,16 @@
                 </div>
                 <button type="submit" class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-100 hover:shadow-lg transition">บันทึกประวัติส่วนตัว</button>
               </form>
+
+              <!-- PWA Notification settings -->
+              <div class="mt-6 pt-6 border-t border-slate-100">
+                <h4 class="font-bold text-slate-800 text-sm">การแจ้งเตือนบนมือถือ (Push Notifications)</h4>
+                <p class="text-xs text-slate-500 mt-1">รับการแจ้งเตือนแบบเรียลไทม์บนอุปกรณ์ของคุณ เมื่อมีการอัปเดตข้อมูลพัสดุ คำขอ หรือการแจ้งซ่อม</p>
+                <button onclick="registerPushSubscription(true)" class="w-full py-2.5 mt-3 bg-emerald-600 text-white text-xs font-semibold rounded-xl hover:bg-emerald-700 shadow-md shadow-emerald-100 hover:shadow-lg transition flex items-center justify-center gap-1.5">
+                  <i data-lucide="bell" class="w-4 h-4"></i>
+                  เปิดใช้งานการแจ้งเตือนบนอุปกรณ์นี้
+                </button>
+              </div>
             </div>
           </section>
 
@@ -2373,6 +2383,9 @@
       
       // Show default view
       switchView('view-dashboard');
+
+      // Register or update push subscription silently
+      registerPushSubscription(false);
     }
 
     function getRoleLabel(role) {
@@ -2584,6 +2597,76 @@
     // ==========================================================
     // NOTIFICATION SYSTEM LOGIC
     // ==========================================================
+    
+    // Helper to convert VAPID public key
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+    // Register PWA Web Push Subscription
+    async function registerPushSubscription(showFeedback = false) {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window) || !dbClient || !currentUser) {
+        if (showFeedback) {
+          showToast('อุปกรณ์หรือเบราว์เซอร์นี้ไม่รองรับการแจ้งเตือนแบบ Push', 'danger');
+        }
+        return;
+      }
+
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          if (showFeedback) {
+            showToast('กรุณาอนุญาตสิทธิ์การแจ้งเตือนในการตั้งค่าเบราว์เซอร์ของคุณ', 'warning');
+          }
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+        
+        // VAPID Public Key from Supabase configuration
+        const applicationServerKey = urlBase64ToUint8Array('BJZ-4BptHGkK2iThFeGyNxTOYGvXygSpCHDoutZ-lLDKzlAackOQPwiRg5WPtf5nTWvp2TyGnBKRsGYFxlcikeI');
+        
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: applicationServerKey
+        });
+
+        // Save subscription to Supabase pwa_subscriptions table
+        const { error } = await dbClient
+          .from('pwa_subscriptions')
+          .upsert({
+            username: currentUser.username,
+            subscription: subscription
+          }, {
+            onConflict: 'username, subscription'
+          });
+
+        if (error) throw error;
+        
+        if (showFeedback) {
+          showToast('เปิดใช้งานการแจ้งเตือนแบบเรียลไทม์บนอุปกรณ์นี้สำเร็จแล้ว', 'success');
+        } else {
+          console.log('PWA Web Push subscription registered/updated successfully.');
+        }
+      } catch (err) {
+        console.warn('Failed to register PWA Web Push subscription:', err);
+        if (showFeedback) {
+          showToast('ไม่สามารถเปิดการแจ้งเตือนได้: ' + err.message, 'danger');
+        }
+      }
+    }
+
     let userNotifications = [];
 
     function loadUserNotifications() {
@@ -2627,7 +2710,8 @@
         read: false
       };
       
-      const duplicate = userNotifications.find(n => n.title === title && n.text === text);
+      // Restore 60-second limit to allow updates/additions/deletions to re-trigger notifications
+      const duplicate = userNotifications.find(n => n.title === title && n.text === text && (new Date() - new Date(n.timestamp) < 60000));
       if (duplicate) return;
 
       userNotifications.unshift(newNotif);
@@ -4487,7 +4571,7 @@
 
         // If status changed to Repair Completed or Disposed, update the Asset table too
         const repairItem = cacheRepairs.find(r => r.id === repairId);
-        if (repairItem) {
+        if (repairItem && repairItem.asset_id && repairItem.asset_id !== 'null') {
           let assetStatus = 'ปกติ';
           if (newStatus === 'กำลังดำเนินการ') assetStatus = 'ส่งซ่อม';
           else if (newStatus === 'จำหน่าย') assetStatus = 'จำหน่าย';
