@@ -49,8 +49,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    body {
+    html, body {
       font-family: 'Kanit', sans-serif;
+      max-width: 100%;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      width: 100%;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
@@ -129,12 +135,12 @@
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 max-w-sm w-full"></div>
 
   <!-- Application Container -->
-  <div class="h-full flex flex-col">
+  <div class="h-full flex flex-col overflow-x-hidden w-full">
 
     <!-- ==========================================================
          GUEST / LANDING VIEW
          ========================================================== -->
-    <div id="view-landing" class="flex-1 flex flex-col bg-slate-50 overflow-y-auto">
+    <div id="view-landing" class="flex-1 flex flex-col bg-slate-50 overflow-y-auto overflow-x-hidden w-full">
       <!-- Navbar -->
       <nav class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
@@ -162,9 +168,9 @@
           <div class="w-[400px] h-[400px] bg-emerald-200 rounded-full blur-[100px] ml-40"></div>
         </div>
 
-        <div class="hero-glass rounded-3xl p-6 sm:p-12 shadow-xl border border-white/50 text-center max-w-4xl mx-auto">
+        <div class="hero-glass rounded-3xl p-4 sm:p-12 shadow-xl border border-white/50 text-center max-w-4xl mx-auto w-full">
           <span class="px-3 py-1 bg-indigo-50 text-indigo-700 text-[10px] sm:text-xs font-bold rounded-full border border-indigo-100">เวอร์ชันระบบจัดซื้อ-เบิกจ่ายครบวงจร</span>
-          <h2 class="mt-6 text-[13px] xs:text-base sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight whitespace-nowrap sm:whitespace-normal">
+          <h2 class="mt-6 text-[2.7vw] xs:text-[11px] sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight whitespace-nowrap sm:whitespace-normal">
             ระบบสารสนเทศงานพัสดุและครุภัณฑ์
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-800">ยุคใหม่สำหรับสถานศึกษา</span>
           </h2>
@@ -413,80 +419,80 @@
           <section id="subview-dashboard" class="space-y-6 view-transition hidden">
             <!-- Top stats -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                <div class="p-3.5 bg-indigo-50 text-indigo-600 rounded-xl">
-                  <i data-lucide="box" class="w-6 h-6"></i>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-indigo-50 text-indigo-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="box" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">พัสดุทั้งหมด</p>
-                  <h3 id="stat-total-inventory" class="text-2xl font-bold text-slate-800">...</h3>
-                </div>
-              </div>
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                <div class="p-3.5 bg-sky-50 text-sky-600 rounded-xl">
-                  <i data-lucide="cpu" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">ครุภัณฑ์ทั้งหมด</p>
-                  <h3 id="stat-total-assets" class="text-2xl font-bold text-slate-800">...</h3>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">พัสดุทั้งหมด</p>
+                  <h3 id="stat-total-inventory" class="text-xs sm:text-xl font-bold text-slate-800 truncate whitespace-nowrap">...</h3>
                 </div>
               </div>
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                <div class="p-3.5 bg-amber-50 text-amber-600 rounded-xl">
-                  <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-sky-50 text-sky-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="cpu" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">รายการใกล้หมด</p>
-                  <h3 id="stat-low-stock" class="text-2xl font-bold text-slate-800 text-amber-600">...</h3>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">ครุภัณฑ์ทั้งหมด</p>
+                  <h3 id="stat-total-assets" class="text-xs sm:text-xl font-bold text-slate-800 truncate whitespace-nowrap">...</h3>
                 </div>
               </div>
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                <div class="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl">
-                  <i data-lucide="banknote" class="w-6 h-6"></i>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-amber-50 text-amber-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">มูลค่าพัสดุรวม</p>
-                  <h3 id="stat-total-asset-value" class="text-2xl font-bold text-slate-800">...</h3>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">รายการใกล้หมด</p>
+                  <h3 id="stat-low-stock" class="text-xs sm:text-xl font-bold text-amber-600 truncate whitespace-nowrap">...</h3>
+                </div>
+              </div>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="banknote" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">มูลค่าพัสดุรวม</p>
+                  <h3 id="stat-total-asset-value" class="text-xs sm:text-xl font-bold text-slate-800 truncate whitespace-nowrap">...</h3>
                 </div>
               </div>
             </div>
 
             <!-- Second row stats -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                <div class="p-3.5 bg-rose-50 text-rose-600 rounded-xl">
-                  <i data-lucide="wrench" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">ครุภัณฑ์ชำรุด</p>
-                  <h3 id="stat-damaged-assets" class="text-2xl font-bold text-slate-800 text-rose-600">...</h3>
-                </div>
-              </div>
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                <div class="p-3.5 bg-indigo-50 text-indigo-600 rounded-xl">
-                  <i data-lucide="clock" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">รอการอนุมัติเบิก</p>
-                  <h3 id="stat-pending-requests" class="text-2xl font-bold text-slate-800">...</h3>
-                </div>
-              </div>
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                <div class="p-3.5 bg-teal-50 text-teal-600 rounded-xl">
-                  <i data-lucide="clipboard-check" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">รอตรวจสอบปีนี้</p>
-                  <h3 id="stat-pending-inspection" class="text-2xl font-bold text-slate-800">...</h3>
-                </div>
-              </div>
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 min-w-0">
-                <div class="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl flex-shrink-0">
-                  <i data-lucide="star" class="w-6 h-6"></i>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-rose-50 text-rose-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="wrench" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-xs text-slate-500 font-medium">เบิกบ่อยที่สุด</p>
-                  <h3 id="stat-most-requested" class="text-xs sm:text-sm font-bold text-slate-800 truncate" title="-">-</h3>
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">ครุภัณฑ์ชำรุด</p>
+                  <h3 id="stat-damaged-assets" class="text-xs sm:text-xl font-bold text-rose-600 truncate whitespace-nowrap">...</h3>
+                </div>
+              </div>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-indigo-50 text-indigo-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">รอการอนุมัติเบิก</p>
+                  <h3 id="stat-pending-requests" class="text-xs sm:text-xl font-bold text-slate-800 truncate whitespace-nowrap">...</h3>
+                </div>
+              </div>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-teal-50 text-teal-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="clipboard-check" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">รอตรวจสอบปีนี้</p>
+                  <h3 id="stat-pending-inspection" class="text-xs sm:text-xl font-bold text-slate-800 truncate whitespace-nowrap">...</h3>
+                </div>
+              </div>
+              <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-xl flex-shrink-0 flex items-center justify-center">
+                  <i data-lucide="star" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">เบิกบ่อยที่สุด</p>
+                  <h3 id="stat-most-requested" class="text-[10px] sm:text-sm font-bold text-slate-800 truncate whitespace-nowrap" title="-">-</h3>
                 </div>
               </div>
             </div>
@@ -750,13 +756,13 @@
           <!-- VIEW 5: REPAIR REQUEST SYSTEM -->
           <section id="subview-asset-repairs" class="space-y-6 view-transition hidden">
             <!-- Headline and action -->
-            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-              <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                <i data-lucide="wrench" class="w-5 h-5 text-indigo-600"></i>
-                การแจ้งซ่อมครุภัณฑ์
+            <div class="flex justify-between items-center bg-white p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-100 gap-2 min-w-0">
+              <h3 class="font-bold text-slate-800 flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0 overflow-hidden">
+                <i data-lucide="wrench" class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 flex-shrink-0"></i>
+                <span class="truncate">การแจ้งซ่อมครุภัณฑ์</span>
               </h3>
-              <button onclick="openScanQrModal('report_repair')" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition shadow-sm">
-                <i data-lucide="alert-circle" class="w-4 h-4"></i>
+              <button onclick="openScanQrModal('report_repair')" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-rose-600 hover:bg-rose-700 text-white text-[10px] sm:text-xs font-semibold rounded-xl flex items-center gap-1 sm:gap-1.5 transition shadow-sm whitespace-nowrap flex-shrink-0">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i>
                 แจ้งซ่อมด่วน (สแกน QR)
               </button>
             </div>
@@ -787,13 +793,13 @@
           <!-- VIEW 6: PROCUREMENT SYSTEM -->
           <section id="subview-procurements" class="space-y-6 view-transition hidden">
             <!-- procurement list header -->
-            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-              <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                <i data-lucide="file-text" class="w-5 h-5 text-indigo-600"></i>
-                ระบบจัดซื้อจัดจ้าง
+            <div class="flex justify-between items-center bg-white p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-100 gap-2 min-w-0">
+              <h3 class="font-bold text-slate-800 flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0 overflow-hidden">
+                <i data-lucide="file-text" class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 flex-shrink-0"></i>
+                <span class="truncate">ระบบจัดซื้อจัดจ้าง</span>
               </h3>
-              <button onclick="openAddProcurementModal()" class="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-xl hover:bg-indigo-700 flex items-center gap-1.5 transition shadow-sm procurement-admin-only">
-                <i data-lucide="plus" class="w-4 h-4"></i>
+              <button onclick="openAddProcurementModal()" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 text-white text-[10px] sm:text-xs font-semibold rounded-xl hover:bg-indigo-700 flex items-center gap-1 sm:gap-1.5 transition shadow-sm procurement-admin-only whitespace-nowrap flex-shrink-0">
+                <i data-lucide="plus" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i>
                 สร้างโครงการจัดซื้อใหม่
               </button>
             </div>
@@ -935,13 +941,13 @@
           <!-- VIEW 8: USER MANAGEMENT (ADMIN ONLY) -->
           <section id="subview-user-management" class="space-y-6 view-transition hidden">
             <!-- actions -->
-            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-              <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                <i data-lucide="users" class="w-5 h-5 text-indigo-600"></i>
-                จัดการสิทธิ์และผู้ใช้งานระบบ
+            <div class="flex justify-between items-center bg-white p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-100 gap-2 min-w-0">
+              <h3 class="font-bold text-slate-800 flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0 overflow-hidden">
+                <i data-lucide="users" class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 flex-shrink-0"></i>
+                <span class="truncate">จัดการสิทธิ์และผู้ใช้งานระบบ</span>
               </h3>
-              <button onclick="openAddUserModal()" class="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-xl hover:bg-indigo-700 flex items-center gap-1.5 transition shadow-sm">
-                <i data-lucide="plus" class="w-4 h-4"></i>
+              <button onclick="openAddUserModal()" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 text-white text-[10px] sm:text-xs font-semibold rounded-xl hover:bg-indigo-700 flex items-center gap-1 sm:gap-1.5 transition shadow-sm whitespace-nowrap flex-shrink-0">
+                <i data-lucide="plus" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i>
                 เพิ่มผู้ใช้ใหม่
               </button>
             </div>
