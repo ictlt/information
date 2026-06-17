@@ -1,0 +1,340 @@
+=== BLOCK 1 ===
+    function openAddAssetModal() {
+      document.getElementById('asset-modal-title').innerText = 'เพิ่มครุภัณฑ์ใหม่';
+      document.getElementById('asset-edit-id').value = '';
+      document.getElementById('form-add-asset').reset();
+      document.getElementById('modal-add-asset').classList.remove('hidden');
+    }
+
+    function closeAddAssetModal() {
+      document.getElementById('modal-add-asset').classList.add('hidden');
+    }
+
+    async function editAssetItem(id) {
+      const asset = cacheAssets.find(a => a.id === id);
+      if (!asset) return;
+
+      document.getElementById('asset-modal-title').innerText = 'แก้ไขข้อมูลครุภัณฑ์';
+      document.getElementById('asset-edit-id').value = asset.id;
+      document.getElementById('asset-code').value = asset.code;
+      document.getElementById('asset-name').value = asset.name;
+      document.getElementById('asset-brand').value = asset.brand || '';
+      document.getElementById('asset-model').value = asset.model || '';
+      document.getElementById('asset-serial').value = asset.serial_number || '';
+      document.getElementById('asset-price').value = asset.price;
+      document.getElementById('asset-fiscal-year').value = asset.fiscal_year;
+      document.getElementById('asset-funding').value = asset.funding_source;
+      document.getElementById('asset-room').value = asset.room;
+      document.getElementById('asset-responsible').value = asset.responsible_person;
+      document.getElementById('asset-status').value = asset.status;
+
+      document.getElementById('modal-add-asset').classList.remove('hidden');
+    }
+
+    // Image compression and base64 helper
+    async function compressAndUploadImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Compress to JPEG with 0.6 quality
+            canvas.toBlob(async (blob) => {
+              try {
+                // Generate a unique filename
+                const fileExt = 'jpg';
+                const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+                const filePath = `uploads/${fileName}`;
+
+                const { data, error } = await dbClient.storage
+                  .from('file')
+                  .upload(filePath, blob, {
+                    contentType: 'image/jpeg'
+                  });
+
+                if (error) throw error;
+
+                // Get public URL
+                const { data: publicUrlData } = dbClient.storage
+                  .from('file')
+                  .getPublicUrl(filePath);
+
+                resolve(publicUrlData.publicUrl);
+              } catch (err) {
+                reject(err);
+              }
+            }, 'image/jpeg', 0.6);
+          };
+        };
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // Form submit for Asset
+    document.getElementById('form-add-asset').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('asset-edit-id').value;
+      let code = document.getElementById('asset-code').value.trim();
+      const name = document.getElementById('asset-name').value.trim();
+      const brand = document.getElementById('asset-brand').value.trim();
+      const model = document.getElementById('asset-model').value.trim();
+      const serial = document.getElementById('asset-serial').value.trim();
+      const price = Number(document.getElementById('asset-price').value);
+      const fiscal = document.getElementById('asset-fiscal-year').value.trim();
+      const funding = document.getElementById('asset-funding').value.trim();
+      const room = document.getElementById('asset-room').value.trim();
+      const responsible = document.getElementById('asset-responsible').value.trim();
+      const status = document.getElementById('asset-status').value;
+      const imageFile = document.getElementById('asset-image-file').files[0];
+
+      showLoader(true);
+      try {
+        let imageUrl = null;
+        if (imageFile) {
+          imageUrl = await compressAndUploadImage(imageFile);
+        } else if (id) {
+          // Keep existing image if editing and no new file selected
+          const existing = cacheAssets.find(a => a.id === id);
+          imageUrl = existing?.image_url;
+        }
+
+        // Generate Code if blank
+        if (!code) {
+          const randNum = Math.floor(1000 + Math.random() * 9000);
+          code = `ASSET-${fiscal || '2569'}-${randNum}`;
+        }
+
+        const payload = {
+          code, name, brand, model, serial_number: serial, price, fiscal_year: fiscal, funding_source: funding, room, responsible_person: responsible, status, image_url: imageUrl
+        };
+
+        if (id) {
+          // Update
+          const { error } = await dbClient.from('assets').update(payload).eq('id', id);
+          if (error) throw error;
+          showToast('แก้ไขข้อมูลครุภัณฑ์เรียบร้อยแล้ว', 'success');
+        } else {
+          // Insert
+          const { error } = await dbClient.from('assets').insert(payload);
+          if (error) throw error;
+          showToast('เพิ่มครุภัณฑ์ใหม่เข้าสู่ระบบแล้ว', 'success');
+        }
+
+        closeAddAssetModal();
+        await refreshAllData();
+        renderAssetsList();
+      } catch (err) {
+        showToast(err.message || 'บันทึกไม่สำเร็จ', 'danger');
+      } finally {
+        showLoader(false);
+      }
+    });
+
+    async function deleteAssetItem(id) {
+      if (!confirm('ยืนยันว่าต้องการลบครุภัณฑ์ชิ้นนี้ออกจากระบบ?')) return;
+      showLoader(true);
+      try {
+        const { error } = await dbClient.from('assets').delete().eq('id', id);
+        if (error) throw error;
+        showToast('ลบรายการครุภัณฑ์แล้ว', 'success');
+        await refreshAllData();
+        renderAssetsList();
+      } catch (err) {
+        showToast('ไม่สามารถลบข้อมูลเนื่องจากติดความสัมพันธ์ในระบบแจ้งซ่อม', 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // ==========================================================
+
+=== BLOCK 2 ===
+    // SUBVIEW 4: ANNUAL INSPECTIONS
+    // ==========================================================
+    async function renderAssetChecksHistory() {
+      const container = document.getElementById('asset-checks-history-list');
+      
+      showLoader(true);
+      try {
+        const { data, error } = await dbClient
+          .from('asset_checks')
+          .select('*, assets(code, name)')
+          .order('check_date', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ยังไม่มีข้อมูลการเดินตรวจในระบบ</td></tr>`;
+          return;
+        }
+
+        container.innerHTML = data.map(item => `
+          <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+            <td class="py-3 px-4 text-xs font-semibold text-slate-500">${new Date(item.check_date).toLocaleString('th-TH')}</td>
+            <td class="py-3 px-4 font-bold text-slate-900">${item.assets?.code || '-'}</td>
+            <td class="py-3 px-4 text-slate-700">${item.assets?.name || '-'}</td>
+            <td class="py-3 px-4 text-xs text-slate-500">${item.checker}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold ${
+                item.status === 'พบครบ' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                item.status === 'สูญหาย' ? 'bg-red-50 text-red-600 border border-red-100' :
+                'bg-amber-50 text-amber-600 border border-amber-100'
+              }">${item.status}</span>
+            </td>
+            <td class="py-3 px-4 text-xs text-slate-500">${item.notes || '-'}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        showToast('ไม่สามารถดึงข้อมูลประวัติการตรวจได้', 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // QR scanner modal trigger
+    function openScanQrModal(mode) {
+      qrScannerCallbackMode = mode;
+      document.getElementById('modal-qr-scanner').classList.remove('hidden');
+      
+      // Start camera scan
+      html5QrScanner = new Html5QrcodeScanner("qr-reader", { 
+        fps: 10, 
+        qrbox: 250,
+        rememberLastUsedCamera: true
+      });
+      
+      html5QrScanner.render(onScanSuccess, onScanError);
+    }
+
+    function closeScanQrModal() {
+      document.getElementById('modal-qr-scanner').classList.add('hidden');
+      if (html5QrScanner) {
+        html5QrScanner.clear().catch(e => console.warn(e));
+      }
+    }
+
+    // QR Callback Router
+    async function onScanSuccess(decodedText, decodedResult) {
+      closeScanQrModal();
+      
+      // Decode QR containing Code (e.g. ASSET-2569-0001 or INV001)
+      const scannedCode = decodedText.trim();
+      showToast(`สแกนพบรหัส: ${scannedCode}`, 'info');
+
+      if (qrScannerCallbackMode === 'view_asset') {
+        const item = cacheAssets.find(a => a.code === scannedCode) || cacheInventory.find(i => i.code === scannedCode);
+        if (item) {
+          if (item.code.startsWith('INV')) {
+            viewInventoryDetails(item.id);
+          } else {
+            viewAssetDetails(item.id);
+          }
+        } else {
+          showToast('ไม่พบรหัสพัสดุ/ครุภัณฑ์นี้ในระบบ', 'warning');
+        }
+      } else if (qrScannerCallbackMode === 'annual_check') {
+        const asset = cacheAssets.find(a => a.code === scannedCode);
+        if (asset) {
+          openInspectAssetModal(asset.id);
+        } else {
+          showToast('ไม่พบข้อมูลครุภัณฑ์สำหรับรหัสนี้', 'warning');
+        }
+      } else if (qrScannerCallbackMode === 'report_repair') {
+        const asset = cacheAssets.find(a => a.code === scannedCode);
+        if (asset) {
+          openReportRepairForm(asset.id);
+        } else {
+          showToast('ไม่พบครุภัณฑ์ในระบบเพื่อทำการแจ้งซ่อม', 'warning');
+        }
+      }
+    }
+
+    function onScanError(err) {
+      // Quiet scanner failures (mostly polling errors)
+    }
+
+    // Inspect Asset Modal Form
+    function openInspectAssetModal(assetId) {
+      const asset = cacheAssets.find(a => a.id === assetId);
+      if (!asset) return;
+
+      document.getElementById('inspect-asset-name').innerText = asset.name;
+      document.getElementById('inspect-asset-code').innerText = asset.code;
+      document.getElementById('inspect-notes').value = '';
+      
+      // Save temp ID to data-attribute
+      document.getElementById('modal-inspect-asset-action').setAttribute('data-current-asset-id', asset.id);
+      document.getElementById('modal-inspect-asset-action').classList.remove('hidden');
+    }
+
+    function closeInspectAssetModal() {
+      document.getElementById('modal-inspect-asset-action').classList.add('hidden');
+    }
+
+    async function submitAssetInspection(status) {
+      const assetId = document.getElementById('modal-inspect-asset-action').getAttribute('data-current-asset-id');
+      const notes = document.getElementById('inspect-notes').value.trim();
+
+      showLoader(true);
+      try {
+        // Record inspection
+        const { error: checkErr } = await dbClient
+          .from('asset_checks')
+          .insert({
+            asset_id: assetId,
+            checker: currentUser.name,
+            status,
+            notes: notes || null
+          });
+
+        if (checkErr) throw checkErr;
+
+        // Map status to Asset status schema and update
+        let newAssetStatus = 'ปกติ';
+        if (status === 'สูญหาย') newAssetStatus = 'สูญหาย';
+        else if (status === 'ชำรุด') newAssetStatus = 'ชำรุด';
+
+        const { error: assetErr } = await dbClient
+          .from('assets')
+          .update({ status: newAssetStatus })
+          .eq('id', assetId);
+
+        if (assetErr) throw assetErr;
+
+        showToast('บันทึกการตรวจสอบครุภัณฑ์และอัปเดตสถานะสำเร็จ', 'success');
+        closeInspectAssetModal();
+        await refreshAllData();
+        renderAssetChecksHistory();
+      } catch (err) {
+        showToast(err.message || 'บันทึกไม่สำเร็จ', 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // ==========================================================

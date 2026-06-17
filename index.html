@@ -46,6 +46,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.6.0/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     body {
@@ -74,6 +75,20 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    /* Mobile-specific adjustments */
+    @media (max-width: 768px) {
+      table th, table td {
+        white-space: nowrap !important;
+      }
+      #notification-dropdown {
+        position: fixed !important;
+        left: 16px !important;
+        right: 16px !important;
+        top: 64px !important;
+        width: auto !important;
+        max-width: none !important;
+      }
     }
   </style>
 </head>
@@ -123,15 +138,13 @@
       <!-- Navbar -->
       <nav class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <div class="p-2 bg-indigo-600 text-white rounded-xl">
-            <i data-lucide="shield" class="w-6 h-6"></i>
-          </div>
+          <img src="logo.png" alt="Logo" class="w-10 h-10 object-contain rounded-xl">
           <div>
-            <h1 class="text-lg font-bold text-slate-900 leading-tight">ระบบพัสดุและครุภัณฑ์โรงเรียน</h1>
-            <p class="text-xs text-slate-500">School Inventory & Asset System</p>
+            <h1 class="text-sm md:text-lg font-bold text-slate-900 leading-tight">ระบบพัสดุและครุภัณฑ์โรงเรียน</h1>
+            <p class="text-[10px] md:text-xs text-slate-500">School Inventory & Asset System</p>
           </div>
         </div>
-        <div class="flex items-center space-x-3">
+        <div class="hidden md:flex items-center space-x-3">
           <button onclick="openPublicRepairModal()" class="px-4 py-2 border border-rose-200 text-rose-600 text-sm font-semibold rounded-xl hover:bg-rose-50 transition flex items-center gap-1.5 shadow-sm">
             <i data-lucide="wrench" class="w-4 h-4"></i>
             แจ้งซ่อมด่วน
@@ -149,13 +162,13 @@
           <div class="w-[400px] h-[400px] bg-emerald-200 rounded-full blur-[100px] ml-40"></div>
         </div>
 
-        <div class="hero-glass rounded-3xl p-8 sm:p-12 shadow-xl border border-white/50 text-center max-w-4xl mx-auto">
-          <span class="px-4 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full border border-indigo-100">เวอร์ชันระบบจัดซื้อ-เบิกจ่ายครบวงจร</span>
-          <h2 class="mt-6 text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            ระบบสารสนเทศงานพัสดุและครุภัณฑ์ <br class="hidden sm:inline">
+        <div class="hero-glass rounded-3xl p-6 sm:p-12 shadow-xl border border-white/50 text-center max-w-4xl mx-auto">
+          <span class="px-3 py-1 bg-indigo-50 text-indigo-700 text-[10px] sm:text-xs font-bold rounded-full border border-indigo-100">เวอร์ชันระบบจัดซื้อ-เบิกจ่ายครบวงจร</span>
+          <h2 class="mt-6 text-[13px] xs:text-base sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight whitespace-nowrap sm:whitespace-normal">
+            ระบบสารสนเทศงานพัสดุและครุภัณฑ์
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-800">ยุคใหม่สำหรับสถานศึกษา</span>
           </h2>
-          <p class="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          <p class="mt-4 text-xs sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
             บริหารจัดการพัสดุสิ้นเปลือง ครุภัณฑ์ประจำปี การแจ้งซ่อมบำรุง และระบบจัดซื้อจัดจ้างผ่านแพลตฟอร์มเดียว รองรับการใช้งานบนมือถือ ตรวจสอบครุภัณฑ์ผ่าน QR Code แบบเรียลไทม์
           </p>
 
@@ -193,7 +206,7 @@
                 <i data-lucide="banknote" class="w-5 h-5"></i>
               </div>
               <div class="min-w-0 flex-1">
-                <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">มูลค่าสินทรัพย์รวม</p>
+                <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">มูลค่าพัสดุรวม</p>
                 <h4 id="landing-total-value" class="text-xs sm:text-sm font-bold text-slate-800 truncate">...</h4>
               </div>
             </div>
@@ -218,7 +231,7 @@
       <div id="landing-features" class="bg-white border-t border-slate-100 py-16 px-6">
         <div class="max-w-7xl mx-auto">
           <div class="text-center max-w-3xl mx-auto">
-            <h3 class="text-2xl sm:text-3xl font-bold text-slate-900">ฟังก์ชันครอบคลุมทุกงานบริหารพัสดุโรงเรียน</h3>
+            <h3 class="text-sm sm:text-3xl font-bold text-slate-900 whitespace-nowrap sm:whitespace-normal">ฟังก์ชันครอบคลุมทุกงานบริหารพัสดุโรงเรียน</h3>
             <p class="mt-3 text-slate-500">รวดเร็ว แม่นยำ และทำงานร่วมกันได้แบบไร้รอยต่อทั้งผู้บริหาร ครู และเจ้าหน้าที่พัสดุ</p>
           </div>
 
@@ -293,13 +306,7 @@
             <label class="block text-sm font-semibold text-slate-700">รหัสผ่าน</label>
             <input type="password" id="login-password" required class="w-full px-4 py-2.5 mt-1 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุ password">
           </div>
-          <div class="text-xs text-slate-400 leading-relaxed bg-slate-50 p-3 rounded-lg">
-            <strong>ข้อมูลผู้ใช้เริ่มต้นสำหรับการทดสอบ:</strong><br>
-            • ผู้ดูแลระบบ: admin / admin123<br>
-            • เจ้าหน้าที่พัสดุ: officer / officer123<br>
-            • ครูผู้สอน: teacher / teacher123<br>
-            • ผู้บริหาร: exec / exec123
-          </div>
+
           <button type="submit" class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-100 hover:shadow-lg transition">เข้าสู่ระบบ</button>
         </form>
       </div>
@@ -312,12 +319,10 @@
     <div id="view-app" class="flex-1 flex flex-col md:flex-row overflow-hidden hidden">
 
       <!-- LEFT SIDEBAR - Desktop View -->
-      <aside class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-200 flex-shrink-0 border-r border-slate-800">
+      <aside id="sidebar-app" class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-200 flex-shrink-0 border-r border-slate-800 transition-all duration-300">
         <!-- Logo Header -->
         <div class="px-6 py-5 border-b border-slate-800 flex items-center space-x-3 bg-slate-950">
-          <div class="p-1.5 bg-indigo-600 text-white rounded-lg">
-            <i data-lucide="shield" class="w-5 h-5"></i>
-          </div>
+          <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain rounded-lg">
           <div>
             <h1 class="text-sm font-bold text-white leading-none">งานพัสดุโรงเรียน</h1>
             <span class="text-[10px] text-indigo-400">Inventory & Asset App</span>
@@ -354,18 +359,23 @@
         
         <!-- Header - Mobile & Desktop -->
         <header class="h-16 bg-white border-b border-slate-100 px-6 flex items-center justify-between z-10">
-          <div class="flex items-center space-x-3 md:hidden">
-            <!-- Mobile Logo -->
-            <div class="p-1.5 bg-indigo-600 text-white rounded-lg">
-              <i data-lucide="shield" class="w-4 h-4"></i>
+          <div class="flex items-center space-x-3">
+            <!-- Sidebar toggle menu button (Hamburger) -->
+            <button onclick="toggleSidebar()" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-slate-50 rounded-xl transition cursor-pointer select-none" title="แสดง/ซ่อน เมนูข้าง">
+              <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3 md:hidden">
+              <!-- Mobile Logo -->
+              <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain rounded-lg">
+              <h2 class="text-sm font-bold text-slate-900 leading-none">งานพัสดุ</h2>
             </div>
-            <h2 class="text-sm font-bold text-slate-900 leading-none">งานพัสดุ</h2>
-          </div>
-          
-          <div class="hidden md:flex items-center space-x-2 text-slate-500 text-sm">
-            <i data-lucide="home" class="w-4 h-4"></i>
-            <span>/</span>
-            <span id="breadcrumb-current" class="font-medium text-slate-800">แดชบอร์ด</span>
+            
+            <div class="hidden md:flex items-center space-x-2 text-slate-500 text-sm">
+              <i data-lucide="home" class="w-4 h-4"></i>
+              <span>/</span>
+              <span id="breadcrumb-current" class="font-medium text-slate-800">แดชบอร์ด</span>
+            </div>
           </div>
 
           <!-- Right side tools -->
@@ -435,7 +445,7 @@
                   <i data-lucide="banknote" class="w-6 h-6"></i>
                 </div>
                 <div>
-                  <p class="text-xs text-slate-500 font-medium">มูลค่าทรัพย์สินรวม</p>
+                  <p class="text-xs text-slate-500 font-medium">มูลค่าพัสดุรวม</p>
                   <h3 id="stat-total-asset-value" class="text-2xl font-bold text-slate-800">...</h3>
                 </div>
               </div>
@@ -861,6 +871,23 @@
                 <div class="mt-4 flex gap-2">
                   <button onclick="viewReportDetail('assets_group')" class="px-4 py-2 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-xl border border-indigo-100 hover:bg-indigo-100 transition flex-1">เรียกดูรายงาน</button>
                   <button onclick="exportReport('assets_group', 'excel')" class="p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition text-slate-600" title="ส่งออก Excel">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Report 4: All Inventory Items -->
+              <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-3 text-sky-500">
+                    <i data-lucide="archive" class="w-6 h-6"></i>
+                    <h4 class="font-bold text-slate-900">รายงานพัสดุคงคลังทั้งหมด</h4>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-2">แสดงรายการพัสดุทั้งหมดในคลัง แยกตามหมวดหมู่ พร้อมยอดคงเหลือและมูลค่ารวม</p>
+                </div>
+                <div class="mt-4 flex gap-2">
+                  <button onclick="viewReportDetail('all_inventory')" class="px-4 py-2 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-xl border border-indigo-100 hover:bg-indigo-100 transition flex-1">เรียกดูรายงาน</button>
+                  <button onclick="exportReport('all_inventory', 'excel')" class="p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition text-slate-600" title="ส่งออก Excel">
                     <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
                   </button>
                 </div>
@@ -1577,10 +1604,11 @@
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">ระบุตัวอุปกรณ์ / เลขครุภัณฑ์ที่ชำรุด <span class="text-rose-500">*</span></label>
-          <select id="public-repair-asset-id" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs">
-            <option value="" disabled selected>-- โปรดเลือกสถานที่และหมวดหมู่ก่อน --</option>
+        <!-- Hidden because specifying the asset is optional/not required now -->
+        <div class="hidden">
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">ระบุตัวอุปกรณ์ / เลขครุภัณฑ์ที่ชำรุด</label>
+          <select id="public-repair-asset-id" class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs">
+            <option value="" selected>-- ไม่ระบุ --</option>
           </select>
         </div>
 
@@ -1741,12 +1769,78 @@
 
   <!-- Javascript Logic -->
   <script>
+    // Disable right-click and common developer tools shortcut keys to deter inspect (Only in production/non-local environments)
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      document.addEventListener('contextmenu', e => e.preventDefault());
+      document.addEventListener('keydown', e => {
+        if (
+          e.keyCode === 123 || // F12
+          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I / J
+          (e.ctrlKey && e.keyCode === 85) // Ctrl+U (View Source)
+        ) {
+          e.preventDefault();
+          return false;
+        }
+      });
+    }
+
     // System Configurations and Global State
     let dbClient = null;
     let currentUser = null;
     let html5QrScanner = null;
     let qrScannerCallbackMode = ''; // 'view_asset', 'annual_check', 'report_repair'
     
+    function formatRepairDescription(desc) {
+      if (!desc) return '';
+      const positionMatch = desc.match(/\[ตำแหน่ง:\s*([^\]]+)\]/);
+      const phoneMatch = desc.match(/\[เบอร์โทร:\s*([^\]]+)\]/);
+      const roomMatch = desc.match(/\[ห้อง:\s*([^\]]+)\]/);
+      const categoryMatch = desc.match(/\[หมวดหมู่:\s*([^\]]+)\]/);
+      
+      let cleanDesc = desc;
+      const symptomIndex = desc.indexOf('อาการชำรุด:');
+      if (symptomIndex !== -1) {
+        cleanDesc = desc.substring(symptomIndex + 10).trim();
+      } else {
+        cleanDesc = desc.replace(/\[ตำแหน่ง:[^\]]+\]\s*/g, '')
+                        .replace(/\[เบอร์โทร:[^\]]+\]\s*/g, '')
+                        .replace(/\[ห้อง:[^\]]+\]\s*/g, '')
+                        .replace(/\[หมวดหมู่:[^\]]+\]\s*/g, '')
+                        .trim();
+      }
+
+      if (positionMatch || phoneMatch || roomMatch || categoryMatch) {
+        return `
+          <div class="space-y-1 font-sans text-left">
+            <div class="text-slate-800 font-bold text-xs leading-normal">${cleanDesc}</div>
+            <div class="flex flex-wrap gap-1 mt-1">
+              ${roomMatch ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">📍 ห้อง: ${roomMatch[1]}</span>` : ''}
+              ${categoryMatch ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">🏷️ ${categoryMatch[1]}</span>` : ''}
+              ${positionMatch ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">👤 ${positionMatch[1]}</span>` : ''}
+              ${phoneMatch ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">📞 ${phoneMatch[1]}</span>` : ''}
+            </div>
+          </div>
+        `;
+      }
+      return `<div class="text-slate-800 text-xs font-medium font-sans text-left">${desc}</div>`;
+    }
+
+    function toggleSidebar() {
+      if (window.innerWidth < 768) {
+        // Toggle mobile bottom admin panel if in mobile view
+        const panel = document.getElementById('mobile-admin-panel');
+        if (panel) {
+          const isHidden = panel.classList.contains('translate-y-full');
+          toggleMobileAdminPanel(isHidden);
+        }
+      } else {
+        // Toggle sidebar visible state on desktop view
+        const sidebar = document.getElementById('sidebar-app');
+        if (sidebar) {
+          sidebar.classList.toggle('md:flex');
+        }
+      }
+    }
     // Cached DB data
     let cacheInventory = [];
     let cacheAssets = [];
@@ -1964,7 +2058,18 @@
       showLoader(false);
 
       // Populate unique rooms list
-      const rooms = [...new Set(publicCacheAssets.map(a => a.room).filter(Boolean))].sort();
+      let rooms = [...new Set(publicCacheAssets.map(a => a.room).filter(Boolean))].sort();
+      if (rooms.length === 0) {
+        // Fallback common rooms if database has no assets/rooms yet
+        rooms = [
+          'ห้องคอมพิวเตอร์ 1',
+          'ห้องคอมพิวเตอร์ 2',
+          'ห้องปฏิบัติการวิทยาศาสตร์',
+          'ห้องสมุด',
+          'ห้องประชุม',
+          'ห้องเรียนทั่วไป'
+        ];
+      }
       const roomSelect = document.getElementById('public-repair-room');
       roomSelect.innerHTML = '<option value="" disabled selected>-- เลือกสถานที่ปฏิบัติงาน --</option>' + 
         rooms.map(r => `<option value="${r}">${r}</option>`).join('');
@@ -2085,11 +2190,6 @@
           const description = document.getElementById('public-repair-description').value.trim();
           const imageFile = imgInput.files[0];
 
-          if (!assetId) {
-            showToast('กรุณาระบุตัวอุปกรณ์ / ครุภัณฑ์ที่ชำรุด', 'warning');
-            return;
-          }
-
           showLoader(true);
           let imageUrl = null;
           let imageUploadSuccess = true;
@@ -2111,7 +2211,7 @@
             const { error: insertErr } = await dbClient
               .from('asset_repairs')
               .insert({
-                asset_id: assetId,
+                asset_id: assetId || null,
                 reporter: reporter,
                 description: combinedDesc,
                 image_url: imageUrl,
@@ -2120,13 +2220,18 @@
 
             if (insertErr) throw insertErr;
 
-            // Auto change Asset Status to 'ชำรุด'
-            const { error: assetErr } = await dbClient
-              .from('assets')
-              .update({ status: 'ชำรุด' })
-              .eq('id', assetId);
+            // Save reporter name to local storage to track notifications for this reporter
+            localStorage.setItem('my_repair_reporter_name', reporter);
 
-            if (assetErr) throw assetErr;
+            // Auto change Asset Status to 'ชำรุด' if assetId is provided
+            if (assetId) {
+              const { error: assetErr } = await dbClient
+                .from('assets')
+                .update({ status: 'ชำรุด' })
+                .eq('id', assetId);
+
+              if (assetErr) throw assetErr;
+            }
 
             if (imageUploadSuccess) {
               showToast('บันทึกแจ้งซ่อมสำเร็จเข้าสู่ระบบแล้ว 🚀', 'success');
@@ -2166,7 +2271,7 @@
         const invCount = inv ? inv.length : 0;
         const astCount = ast ? ast.length : 0;
         const damaged = ast ? ast.filter(a => a.status === 'ชำรุด').length : 0;
-        const totalValText = (ast ? ast.reduce((sum, item) => sum + (Number(item.price) || 0), 0) : 0).toLocaleString() + ' ฿';
+        const totalValText = (inv ? inv.reduce((sum, item) => sum + ((Number(item.stock_remain) || 0) * (Number(item.price_per_unit) || 0)), 0) : 0).toLocaleString() + ' ฿';
 
         const elInv = document.getElementById('landing-count-inventory');
         const elAst = document.getElementById('landing-count-assets');
@@ -2290,7 +2395,7 @@
         { id: 'view-asset-checks', label: 'ตรวจสอบครุภัณฑ์ประจำปี', icon: 'clipboard-check', roles: ['admin', 'asset_officer'] },
         { id: 'view-repairs', label: 'ระบบแจ้งซ่อมบำรุง', icon: 'wrench', roles: ['admin', 'officer', 'asset_officer', 'teacher'] },
         { id: 'view-procurements', label: 'ระบบจัดซื้อจัดจ้าง', icon: 'file-text', roles: ['admin', 'procure_officer'] },
-        { id: 'view-reports', label: 'ระบบรายงาน & วิเคราะห์', icon: 'trending-up', roles: ['admin', 'reporter', 'executive'] },
+        { id: 'view-reports', label: 'ระบบรายงาน & วิเคราะห์', icon: 'trending-up', roles: ['admin', 'reporter', 'executive', 'officer'] },
         { id: 'view-users', label: 'จัดการสิทธิ์ผู้ใช้งาน', icon: 'users', roles: ['admin'] },
         { id: 'view-profile', label: 'ประวัติส่วนตัว', icon: 'user', roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher'] }
       ];
@@ -2330,7 +2435,7 @@
         'view-asset-checks': ['admin', 'asset_officer'],
         'view-repairs': ['admin', 'officer', 'asset_officer', 'teacher'],
         'view-procurements': ['admin', 'procure_officer'],
-        'view-reports': ['admin', 'reporter', 'executive'],
+        'view-reports': ['admin', 'reporter', 'executive', 'officer'],
         'view-users': ['admin'],
         'view-profile': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher']
       };
@@ -2516,7 +2621,7 @@
         read: false
       };
       
-      const duplicate = userNotifications.find(n => n.title === title && n.text === text && (new Date() - new Date(n.timestamp) < 60000));
+      const duplicate = userNotifications.find(n => n.title === title && n.text === text);
       if (duplicate) return;
 
       userNotifications.unshift(newNotif);
@@ -2626,29 +2731,79 @@
 
         // Generate automatic system notifications based on loaded data
         if (currentUser) {
-          // 1. Alert: Low Stock (for Admin, Officer, Teacher)
-          if (['admin', 'officer', 'teacher'].includes(currentUser.role)) {
+          // 1. Alert: Low Stock (for Admin, Executive, Officer, Teacher)
+          if (['admin', 'executive', 'officer', 'teacher'].includes(currentUser.role)) {
             const lowStockCount = cacheInventory.filter(item => item.stock_remain < item.min_threshold).length;
             if (lowStockCount > 0) {
               addNotification('พัสดุใกล้หมดคลัง', `มีพัสดุจำนวน ${lowStockCount} รายการ ต่ำกว่าจุดสั่งซื้อขั้นต่ำ`, 'warning', 'view-inventory');
             }
           }
 
-          // 2. Alert: Pending Requests (for Admin, Officer)
-          if (['admin', 'officer'].includes(currentUser.role)) {
+          // 2. Alert: Pending Requests (for Admin, Executive, Officer)
+          if (['admin', 'executive', 'officer'].includes(currentUser.role)) {
             const pendingCount = cacheRequests.filter(req => req.status === 'pending').length;
             if (pendingCount > 0) {
               addNotification('คำขอเบิกพัสดุใหม่', `มีใบขอเบิกพัสดุจำนวน ${pendingCount} รายการ รอการพิจารณาอนุมัติ`, 'info', 'view-dashboard');
             }
           }
 
-          // 3. Alert: Repairs (for Admin, Officer, Asset Officer)
-          if (['admin', 'officer', 'asset_officer'].includes(currentUser.role)) {
-            const pendingRepairs = cacheRepairs.filter(rep => rep.status === 'แจ้งแล้ว').length;
-            if (pendingRepairs > 0) {
-              addNotification('รายการแจ้งซ่อมใหม่', `มีครุภัณฑ์ชำรุดรอการดำเนินการจำนวน ${pendingRepairs} รายการ`, 'danger', 'view-repairs');
-            }
+          // 3. Alert: Repair Status Tracker & New Repairs (Role-filtered & Creator-specific)
+          const statusTrackerKey = `repair_status_tracker_${currentUser.username}`;
+          let localStatuses = {};
+          try {
+            localStatuses = JSON.parse(localStorage.getItem(statusTrackerKey)) || {};
+          } catch (e) {
+            localStatuses = {};
           }
+
+          cacheRepairs.forEach(rep => {
+            const lastStatus = localStatuses[rep.id];
+            const isReporter = currentUser && (currentUser.name === rep.reporter || currentUser.username === rep.reporter);
+            const isPublicReporter = localStorage.getItem('my_repair_reporter_name') === rep.reporter;
+            const belongsToMe = isReporter || isPublicReporter;
+
+            if (lastStatus !== undefined && lastStatus !== rep.status) {
+              // Status changed!
+              if (belongsToMe) {
+                let statusLabel = rep.status;
+                let notifType = 'info';
+                if (rep.status === 'กำลังดำเนินการ') {
+                  statusLabel = 'กำลังดำเนินการ';
+                  notifType = 'info';
+                } else if (rep.status === 'ซ่อมเสร็จ') {
+                  statusLabel = 'ซ่อมเสร็จสิ้น';
+                  notifType = 'success';
+                } else if (rep.status === 'ยกเลิก' || rep.status === 'ปฏิเสธ') {
+                  statusLabel = 'ถูกปฏิเสธ/ยกเลิก';
+                  notifType = 'warning';
+                }
+                
+                addNotification(
+                  `อัปเดตสถานะแจ้งซ่อม`, 
+                  `รายการ "${rep.assets?.name || 'พัสดุ/ครุภัณฑ์'}" ของคุณเปลี่ยนสถานะเป็น: ${statusLabel}`, 
+                  notifType, 
+                  'view-repairs'
+                );
+                showToast(`แจ้งซ่อมของคุณเปลี่ยนสถานะเป็น: ${statusLabel}`, notifType);
+              }
+            } else if (lastStatus === undefined) {
+              // First time seeing this repair request in this browser session
+              if (rep.status === 'แจ้งแล้ว') {
+                const isStaff = ['admin', 'executive', 'officer', 'asset_officer'].includes(currentUser.role);
+                if (isStaff || belongsToMe) {
+                  addNotification(
+                    'รายการแจ้งซ่อมใหม่', 
+                    `มีรายการแจ้งซ่อมใหม่: "${rep.assets?.name || 'พัสดุ/ครุภัณฑ์'}" โดย ${rep.reporter}`, 
+                    'danger', 
+                    'view-repairs'
+                  );
+                }
+              }
+            }
+            // Update the tracker
+            localStatuses[rep.id] = rep.status;
+          });
+          localStorage.setItem(statusTrackerKey, JSON.stringify(localStatuses));
         }
       } catch (err) {
         console.error('Error fetching database data:', err);
@@ -2719,7 +2874,7 @@
       const lowStockCount = cacheInventory.filter(item => item.stock_remain < item.min_threshold).length;
       document.getElementById('stat-low-stock').innerText = lowStockCount;
       
-      const totalVal = cacheAssets.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+      const totalVal = cacheInventory.reduce((sum, item) => sum + ((Number(item.stock_remain) || 0) * (Number(item.price_per_unit) || 0)), 0);
       document.getElementById('stat-total-asset-value').innerText = totalVal.toLocaleString() + ' ฿';
       
       const damaged = cacheAssets.filter(item => item.status === 'ชำรุด').length;
@@ -3821,7 +3976,7 @@
               <span>สถานะ: ${r.status}</span>
               <span>${new Date(r.report_date).toLocaleDateString('th-TH')}</span>
             </div>
-            <p class="mt-1">${r.description}</p>
+            <div class="mt-1.5">${formatRepairDescription(r.description)}</div>
           </div>
         `).join('');
       }
@@ -4266,9 +4421,9 @@
               <span class="text-[10px] text-slate-400">ห้อง: ${rep.assets?.room || '-'}</span>
             </div>
           </td>
-          <td class="py-3 px-4 text-slate-700 font-medium">${rep.description}</td>
+          <td class="py-3 px-4">${formatRepairDescription(rep.description)}</td>
           <td class="py-3 px-4 text-xs text-slate-500">${rep.reporter}</td>
-          <td class="py-3 px-4">
+          <td class="py-3 px-4 whitespace-nowrap">
             <span class="px-2 py-0.5 rounded-full text-xs font-bold ${
               rep.status === 'แจ้งแล้ว' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' :
               rep.status === 'กำลังดำเนินการ' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
@@ -4276,8 +4431,8 @@
               'bg-slate-50 text-slate-600 border border-slate-100'
             }">${rep.status}</span>
           </td>
-          <td class="py-3 px-4 text-center">
-            <div class="flex flex-wrap justify-center items-center gap-1.5">
+          <td class="py-3 px-4 text-center whitespace-nowrap">
+            <div class="flex flex-col items-center gap-1.5">
               ${isStaff ? `
                 <select onchange="updateRepairStatus('${rep.id}', this.value)" class="px-2 py-1 text-xs border border-slate-200 rounded-lg focus:outline-none bg-white">
                   <option value="แจ้งแล้ว" ${rep.status === 'แจ้งแล้ว' ? 'selected' : ''}>แจ้งแล้ว</option>
@@ -4287,12 +4442,14 @@
                 </select>
               ` : ''}
               ${canModify ? `
-                <button onclick="editRepairItem('${rep.id}')" class="p-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded border border-emerald-200 text-[10px] font-semibold flex items-center gap-0.5 transition" title="แก้ไข">
-                  <i data-lucide="edit-2" class="w-3.5 h-3.5"></i> แก้ไข
-                </button>
-                <button onclick="deleteRepairItem('${rep.id}')" class="p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded border border-rose-200 text-[10px] font-semibold flex items-center gap-0.5 transition" title="ลบ">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> ลบ
-                </button>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <button onclick="editRepairItem('${rep.id}')" class="p-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded border border-emerald-200 text-[10px] font-semibold flex items-center gap-0.5 transition" title="แก้ไข">
+                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i> แก้ไข
+                  </button>
+                  <button onclick="deleteRepairItem('${rep.id}')" class="p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded border border-rose-200 text-[10px] font-semibold flex items-center gap-0.5 transition" title="ลบ">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> ลบ
+                  </button>
+                </div>
               ` : ''}
               ${!isStaff && !canModify ? `
                 <span class="text-xs text-slate-400">-</span>
@@ -4410,6 +4567,9 @@
             });
 
           if (repErr) throw repErr;
+
+          // Save reporter name to local storage to track notifications for this reporter
+          localStorage.setItem('my_repair_reporter_name', reporter);
 
           // Auto change Asset Status to Damaged
           const { error: assetErr } = await dbClient
@@ -4896,7 +5056,7 @@
           for (const [dept, list] of Object.entries(groupedAssets)) {
             rowsHtml += `
               <tr class="bg-indigo-50/40 font-bold text-indigo-900">
-                <td colspan="6" class="py-2 px-4 text-xs">ฝ่ายงาน: 	hิ${dept} (${list.length} รายการ)</td>
+                <td colspan="6" class="py-2 px-4 text-xs">ฝ่ายงาน: ${dept} (${list.length} รายการ)</td>
               </tr>
             `;
             rowsHtml += list.map(a => `
@@ -4925,6 +5085,80 @@
             <tr class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
               <td colspan="5" class="py-4 px-4 text-right text-sm">มูลค่าครุภัณฑ์สะสมรวมทั้งหมด:</td>
               <td class="py-4 px-4 text-indigo-600 text-sm">${grandTotal.toLocaleString()} ฿</td>
+            </tr>
+          `;
+          body.innerHTML = rowsHtml;
+        }
+      } else if (reportKey === 'all_inventory') {
+        titleEl.innerText = 'รายงานพัสดุคงคลังทั้งหมด';
+        descEl.innerText = 'แสดงรายการรายละเอียดพัสดุและวัสดุสิ้นเปลืองทั้งหมดในสถานศึกษา แยกตามหมวดหมู่';
+
+        header.innerHTML = `
+          <tr>
+            <th class="py-3 px-4">รหัสพัสดุ</th>
+            <th class="py-3 px-4">ชื่อพัสดุ</th>
+            <th class="py-3 px-4">ราคาต่อหน่วย</th>
+            <th class="py-3 px-4">คงเหลือ</th>
+            <th class="py-3 px-4">มูลค่ารวม</th>
+            <th class="py-3 px-4">สถานที่จัดเก็บ</th>
+          </tr>
+        `;
+
+        let items = cacheInventory;
+        if (selectedDept !== 'all') {
+          const deptInvIds = new Set(cacheRequests.filter(r => r.department === selectedDept).map(r => r.inventory_id));
+          items = cacheInventory.filter(item => deptInvIds.has(item.id));
+        }
+
+        if (items.length === 0) {
+          body.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีข้อมูลพัสดุคงคลังสำหรับฝ่ายงานนี้</td></tr>`;
+        } else {
+          const grouped = {};
+          items.forEach(item => {
+            const cat = item.category || 'เครื่องเขียน';
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push(item);
+          });
+
+          let rowsHtml = '';
+          let grandTotal = 0;
+
+          for (const [cat, list] of Object.entries(grouped)) {
+            rowsHtml += `
+              <tr class="bg-indigo-50/40 font-bold text-indigo-900">
+                <td colspan="6" class="py-2 px-4 text-xs">หมวดหมู่: ${cat} (${list.length} รายการ)</td>
+              </tr>
+            `;
+
+            rowsHtml += list.map(item => {
+              const totalVal = (Number(item.stock_remain) || 0) * (Number(item.price_per_unit) || 0);
+              return `
+                <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
+                  <td class="py-3 px-4 font-semibold text-slate-500">${item.code}</td>
+                  <td class="py-3 px-4 font-bold text-slate-800 text-sm">${item.name}</td>
+                  <td class="py-3 px-4 text-slate-650 font-semibold">${Number(item.price_per_unit || 0).toLocaleString()} ฿</td>
+                  <td class="py-3 px-4 font-bold text-slate-800">${item.stock_remain} <span class="text-xs text-slate-400 font-medium">${item.unit}</span></td>
+                  <td class="py-3 px-4 text-slate-850 font-bold">${totalVal.toLocaleString()} ฿</td>
+                  <td class="py-3 px-4 text-xs text-slate-550">${item.location}</td>
+                </tr>
+              `;
+            }).join('');
+
+            const catTotal = list.reduce((sum, item) => sum + ((Number(item.stock_remain) || 0) * (Number(item.price_per_unit) || 0)), 0);
+            grandTotal += catTotal;
+
+            rowsHtml += `
+              <tr class="bg-slate-50/50 font-semibold text-slate-700 border-b border-slate-150">
+                <td colspan="4" class="py-2 px-4 text-right text-xs">มูลค่ารวมหมวด ${cat}:</td>
+                <td colspan="2" class="py-2 px-4 text-indigo-650 text-xs font-bold">${catTotal.toLocaleString()} ฿</td>
+              </tr>
+            `;
+          }
+
+          rowsHtml += `
+            <tr class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
+              <td colspan="4" class="py-4 px-4 text-right text-sm">มูลค่าพัสดุคงคลังสะสมรวมทั้งหมด:</td>
+              <td colspan="2" class="py-4 px-4 text-indigo-600 text-sm">${grandTotal.toLocaleString()} ฿</td>
             </tr>
           `;
           body.innerHTML = rowsHtml;
@@ -4984,41 +5218,82 @@
         XLSX.writeFile(wb, `Report-${reportKey}-${new Date().toISOString().split('T')[0]}.xlsx`);
         showToast('ดาวน์โหลดเอกสาร Excel เรียบร้อยแล้ว', 'success');
       } else {
-        // Load Thai fonts dynamically first
-        await loadThaiFontsForPDF();
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'pt', 'a4');
-        
-        // Register Sarabun fonts if loaded successfully
-        if (sarabunRegularBase64) {
-          doc.addFileToVFS("Sarabun-Regular.ttf", sarabunRegularBase64);
-          doc.addFont("Sarabun-Regular.ttf", "Sarabun", "normal");
+        showLoader(true);
+        try {
+          // Create temporary container styled with Tailwind classes
+          const container = document.createElement('div');
+          container.className = 'bg-white p-8 font-sans';
+          container.style.width = '700px'; // standard width for A4 canvas rendering (scaled with 10mm margins)
+          
+          // Header section inside PDF
+          const headerDiv = document.createElement('div');
+          headerDiv.className = 'border-b-2 border-indigo-600 pb-4 mb-6';
+          
+          const title = document.createElement('h2');
+          title.innerText = document.getElementById('report-title').innerText;
+          title.className = 'text-2xl font-bold text-slate-800';
+          headerDiv.appendChild(title);
+          
+          const desc = document.createElement('p');
+          desc.innerText = document.getElementById('report-desc').innerText;
+          desc.className = 'text-xs text-slate-500 mt-1';
+          headerDiv.appendChild(desc);
+          
+          headerDiv.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          title.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          desc.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          
+          headerDiv.style.lineHeight = '1.6';
+          title.style.lineHeight = '1.6';
+          desc.style.lineHeight = '1.6';
+          
+          container.appendChild(headerDiv);
+          
+          // Clone the table
+          const tableClone = document.getElementById('report-result-table').cloneNode(true);
+          tableClone.removeAttribute('id');
+          tableClone.className = 'w-full text-left border-collapse text-xs';
+          tableClone.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          tableClone.style.lineHeight = '1.6';
+          
+          // Add inline styling to ensure cells look exactly right in the PDF output
+          tableClone.querySelectorAll('th, td').forEach(cell => {
+            cell.style.padding = '6px 10px';
+            cell.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+            cell.style.lineHeight = '1.6';
+          });
+          
+          // Prevent rows from breaking awkwardly across pages
+          tableClone.querySelectorAll('tr').forEach(row => {
+            row.style.pageBreakInside = 'avoid';
+          });
+          
+          container.appendChild(tableClone);
+          
+          // Append temporarily to DOM to apply browser styles (Tailwind, etc.)
+          document.body.appendChild(container);
+          
+          // Options for html2pdf
+          const opt = {
+            margin:       10, // Reduced from 15 to 10 to give more printable width
+            filename:     `Report-${reportKey}-${new Date().toISOString().split('T')[0]}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2.5, useCORS: true, letterRendering: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+          
+          // Generate and save PDF
+          await html2pdf().set(opt).from(container).save();
+          
+          // Clean up
+          document.body.removeChild(container);
+          showToast('ดาวน์โหลดเอกสาร PDF เรียบร้อยแล้ว', 'success');
+        } catch (error) {
+          console.error('Failed to export PDF:', error);
+          showToast('ไม่สามารถส่งออก PDF ได้ กรุณาลองใหม่อีกครั้ง', 'error');
+        } finally {
+          showLoader(false);
         }
-        if (sarabunBoldBase64) {
-          doc.addFileToVFS("Sarabun-Bold.ttf", sarabunBoldBase64);
-          doc.addFont("Sarabun-Bold.ttf", "Sarabun", "bold");
-        }
-        
-        const fontName = sarabunRegularBase64 ? "Sarabun" : "Helvetica";
-
-        doc.setFont(fontName, "bold");
-        doc.text(document.getElementById('report-title').innerText, 40, 40);
-        doc.setFontSize(10);
-        doc.setFont(fontName, "normal");
-        doc.text(document.getElementById('report-desc').innerText, 40, 60);
-
-        doc.autoTable({
-          html: '#report-result-table',
-          startY: 80,
-          styles: { font: fontName, fontSize: 8 },
-          theme: 'grid',
-          headStyles: { font: fontName, fontStyle: 'bold' },
-          bodyStyles: { font: fontName }
-        });
-
-        doc.save(`Report-${reportKey}-${new Date().toISOString().split('T')[0]}.pdf`);
-        showToast('ดาวน์โหลดเอกสาร PDF เรียบร้อยแล้ว', 'success');
       }
     }
 
