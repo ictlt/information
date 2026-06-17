@@ -308,3 +308,68 @@ ALTER TABLE pwa_subscriptions ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS pwa_subscriptions_all ON pwa_subscriptions;
 CREATE POLICY pwa_subscriptions_all ON pwa_subscriptions FOR ALL USING (true) WITH CHECK (true);
 
+
+-- 13. PWA Web Push Notification triggers via pg_net HTTP Request
+-- Create trigger function
+CREATE OR REPLACE FUNCTION public.send_push_notification_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+    payload jsonb;
+    request_id bigint;
+    url text := 'https://iberaugjjhjgbwkzxswk.supabase.co/functions/v1/send-push';
+    -- Pass API key and Authorization header to pass Supabase API Gateway JWT verification
+    headers jsonb := '{
+        "Content-Type": "application/json",
+        "apikey": "sb_publishable_Cnit-KuO8o1NtlOoRAyMQg_BegSURgQ",
+        "Authorization": "Bearer sb_publishable_Cnit-KuO8o1NtlOoRAyMQg_BegSURgQ"
+    }'::jsonb;
+BEGIN
+    payload := jsonb_build_object(
+        'table', TG_TABLE_NAME,
+        'type', TG_OP,
+        'record', CASE WHEN TG_OP = 'DELETE' THEN NULL ELSE row_to_json(NEW)::jsonb END,
+        'old_record', CASE WHEN TG_OP = 'INSERT' THEN NULL ELSE row_to_json(OLD)::jsonb END
+    );
+
+    BEGIN
+        SELECT net.http_post(url := url, body := payload, headers := headers) INTO request_id;
+    EXCEPTION WHEN OTHERS THEN
+        SELECT public.http_post(url := url, body := payload, headers := headers) INTO request_id;
+    END;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Recreate triggers for each table with DELETE event support
+DROP TRIGGER IF EXISTS trg_send_push_inventory ON inventory;
+CREATE TRIGGER trg_send_push_inventory
+AFTER INSERT OR UPDATE OR DELETE ON inventory
+FOR EACH ROW EXECUTE FUNCTION public.send_push_notification_trigger();
+
+DROP TRIGGER IF EXISTS trg_send_push_assets ON assets;
+CREATE TRIGGER trg_send_push_assets
+AFTER INSERT OR UPDATE OR DELETE ON assets
+FOR EACH ROW EXECUTE FUNCTION public.send_push_notification_trigger();
+
+DROP TRIGGER IF EXISTS trg_send_push_inventory_requests ON inventory_requests;
+CREATE TRIGGER trg_send_push_inventory_requests
+AFTER INSERT OR UPDATE OR DELETE ON inventory_requests
+FOR EACH ROW EXECUTE FUNCTION public.send_push_notification_trigger();
+
+DROP TRIGGER IF EXISTS trg_send_push_asset_repairs ON asset_repairs;
+CREATE TRIGGER trg_send_push_asset_repairs
+AFTER INSERT OR UPDATE OR DELETE ON asset_repairs
+FOR EACH ROW EXECUTE FUNCTION public.send_push_notification_trigger();
+
+DROP TRIGGER IF EXISTS trg_send_push_asset_checks ON asset_checks;
+CREATE TRIGGER trg_send_push_asset_checks
+AFTER INSERT OR DELETE ON asset_checks
+FOR EACH ROW EXECUTE FUNCTION public.send_push_notification_trigger();
+
+DROP TRIGGER IF EXISTS trg_send_push_procurements ON procurements;
+CREATE TRIGGER trg_send_push_procurements
+AFTER INSERT OR UPDATE OR DELETE ON procurements
+FOR EACH ROW EXECUTE FUNCTION public.send_push_notification_trigger();
+
+
