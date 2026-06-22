@@ -4044,7 +4044,7 @@
               <span class="text-xs text-indigo-600 font-semibold">${Number(item.price).toLocaleString()} ฿</span>
             </div>
           </td>
-          <td class="py-3 px-4 text-xs text-slate-650">${item.brand || '-'} / ${item.model || '-'}</td>
+          <td class="py-3 px-4 text-xs text-slate-600">${item.brand || '-'} / ${item.model || '-'}</td>
           <td class="py-3 px-4 text-xs text-slate-500">${item.room}</td>
           <td class="py-3 px-4 text-xs text-slate-500">${item.responsible_person}</td>
           <td class="py-3 px-4">
@@ -4812,7 +4812,7 @@
             ${item.po_url ? `<a href="${item.po_url}" target="_blank" class="block text-indigo-600 hover:underline">ใบสั่งซื้อ PO</a>` : ''}
             ${item.receive_url ? `<a href="${item.receive_url}" target="_blank" class="block text-indigo-600 hover:underline">ใบตรวจรับ</a>` : ''}
           </td>
-          <td class="py-3 px-4 text-slate-650 leading-relaxed">${itemsList}</td>
+          <td class="py-3 px-4 text-slate-600 leading-relaxed">${itemsList}</td>
           <td class="py-3 px-4">
             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
               item.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
@@ -5105,9 +5105,9 @@
               <tr class="hover:bg-slate-50 transition border-b border-slate-100">
                 <td class="py-3 px-4 font-semibold text-slate-900">${item.code}</td>
                 <td class="py-3 px-4 font-bold text-slate-800">${item.name}</td>
-                <td class="py-3 px-4 text-red-650 font-bold">${item.stock_remain} ${item.unit}</td>
+                <td class="py-3 px-4 text-red-600 font-bold">${item.stock_remain} ${item.unit}</td>
                 <td class="py-3 px-4 font-semibold text-slate-500">${item.min_threshold}</td>
-                <td class="py-3 px-4 text-xs text-slate-550">${item.location}</td>
+                <td class="py-3 px-4 text-xs text-slate-500">${item.location}</td>
               </tr>
             `).join('');
           }
@@ -5215,7 +5215,7 @@
               <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
                 <td class="py-3 px-4 font-semibold text-slate-500">${a.code}</td>
                 <td class="py-3 px-4 font-bold text-slate-800 text-sm">${a.name}</td>
-                <td class="py-3 px-4 text-slate-650">${a.room}</td>
+                <td class="py-3 px-4 text-slate-600">${a.room}</td>
                 <td class="py-3 px-4 text-slate-500">${a.responsible_person}</td>
                 <td class="py-3 px-4 text-slate-500 font-bold">${a.fiscal_year}</td>
                 <td class="py-3 px-4 text-slate-800 font-bold">${Number(a.price).toLocaleString()} ฿</td>
@@ -5228,7 +5228,7 @@
             rowsHtml += `
               <tr class="bg-slate-50/50 font-semibold text-slate-700 border-b border-slate-150">
                 <td colspan="5" class="py-2 px-4 text-right text-xs">มูลค่ารวมฝ่าย ${dept}:</td>
-                <td class="py-2 px-4 text-indigo-650 text-xs font-bold">${deptTotal.toLocaleString()} ฿</td>
+                <td class="py-2 px-4 text-indigo-600 text-xs font-bold">${deptTotal.toLocaleString()} ฿</td>
               </tr>
             `;
           }
@@ -5288,10 +5288,10 @@
                 <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
                   <td class="py-3 px-4 font-semibold text-slate-500">${item.code}</td>
                   <td class="py-3 px-4 font-bold text-slate-800 text-sm">${item.name}</td>
-                  <td class="py-3 px-4 text-slate-650 font-semibold">${Number(item.price_per_unit || 0).toLocaleString()} ฿</td>
+                  <td class="py-3 px-4 text-slate-600 font-semibold">${Number(item.price_per_unit || 0).toLocaleString()} ฿</td>
                   <td class="py-3 px-4 font-bold text-slate-800">${item.stock_remain} <span class="text-xs text-slate-400 font-medium">${item.unit}</span></td>
-                  <td class="py-3 px-4 text-slate-850 font-bold">${totalVal.toLocaleString()} ฿</td>
-                  <td class="py-3 px-4 text-xs text-slate-550">${item.location}</td>
+                  <td class="py-3 px-4 text-slate-800 font-bold">${totalVal.toLocaleString()} ฿</td>
+                  <td class="py-3 px-4 text-xs text-slate-500">${item.location}</td>
                 </tr>
               `;
             }).join('');
@@ -5302,7 +5302,7 @@
             rowsHtml += `
               <tr class="bg-slate-50/50 font-semibold text-slate-700 border-b border-slate-150">
                 <td colspan="4" class="py-2 px-4 text-right text-xs">มูลค่ารวมหมวด ${cat}:</td>
-                <td colspan="2" class="py-2 px-4 text-indigo-650 text-xs font-bold">${catTotal.toLocaleString()} ฿</td>
+                <td colspan="2" class="py-2 px-4 text-indigo-600 text-xs font-bold">${catTotal.toLocaleString()} ฿</td>
               </tr>
             `;
           }
@@ -5461,7 +5461,7 @@
         row.className = 'border-b border-slate-100 hover:bg-slate-50 transition text-sm';
         row.innerHTML = `
           <td class="py-3 px-4 font-bold text-slate-800">${user.name}</td>
-          <td class="py-3 px-4 text-slate-650">${user.username}</td>
+          <td class="py-3 px-4 text-slate-600">${user.username}</td>
           <td class="py-3 px-4 font-semibold text-indigo-600">${getRoleLabel(user.role)}</td>
           <td class="py-3 px-4 text-xs text-slate-500">${user.department}</td>
           <td class="py-3 px-4 text-center">
