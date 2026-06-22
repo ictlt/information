@@ -1053,35 +1053,35 @@
             </button>
           </div>
           <div class="grid grid-cols-3 gap-3">
-            <button onclick="switchView('view-dashboard'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-dashboard'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="pie-chart" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">Dashboard</span>
             </button>
-            <button onclick="switchView('view-inventory'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-inventory'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="package" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">คลังพัสดุ</span>
             </button>
-            <button onclick="switchView('view-assets'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-assets'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="cpu" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">ครุภัณฑ์</span>
             </button>
-            <button onclick="switchView('view-asset-checks'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-asset-checks'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="clipboard-check" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">ตรวจประจำปี</span>
             </button>
-            <button onclick="switchView('view-repairs'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-repairs'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="wrench" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">แจ้งซ่อม</span>
             </button>
-            <button onclick="switchView('view-procurements'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-procurements'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="file-text" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">จัดซื้อจัดจ้าง</span>
             </button>
-            <button onclick="switchView('view-reports'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-reports'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="trending-up" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">รายงาน</span>
             </button>
-            <button onclick="switchView('view-users'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-650 transition text-slate-200">
+            <button onclick="switchView('view-users'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="users" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">ผู้ใช้งาน</span>
             </button>
@@ -1562,51 +1562,55 @@
     </div>
   </div>
 
-  <!-- Modal: Public Report Repair Form (แจ้งซ่อมสำหรับครู/บุคลากร - ธีมมืดตามแบบฟอร์มบันทึกแจ้งปัญหาระบบ ICT) -->
-  <div id="modal-public-report-repair" class="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden">
-    <div class="bg-slate-900 text-slate-100 rounded-2xl shadow-2xl w-full max-w-xl p-6 mx-4 max-h-[90vh] overflow-y-auto border border-slate-800 custom-scrollbar">
-      <div class="flex justify-between items-center pb-4 border-b border-slate-800">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-rose-500/10 text-rose-500 rounded-xl border border-rose-500/20">
+  <!-- Modal: Public Report Repair Form (แจ้งซ่อมสำหรับครู/บุคลากร - ธีมสว่างตามธีมหลักของเว็บ) -->
+  <div id="modal-public-report-repair" class="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm hidden">
+    <div class="bg-white text-slate-800 rounded-2xl shadow-2xl w-full max-w-xl p-6 mx-4 max-h-[90vh] overflow-y-auto border border-slate-100 custom-scrollbar">
+      <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+          <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100 flex items-center justify-center flex-shrink-0">
             <i data-lucide="wrench" class="w-6 h-6 animate-pulse"></i>
           </div>
-          <div>
-            <h3 class="text-lg font-bold text-white leading-tight">แบบฟอร์มบันทึกแจ้งปัญหาระบบ ICT</h3>
-            <p class="text-[10px] text-slate-400">ส่วนที่ 1 กรอกข้อมูลผู้แจ้งและรายละเอียดอุปกรณ์ชำรุดเสียหาย</p>
+          <div class="min-w-0 flex-1">
+            <h3 class="text-sm sm:text-lg font-bold text-slate-800 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">แบบฟอร์มบันทึกแจ้งปัญหาระบบ ICT</h3>
+            <p class="text-[9px] sm:text-xs text-slate-500 whitespace-nowrap overflow-hidden text-ellipsis">ส่วนที่ 1 กรอกข้อมูลผู้แจ้งและรายละเอียดอุปกรณ์ชำรุดเสียหาย</p>
           </div>
         </div>
-        <button type="button" onclick="closePublicRepairModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition border border-slate-700 select-none">
-          ย้อนกลับ
+        <button type="button" onclick="closePublicRepairModal()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1.5 rounded-lg transition select-none flex items-center justify-center ml-2 flex-shrink-0">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
       
       <form id="form-public-report-repair" class="mt-5 space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">ชื่อ - นามสกุล ผู้แจ้งซ่อม <span class="text-rose-500">*</span></label>
-          <input type="text" id="public-repair-reporter" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white placeholder-slate-600 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs" placeholder="กรอกชื่อ-นามสกุลของคุณ">
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">ชื่อ - นามสกุล ผู้แจ้งซ่อม <span class="text-rose-500">*</span></label>
+          <input type="text" id="public-repair-reporter" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs" placeholder="กรอกชื่อ-นามสกุลของคุณ">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">ตำแหน่งปฏิบัติหน้าที่ <span class="text-rose-500">*</span></label>
-            <input type="text" id="public-repair-position" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white placeholder-slate-600 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs" placeholder="เช่น ครูประจำชั้น, เจ้าหน้าที่ ICT">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">ตำแหน่งปฏิบัติหน้าที่ <span class="text-rose-500">*</span></label>
+            <input type="text" id="public-repair-position" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs" placeholder="เช่น ครูประจำชั้น, เจ้าหน้าที่ ICT">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">หมายเลขโทรศัพท์ติดต่อ <span class="text-rose-500">*</span></label>
-            <input type="tel" id="public-repair-phone" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white placeholder-slate-600 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs" placeholder="เช่น 0812345678">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">หมายเลขโทรศัพท์ติดต่อ <span class="text-rose-500">*</span></label>
+            <input type="tel" id="public-repair-phone" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs" placeholder="เช่น 0812345678">
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">ห้องเรียน / ห้องปฏิบัติการ (ดึงจากระบบ) <span class="text-rose-500">*</span></label>
-            <select id="public-repair-room" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">ห้องเรียน / ห้องปฏิบัติการ (ดึงจากระบบ) <span class="text-rose-500">*</span></label>
+            <select id="public-repair-room" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs">
               <option value="" disabled selected>-- เลือกสถานที่ปฏิบัติงาน --</option>
             </select>
+            <!-- Custom Room Input (hidden by default) -->
+            <div id="public-repair-custom-room-container" class="hidden mt-2">
+              <input type="text" id="public-repair-custom-room" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs" placeholder="ระบุชื่อห้องเรียน / สถานที่ทำงานของคุณ">
+            </div>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">หมวดหมู่รายการทรัพย์สินชำรุด <span class="text-rose-500">*</span></label>
-            <select id="public-repair-category" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">หมวดหมู่รายการทรัพย์สินชำรุด <span class="text-rose-500">*</span></label>
+            <select id="public-repair-category" required class="w-full px-4 py-2.5 mt-1.5 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs">
               <option value="" disabled selected>-- เลือกประเภทอุปกรณ์ --</option>
               <option value="computer">คอมพิวเตอร์/โน้ตบุ๊ก</option>
               <option value="printer">เครื่องพิมพ์/เครื่องสแกน</option>
@@ -1622,35 +1626,35 @@
 
         <!-- Hidden because specifying the asset is optional/not required now -->
         <div class="hidden">
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">ระบุตัวอุปกรณ์ / เลขครุภัณฑ์ที่ชำรุด</label>
-          <select id="public-repair-asset-id" class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs">
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">ระบุตัวอุปกรณ์ / เลขครุภัณฑ์ที่ชำรุด</label>
+          <select id="public-repair-asset-id" class="w-full px-4 py-2.5 mt-1.5 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs">
             <option value="" selected>-- ไม่ระบุ --</option>
           </select>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">รายละเอียดและอาการชำรุดเด่นชัด <span class="text-rose-500">*</span></label>
-          <textarea id="public-repair-description" required rows="3" class="w-full px-4 py-2.5 mt-1.5 bg-slate-950 border border-slate-800 text-white placeholder-slate-600 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:outline-none text-xs" placeholder="โปรดระบุรายละเอียดอาการ..."></textarea>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">รายละเอียดและอาการชำรุดเด่นชัด <span class="text-rose-500">*</span></label>
+          <textarea id="public-repair-description" required rows="3" class="w-full px-4 py-2.5 mt-1.5 bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none text-xs" placeholder="โปรดระบุรายละเอียดอาการ..."></textarea>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">แนบภาพประกอบความเสียหาย (ระบบบีบอัดอัตโนมัติ)</label>
-          <div class="relative border-2 border-dashed border-slate-800 rounded-xl p-4 bg-slate-950/50 hover:bg-slate-950 transition flex flex-col items-center justify-center cursor-pointer group">
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">แนบภาพประกอบความเสียหาย (ระบบบีบอัดอัตโนมัติ)</label>
+          <div class="relative border-2 border-dashed border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-slate-100/50 transition flex flex-col items-center justify-center cursor-pointer group">
             <input type="file" id="public-repair-image-file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
             <div id="public-repair-upload-placeholder" class="text-center flex flex-col items-center">
-              <i data-lucide="image-plus" class="w-8 h-8 text-slate-500 group-hover:text-rose-400 transition mb-2"></i>
-              <span class="text-xs font-semibold text-indigo-400 group-hover:text-rose-450">เลือกอัปโหลดไฟล์รูปภาพ</span>
-              <span class="text-[10px] text-slate-500 mt-1">PNG, JPG ขนาดลดลงประหยัดพื้นที่คลาวด์</span>
+              <i data-lucide="image-plus" class="w-8 h-8 text-slate-400 group-hover:text-indigo-500 transition mb-2"></i>
+              <span class="text-xs font-semibold text-indigo-600 group-hover:text-indigo-700">เลือกอัปโหลดไฟล์รูปภาพ</span>
+              <span class="text-[10px] text-slate-400 mt-1">PNG, JPG ขนาดลดลงประหยัดพื้นที่คลาวด์</span>
             </div>
             <div id="public-repair-image-preview-container" class="hidden flex flex-col items-center w-full">
-              <img id="public-repair-image-preview" class="max-h-36 rounded-lg object-contain border border-slate-800" src="">
-              <span id="public-repair-image-delete-btn" class="text-[10px] text-slate-400 mt-2 hover:text-rose-450 transition underline cursor-pointer">ลบรูปภาพนี้</span>
+              <img id="public-repair-image-preview" class="max-h-36 rounded-lg object-contain border border-slate-200" src="">
+              <span id="public-repair-image-delete-btn" class="text-[10px] text-slate-500 mt-2 hover:text-rose-600 transition underline cursor-pointer">ลบรูปภาพนี้</span>
             </div>
           </div>
         </div>
 
-        <div class="pt-4 border-t border-slate-800">
-          <button type="submit" class="w-full py-3 bg-gradient-to-r from-rose-600 via-indigo-600 to-indigo-700 hover:from-rose-550 hover:to-indigo-650 text-white font-bold rounded-xl transition shadow-lg hover:shadow-indigo-500/10 flex items-center justify-center gap-2 select-none">
+        <div class="pt-4 border-t border-slate-100">
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold rounded-xl transition shadow-lg hover:shadow-indigo-500/10 flex items-center justify-center gap-2 select-none">
             <span>ส่งข้อมูลบันทึก "แจ้งปัญหาซ่อมแซม" 🚀</span>
           </button>
         </div>
@@ -2080,19 +2084,55 @@
         rooms = [
           'ห้องคอมพิวเตอร์ 1',
           'ห้องคอมพิวเตอร์ 2',
-          'ห้องปฏิบัติการวิทยาศาสตร์',
-          'ห้องสมุด',
-          'ห้องประชุม',
-          'ห้องเรียนทั่วไป'
+          'ห้องปฏิบัติการวิทยาศาสตร์1',
+		  'ห้องปฏิบัติการวิทยาศาสตร์2',
+          'ห้องป.1/1',
+		  'ห้องป.1/2',
+		  'ห้องป.1/3',
+		  'ห้องป.2/1',
+		  'ห้องป.2/2',
+		  'ห้องป.2/3',
+		  'ห้องป.2/4',
+		  'ห้องป.3/1',
+		  'ห้องป.3/2',
+		  'ห้องป.3/3',
+		  'ห้องป.3/4',
+		  'ห้องป.4/1',
+		  'ห้องป.4/2',
+		  'ห้องป.4/3',
+		  'ห้องป.4/4',
+		  'ห้องป.5/1',
+		  'ห้องป.5/2',
+		  'ห้องป.5/3',
+		  'ห้องป.5/4',
+		  'ห้องป.6/1',
+		  'ห้องป.6/2',
+		  'ห้องป.6/3',
+		  'ห้องป.6/4',
+		  'ห้องป.6/5',
+          'ห้องประชุมแจ้งศิริ',
+		  'อื่นๆ'
         ];
+      } else {
+        // Always ensure 'อื่นๆ' is at the end of the unique rooms list
+        if (!rooms.includes('อื่นๆ')) {
+          rooms.push('อื่นๆ');
+        }
       }
       const roomSelect = document.getElementById('public-repair-room');
       roomSelect.innerHTML = '<option value="" disabled selected>-- เลือกสถานที่ปฏิบัติงาน --</option>' + 
         rooms.map(r => `<option value="${r}">${r}</option>`).join('');
 
-      // Reset asset dropdown options
+      // Reset asset dropdown options and custom room input
       document.getElementById('public-repair-category').selectedIndex = 0;
       document.getElementById('public-repair-asset-id').innerHTML = '<option value="" disabled selected>-- โปรดเลือกสถานที่และหมวดหมู่ก่อน --</option>';
+      const customRoomContainer = document.getElementById('public-repair-custom-room-container');
+      const customRoomInput = document.getElementById('public-repair-custom-room');
+      if (customRoomContainer) customRoomContainer.classList.add('hidden');
+      if (customRoomInput) {
+        customRoomInput.removeAttribute('required');
+        customRoomInput.value = '';
+      }
 
       // Show public repair modal
       document.getElementById('modal-public-report-repair').classList.remove('hidden');
@@ -2107,6 +2147,20 @@
       const selectedRoom = document.getElementById('public-repair-room').value;
       const selectedCategory = document.getElementById('public-repair-category').value;
       const assetSelect = document.getElementById('public-repair-asset-id');
+
+      // Toggle Custom Room Input
+      const customRoomContainer = document.getElementById('public-repair-custom-room-container');
+      const customRoomInput = document.getElementById('public-repair-custom-room');
+      if (selectedRoom === 'อื่นๆ') {
+        if (customRoomContainer) customRoomContainer.classList.remove('hidden');
+        if (customRoomInput) customRoomInput.setAttribute('required', 'required');
+      } else {
+        if (customRoomContainer) customRoomContainer.classList.add('hidden');
+        if (customRoomInput) {
+          customRoomInput.removeAttribute('required');
+          customRoomInput.value = '';
+        }
+      }
 
       if (!selectedRoom || !selectedCategory) {
         assetSelect.innerHTML = '<option value="" disabled selected>-- โปรดเลือกสถานที่และหมวดหมู่ก่อน --</option>';
@@ -2200,7 +2254,15 @@
           const reporter = document.getElementById('public-repair-reporter').value.trim();
           const position = document.getElementById('public-repair-position').value.trim();
           const phone = document.getElementById('public-repair-phone').value.trim();
-          const room = document.getElementById('public-repair-room').value;
+          
+          let room = document.getElementById('public-repair-room').value;
+          if (room === 'อื่นๆ') {
+            const customRoomVal = document.getElementById('public-repair-custom-room').value.trim();
+            if (customRoomVal) {
+              room = customRoomVal;
+            }
+          }
+
           const categoryName = document.getElementById('public-repair-category').options[document.getElementById('public-repair-category').selectedIndex].text;
           const assetId = document.getElementById('public-repair-asset-id').value;
           const description = document.getElementById('public-repair-description').value.trim();
