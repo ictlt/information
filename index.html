@@ -973,6 +973,38 @@
             </div>
           </section>
 
+          <!-- VIEW: ROOM MANAGEMENT (ADMIN ONLY) -->
+          <section id="subview-room-management" class="space-y-6 view-transition hidden">
+            <!-- actions -->
+            <div class="flex justify-between items-center bg-white p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-100 gap-2 min-w-0">
+              <h3 class="font-bold text-slate-800 flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0 overflow-hidden">
+                <i data-lucide="map-pin" class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 flex-shrink-0"></i>
+                <span class="truncate">จัดการข้อมูลห้อง / สถานที่ทำงาน</span>
+              </h3>
+              <button onclick="openAddRoomModal()" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 text-white text-[10px] sm:text-xs font-semibold rounded-xl hover:bg-indigo-700 flex items-center gap-1 sm:gap-1.5 transition shadow-sm whitespace-nowrap flex-shrink-0">
+                <i data-lucide="plus" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i>
+                เพิ่มห้อง/สถานที่
+              </button>
+            </div>
+
+            <!-- Rooms list -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs font-semibold">
+                      <th class="py-3 px-4">ชื่อสถานที่ / ห้องเรียน</th>
+                      <th class="py-3 px-4 text-center">การจัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rooms-list" class="text-sm divide-y divide-slate-100 text-slate-600">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
           <!-- VIEW 9: PROFILE VIEW (ดู/แก้ไข ข้อมูลตัวเอง) -->
           <section id="subview-profile" class="space-y-6 view-transition hidden">
             <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
@@ -1084,6 +1116,10 @@
             <button onclick="switchView('view-users'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="users" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">ผู้ใช้งาน</span>
+            </button>
+            <button onclick="switchView('view-rooms'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
+              <i data-lucide="map-pin" class="w-6 h-6 text-indigo-400"></i>
+              <span class="text-[10px] mt-1.5 text-center">จัดการห้อง</span>
             </button>
             <button onclick="confirmLogout(); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-red-900 transition text-slate-200">
               <i data-lucide="log-out" class="w-6 h-6 text-red-400"></i>
@@ -1787,6 +1823,27 @@
     </div>
   </div>
 
+  <!-- Modal: Add Room (เพิ่ม/แก้ไขห้องเรียน/สถานที่) -->
+  <div id="modal-add-room" class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 mx-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+        <h3 id="room-modal-title" class="text-lg font-bold text-slate-800">เพิ่มห้อง / สถานที่ใหม่</h3>
+        <button onclick="closeAddRoomModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-add-room" class="mt-4 space-y-4">
+        <input type="hidden" id="room-edit-id">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase">ชื่อสถานที่ / ห้องเรียน <span class="text-rose-500">*</span></label>
+          <input type="text" id="room-name" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="เช่น ห้องคอมพิวเตอร์ 1">
+        </div>
+        <div class="pt-4 border-t border-slate-100 flex space-x-3">
+          <button type="button" onclick="closeAddRoomModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition">ยกเลิก</button>
+          <button type="submit" class="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition">บันทึกข้อมูลห้อง</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Javascript Logic -->
   <script>
     // Disable right-click and common developer tools shortcut keys to deter inspect (Only in production/non-local environments)
@@ -1807,6 +1864,7 @@
     // System Configurations and Global State
     let dbClient = null;
     let currentUser = null;
+    let cacheRooms = [];
     let html5QrScanner = null;
     let qrScannerCallbackMode = ''; // 'view_asset', 'annual_check', 'report_repair'
     
@@ -2077,36 +2135,52 @@
       }
       showLoader(false);
 
-      // Populate unique rooms list
-      let rooms = [...new Set(publicCacheAssets.map(a => a.room).filter(Boolean))].sort();
+      // Populate unique rooms list from database dynamic table
+      let rooms = [];
+      try {
+        const { data: dbRooms, error: roomsErr } = await dbClient
+          .from('rooms')
+          .select('name')
+          .order('name');
+        if (roomsErr) throw roomsErr;
+        if (dbRooms && dbRooms.length > 0) {
+          rooms = dbRooms.map(r => r.name);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch rooms from rooms table, falling back to assets:', err);
+      }
+
+      if (rooms.length === 0) {
+        rooms = [...new Set(publicCacheAssets.map(a => a.room).filter(Boolean))].sort();
+      }
+
       if (rooms.length === 0) {
         // Fallback common rooms if database has no assets/rooms yet
         rooms = [
           'ห้องคอมพิวเตอร์ 1',
           'ห้องคอมพิวเตอร์ 2',
           'ห้องปฏิบัติการวิทยาศาสตร์1',
-		  'ห้องปฏิบัติการวิทยาศาสตร์2',
+          'ห้องปฏิบัติการวิทยาศาสตร์2',
           'ห้องกิจกรรม',
-		  'ห้องหมวดพลศึกษา',
-		  'ห้องหมวดภาษาไทย',
-		  'ห้องหมวดการงานอาชีพ',
-		  'ห้องหมวดคณิตศาสตร์',
-		  'ห้องหมวดอังกฤษ',
-		  'ห้องICT',
-		  'ห้องศิลปะ',
-		  'ห้องดนตรี',
-		  'ห้องนาฏศิลป์',
-		  'ห้องวิชาการ',
-		  'ห้องหมวดสังคม',
-		  'ห้องบุคคล',
-		  'ห้องปกครอง',
-		  'ห้องคูปอง',
-		  'ห้องทะเบียน',
-		  'ห้องการเงิน',
-		  'ห้องการเงิน',
-		  'ฝ่ายอนุบาล',
+          'ห้องหมวดพลศึกษา',
+          'ห้องหมวดภาษาไทย',
+          'ห้องหมวดการงานอาชีพ',
+          'ห้องหมวดคณิตศาสตร์',
+          'ห้องหมวดอังกฤษ',
+          'ห้องICT',
+          'ห้องศิลปะ',
+          'ห้องดนตรี',
+          'ห้องนาฏศิลป์',
+          'ห้องวิชาการ',
+          'ห้องหมวดสังคม',
+          'ห้องบุคคล',
+          'ห้องปกครอง',
+          'ห้องคูปอง',
+          'ห้องทะเบียน',
+          'ห้องการเงิน',
+          'ฝ่ายอนุบาล',
           'ห้องประชุมแจ้งศิริ',
-		  'อื่นๆ'
+          'อื่นๆ'
         ];
       } else {
         // Always ensure 'อื่นๆ' is at the end of the unique rooms list
@@ -2473,6 +2547,7 @@
         { id: 'view-procurements', label: 'ระบบจัดซื้อจัดจ้าง', icon: 'file-text', roles: ['admin', 'procure_officer'] },
         { id: 'view-reports', label: 'ระบบรายงาน & วิเคราะห์', icon: 'trending-up', roles: ['admin', 'reporter', 'executive', 'officer'] },
         { id: 'view-users', label: 'จัดการสิทธิ์ผู้ใช้งาน', icon: 'users', roles: ['admin'] },
+        { id: 'view-rooms', label: 'จัดการห้อง/สถานที่', icon: 'map-pin', roles: ['admin'] },
         { id: 'view-profile', label: 'ประวัติส่วนตัว', icon: 'user', roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher'] }
       ];
 
@@ -2513,6 +2588,7 @@
         'view-procurements': ['admin', 'procure_officer'],
         'view-reports': ['admin', 'reporter', 'executive', 'officer'],
         'view-users': ['admin'],
+        'view-rooms': ['admin'],
         'view-profile': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher']
       };
       
@@ -2532,6 +2608,7 @@
         'view-procurements': 'ระบบจัดซื้อจัดจ้างและการนำเข้า',
         'view-reports': 'ระบบรายงานสถิติและตัววัดผล',
         'view-users': 'ระบบจัดการข้อมูลพนักงาน / ครูผู้สอน',
+        'view-rooms': 'ระบบจัดการข้อมูลสถานที่ / ห้องปฏิบัติการ',
         'view-profile': 'ข้อมูลประวัติส่วนตัว'
       };
       
@@ -2539,7 +2616,7 @@
       document.getElementById('breadcrumb-current').innerText = title;
       
       // Hide all subviews
-      const sections = ['subview-dashboard', 'subview-inventory', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-profile'];
+      const sections = ['subview-dashboard', 'subview-inventory', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-room-management', 'subview-profile'];
       sections.forEach(sec => document.getElementById(sec).classList.add('hidden'));
       
       // Map viewId to section element
@@ -2551,6 +2628,7 @@
       else if (viewId === 'view-procurements') targetSection = 'subview-procurements';
       else if (viewId === 'view-reports') targetSection = 'subview-reports';
       else if (viewId === 'view-users') targetSection = 'subview-user-management';
+      else if (viewId === 'view-rooms') targetSection = 'subview-room-management';
       else if (viewId === 'view-profile') targetSection = 'subview-profile';
       
       const secEl = document.getElementById(targetSection);
@@ -2584,6 +2662,8 @@
         renderProcurementsList();
       } else if (viewId === 'view-users') {
         renderUsersList();
+      } else if (viewId === 'view-rooms') {
+        renderRoomsList();
       } else if (viewId === 'view-profile') {
         setupProfileForm();
       }
@@ -5553,6 +5633,139 @@
         showLoader(false);
       }
     }
+
+    // ==========================================================
+    // SUBVIEW: ROOM MANAGEMENT (ADMIN ONLY)
+    // ==========================================================
+    async function fetchRooms() {
+      if (!dbClient) return;
+      try {
+        const { data, error } = await dbClient
+          .from('rooms')
+          .select('*')
+          .order('name');
+        if (error) throw error;
+        cacheRooms = data || [];
+      } catch (err) {
+        console.error('Error fetching rooms:', err);
+        // Fallback: Populate cacheRooms with unique rooms from assets
+        const uniqueRoomNames = [...new Set(publicCacheAssets.map(a => a.room).filter(Boolean))].sort();
+        cacheRooms = uniqueRoomNames.map((name, index) => ({ id: `temp-${index}`, name }));
+      }
+    }
+
+    async function renderRoomsList() {
+      showLoader(true);
+      await fetchRooms();
+      showLoader(false);
+
+      const container = document.getElementById('rooms-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      cacheRooms.forEach(room => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-slate-100 hover:bg-slate-50 transition text-sm';
+        row.innerHTML = `
+          <td class="py-3 px-4 font-bold text-slate-800">${room.name}</td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex justify-center space-x-1.5">
+              <button onclick="editRoomItem('${room.id}', '${room.name}')" class="p-1.5 bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 rounded-lg transition" title="แก้ไขข้อมูล"><i data-lucide="edit" class="w-4 h-4"></i></button>
+              <button onclick="deleteRoomItem('${room.id}', '${room.name}')" class="p-1.5 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-lg transition" title="ลบข้อมูลห้อง"><i data-lucide="trash" class="w-4 h-4"></i></button>
+            </div>
+          </td>
+        `;
+        container.appendChild(row);
+      });
+      lucide.createIcons();
+    }
+
+    function openAddRoomModal() {
+      document.getElementById('room-modal-title').innerText = 'เพิ่มห้อง / สถานที่ใหม่';
+      document.getElementById('room-edit-id').value = '';
+      document.getElementById('room-name').value = '';
+      document.getElementById('modal-add-room').classList.remove('hidden');
+    }
+
+    function closeAddRoomModal() {
+      document.getElementById('modal-add-room').classList.add('hidden');
+    }
+
+    function editRoomItem(id, name) {
+      if (id.startsWith('temp-')) {
+        showToast('ห้องนี้มาจากประวัติตัวเครื่อง (ต้องรันไฟล์อัปเดต SQL ในตารางจริงก่อนจึงจะจัดการได้)', 'warning');
+        return;
+      }
+      document.getElementById('room-modal-title').innerText = 'แก้ไขข้อมูลห้อง / สถานที่';
+      document.getElementById('room-edit-id').value = id;
+      document.getElementById('room-name').value = name;
+      document.getElementById('modal-add-room').classList.remove('hidden');
+    }
+
+    async function deleteRoomItem(id, name) {
+      if (id.startsWith('temp-')) {
+        showToast('ห้องนี้มาจากประวัติตัวเครื่อง (ต้องรันไฟล์อัปเดต SQL ในตารางจริงก่อนจึงจะจัดการได้)', 'warning');
+        return;
+      }
+      if (!confirm(`คุณต้องการลบห้อง "${name}" ใช่หรือไม่?`)) return;
+
+      showLoader(true);
+      try {
+        const { error } = await dbClient
+          .from('rooms')
+          .delete()
+          .eq('id', id);
+        if (error) throw error;
+        showToast('ลบห้องสำเร็จเรียบร้อยแล้ว', 'success');
+        await renderRoomsList();
+      } catch (err) {
+        console.error('Error deleting room:', err);
+        showToast(err.message || 'ลบห้องล้มเหลว', 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // Set up form submission handler for Room Form
+    document.addEventListener('DOMContentLoaded', () => {
+      const roomForm = document.getElementById('form-add-room');
+      if (roomForm) {
+        roomForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const id = document.getElementById('room-edit-id').value;
+          const name = document.getElementById('room-name').value.trim();
+
+          if (!name) return;
+
+          showLoader(true);
+          try {
+            if (id) {
+              // Update
+              const { error } = await dbClient
+                .from('rooms')
+                .update({ name })
+                .eq('id', id);
+              if (error) throw error;
+              showToast('แก้ไขข้อมูลห้องสำเร็จ', 'success');
+            } else {
+              // Insert
+              const { error } = await dbClient
+                .from('rooms')
+                .insert({ name });
+              if (error) throw error;
+              showToast('เพิ่มห้องใหม่สำเร็จ', 'success');
+            }
+            closeAddRoomModal();
+            await renderRoomsList();
+          } catch (err) {
+            console.error('Error saving room:', err);
+            showToast(err.message || 'บันทึกข้อมูลล้มเหลว', 'danger');
+          } finally {
+            showLoader(false);
+          }
+        });
+      }
+    });
 
     // ==========================================================
     // SUBVIEW 9: PROFILE MANAGEMENT
