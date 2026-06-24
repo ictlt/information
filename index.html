@@ -908,13 +908,6 @@
                   <p id="report-desc" class="text-xs text-slate-500">คำอธิบายรายงาน</p>
                 </div>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto items-center">
-                  <!-- Department Filter -->
-                  <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
-                    <span class="text-[10px] text-slate-500 font-semibold uppercase">ฝ่ายงาน:</span>
-                    <select id="report-filter-department" onchange="onReportFilterChange()" class="bg-transparent text-xs text-slate-700 font-bold focus:outline-none focus:ring-0 border-0 p-0 cursor-pointer">
-                      <option value="all">ทั้งหมดทุกฝ่ายงาน</option>
-                    </select>
-                  </div>
                   <button id="btn-export-pdf" class="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-xl hover:bg-indigo-700 flex items-center justify-center gap-1.5 transition flex-1 sm:flex-initial">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     ดาวน์โหลด PDF
@@ -923,6 +916,57 @@
                     <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
                     ส่งออก Excel
                   </button>
+                </div>
+              </div>
+
+              <!-- Report Filter Bar (Department & Date Filters) -->
+              <div class="bg-slate-50 border border-slate-100 p-4 rounded-xl mb-6 grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+                <!-- Department Filter -->
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">ฝ่ายงาน/กลุ่มสาระ</label>
+                  <select id="report-filter-department" onchange="onReportFilterChange()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-slate-700">
+                    <option value="all">ทั้งหมดทุกฝ่ายงาน</option>
+                  </select>
+                </div>
+                <!-- Date Filter Type -->
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">ประเภทการกรองเวลา</label>
+                  <select id="report-filter-date-type" onchange="toggleDateFilterInputs(); onReportFilterChange();" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-slate-700">
+                    <option value="all">ทั้งหมด (ไม่จำกัดเวลา)</option>
+                    <option value="day">รายวัน (เฉพาะวัน)</option>
+                    <option value="month">รายเดือน (เฉพาะเดือน)</option>
+                    <option value="year">รายปี (เฉพาะปีงบประมาณ/ปี)</option>
+                    <option value="custom">กำหนดช่วงวันที่เอง</option>
+                  </select>
+                </div>
+                <!-- Dynamic Date Inputs Container -->
+                <div class="sm:col-span-2 grid grid-cols-2 gap-2" id="report-date-inputs-container">
+                  <div id="date-input-single-container" class="col-span-2 hidden">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">เลือกวันที่</label>
+                    <input type="date" id="report-filter-single-date" onchange="onReportFilterChange()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700">
+                  </div>
+                  
+                  <div id="date-input-month-container" class="col-span-2 hidden">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">เลือกเดือน</label>
+                    <input type="month" id="report-filter-month" onchange="onReportFilterChange()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700">
+                  </div>
+
+                  <div id="date-input-year-container" class="col-span-2 hidden">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">เลือกปีงบประมาณ / ปี</label>
+                    <select id="report-filter-year" onchange="onReportFilterChange()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700 font-semibold">
+                      <!-- Dynamically populated -->
+                    </select>
+                  </div>
+
+                  <div id="date-input-range-start-container" class="hidden">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">จากวันที่</label>
+                    <input type="date" id="report-filter-start-date" onchange="onReportFilterChange()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700">
+                  </div>
+                  
+                  <div id="date-input-range-end-container" class="hidden">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">ถึงวันที่</label>
+                    <input type="date" id="report-filter-end-date" onchange="onReportFilterChange()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700">
+                  </div>
                 </div>
               </div>
               <div class="overflow-x-auto custom-scrollbar">
@@ -1001,6 +1045,107 @@
                     <!-- Dynamically populated -->
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW 8.2: DATABASE BACKUP & RESTORE (ADMIN ONLY) -->
+          <section id="subview-database" class="space-y-6 view-transition hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+              <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2 mb-2">
+                <i data-lucide="database" class="w-5 h-5 text-indigo-600"></i>
+                ระบบสำรองและจัดการข้อมูล (Database Backup & Restore)
+              </h3>
+              <p class="text-xs text-slate-500 mb-6">ผู้ดูแลระบบสามารถส่งออกข้อมูลทั้งหมดเก็บไว้ในรูปแบบไฟล์ หรือนำเข้าไฟล์ข้อมูลเดิม และล้างประวัติธุรกรรมเพื่อป้องกันฐานข้อมูลเต็มได้ที่นี่</p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Box 1: Backup -->
+                <div class="p-5 border border-slate-100 rounded-2xl bg-slate-50 flex flex-col justify-between">
+                  <div>
+                    <h4 class="font-bold text-slate-900 text-sm flex items-center gap-1.5 mb-2">
+                      <i data-lucide="download" class="w-4 h-4 text-emerald-600"></i>
+                      ส่งออกข้อมูลระบบ (Backup Database)
+                    </h4>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-4">ดาวน์โหลดตารางข้อมูลทั้งหมดในระบบคลังพัสดุ ครุภัณฑ์ การแจ้งซ่อม และรายชื่อผู้ใช้งานเก็บเป็นไฟล์ JSON ไว้ในเครื่องคอมพิวเตอร์ของคุณอย่างปลอดภัย</p>
+                  </div>
+                  <button type="button" onclick="exportDatabaseBackup()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <i data-lucide="file-down" class="w-4 h-4"></i>
+                    ดาวน์โหลดไฟล์สำรองข้อมูล (.json)
+                  </button>
+                </div>
+
+                <!-- Box 2: Restore -->
+                <div class="p-5 border border-slate-100 rounded-2xl bg-slate-50 flex flex-col justify-between">
+                  <div>
+                    <h4 class="font-bold text-slate-900 text-sm flex items-center gap-1.5 mb-2">
+                      <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
+                      นำเข้าข้อมูลสำรอง (Restore Database)
+                    </h4>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-4">เลือกไฟล์สำรองข้อมูล JSON ที่เคยดาวน์โหลดไว้เพื่ออัปเดตเข้าระบบ ข้อมูลที่มี UUID ตรงกันจะได้รับการอัปเดตแบบอัตโนมัติ (Upsert) เพื่อความปลอดภัย</p>
+                  </div>
+                  <div class="space-y-3">
+                    <input type="file" id="database-restore-file" accept=".json" class="hidden" onchange="onBackupFileSelected()">
+                    <button type="button" onclick="document.getElementById('database-restore-file').click()" class="w-full py-2 border-2 border-dashed border-slate-200 hover:border-indigo-400 bg-white rounded-xl text-xs font-semibold text-slate-650 hover:text-indigo-600 transition flex items-center justify-center gap-1.5 h-10">
+                      <i data-lucide="folder-open" class="w-4 h-4"></i>
+                      <span id="restore-file-label">เลือกไฟล์สำรองข้อมูล...</span>
+                    </button>
+                    <button type="button" id="btn-submit-restore" onclick="importDatabaseRestore()" disabled class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                      <i data-lucide="play" class="w-4 h-4"></i>
+                      นำเข้าและบันทึกข้อมูลเข้าระบบ
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Box 3: Cleanup / Purge Data (ล้างข้อมูลธุรกรรมเก่า) -->
+              <div class="mt-6 p-5 border border-rose-100 rounded-2xl bg-rose-50/50">
+                <h4 class="font-bold text-rose-900 text-sm flex items-center gap-1.5 mb-2">
+                  <i data-lucide="trash-2" class="w-4 h-4 text-rose-600"></i>
+                  ล้างข้อมูลและประวัติธุรกรรมเก่า (Purge Old Transaction Data)
+                </h4>
+                <p class="text-xs text-slate-500 leading-relaxed mb-4">เพื่อความสบายใจในการใช้งานเซิร์ฟเวอร์ฟรี (Supabase 500MB Limit) คุณสามารถลบประวัติพัสดุและรายการซ่อมบำรุงที่บันทึกไว้นานแล้วออกไปได้ โดยระบุขอบเขตวันเวลา (แนะนำให้ทำการสำรองข้อมูลก่อนรันคำสั่งนี้)</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end mb-4">
+                  <div>
+                    <label class="block text-[10px] font-bold text-rose-800 uppercase tracking-wider mb-1">ลบข้อมูลธุรกรรมที่เก่ากว่าวันที่</label>
+                    <input type="date" id="purge-before-date" class="w-full px-3 py-1.5 bg-white border border-rose-200 rounded-lg text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none text-slate-700">
+                  </div>
+                  <div class="sm:col-span-2 space-y-2">
+                    <label class="block text-[10px] font-bold text-rose-800 uppercase tracking-wider mb-1">เลือกประเภทข้อมูลที่ต้องการลบ</label>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1">
+                      <label class="flex items-center text-xs text-slate-750 cursor-pointer">
+                        <input type="checkbox" id="purge-requests" checked class="rounded border-slate-300 text-rose-600 focus:ring-rose-500 mr-1.5">
+                        คำขอเบิกพัสดุ (inventory_requests)
+                      </label>
+                      <label class="flex items-center text-xs text-slate-755 cursor-pointer">
+                        <input type="checkbox" id="purge-logs" checked class="rounded border-slate-300 text-rose-600 focus:ring-rose-500 mr-1.5">
+                        ประวัติการรับเข้าพัสดุ (inventory_logs)
+                      </label>
+                      <label class="flex items-center text-xs text-slate-760 cursor-pointer">
+                        <input type="checkbox" id="purge-repairs" checked class="rounded border-slate-300 text-rose-600 focus:ring-rose-500 mr-1.5">
+                        ประวัติการแจ้งซ่อมครุภัณฑ์ (asset_repairs)
+                      </label>
+                      <label class="flex items-center text-xs text-slate-765 cursor-pointer">
+                        <input type="checkbox" id="purge-checks" checked class="rounded border-slate-300 text-rose-600 focus:ring-rose-500 mr-1.5">
+                        ประวัติการตรวจสอบปี (asset_checks)
+                      </label>
+                      <label class="flex items-center text-xs text-slate-770 cursor-pointer">
+                        <input type="checkbox" id="purge-procurements" checked class="rounded border-slate-300 text-rose-600 focus:ring-rose-500 mr-1.5">
+                        ข้อมูลการจัดซื้อจัดจ้าง (procurements)
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 items-center">
+                  <div class="w-full sm:flex-1">
+                    <input type="text" id="purge-confirm-input" placeholder="พิมพ์คำว่า CONFIRM เพื่อยืนยันการลบอย่างถาวร..." class="w-full px-3 py-2 border border-rose-200 rounded-lg text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none bg-white">
+                  </div>
+                  <button type="button" onclick="executeDatabasePurge()" class="w-full sm:w-auto px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <i data-lucide="trash" class="w-4 h-4"></i>
+                    ยืนยันการลบข้อมูลธุรกรรมประวัติเก่า
+                  </button>
+                </div>
               </div>
             </div>
           </section>
@@ -1120,6 +1265,10 @@
             <button onclick="switchView('view-rooms'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
               <i data-lucide="map-pin" class="w-6 h-6 text-indigo-400"></i>
               <span class="text-[10px] mt-1.5 text-center">จัดการห้อง</span>
+            </button>
+            <button onclick="switchView('view-database'); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-indigo-700 transition text-slate-200">
+              <i data-lucide="database" class="w-6 h-6 text-indigo-400"></i>
+              <span class="text-[10px] mt-1.5 text-center">จัดการข้อมูล</span>
             </button>
             <button onclick="confirmLogout(); toggleMobileAdminPanel(false);" class="flex flex-col items-center justify-center p-3 bg-slate-800 rounded-2xl hover:bg-red-900 transition text-slate-200">
               <i data-lucide="log-out" class="w-6 h-6 text-red-400"></i>
@@ -1301,42 +1450,80 @@
 
   <!-- Modal: Request Borrow (ขอเบิกพัสดุ) -->
   <div id="modal-request-borrow" class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 mx-4 max-h-[95vh] overflow-y-auto custom-scrollbar">
       <div class="flex justify-between items-center pb-3 border-b border-slate-100">
         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-          <i data-lucide="shopping-bag" class="w-5 h-5 text-indigo-600"></i>
-          ยื่นคำขอเบิกพัสดุ (วัสดุสิ้นเปลือง)
+          <i data-lucide="shopping-cart" class="w-5 h-5 text-indigo-600"></i>
+          ยื่นคำขอเบิกพัสดุ (ระบบตะกร้าพัสดุ)
         </h3>
-        <button onclick="closeRequestBorrowModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button type="button" onclick="closeRequestBorrowModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <form id="form-request-borrow" class="mt-4 space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase">ค้นหาพัสดุเพื่อเบิก</label>
-          <select id="borrow-inventory-id" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <!-- Loaded dynamically -->
-          </select>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase">จำนวนที่ต้องการเบิก</label>
-            <input type="number" id="borrow-quantity" required min="1" class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-          </div>
+        <!-- Part 1: Borrower Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
           <div>
             <label class="block text-xs font-semibold text-slate-600 uppercase">วันที่ขอเบิก</label>
-            <input type="date" id="borrow-date" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <input type="date" id="borrow-date" required class="w-full px-3 py-1.5 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase">ผู้เบิก (ชื่ออาจารย์)</label>
+            <input type="text" id="borrow-borrower" required class="w-full px-3 py-1.5 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase">กลุ่มสาระการเรียนรู้ / แผนก</label>
+            <input type="text" id="borrow-department" required class="w-full px-3 py-1.5 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase">ผู้เบิก (ชื่ออาจารย์)</label>
-          <input type="text" id="borrow-borrower" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+
+        <!-- Part 2: Add Item section -->
+        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/50 space-y-3">
+          <h4 class="text-xs font-bold text-indigo-800 uppercase tracking-wider">เลือกพัสดุเพื่อเพิ่มลงในตะกร้า</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+            <div class="sm:col-span-7">
+              <label class="block text-xs font-semibold text-slate-600 uppercase">พิมพ์ค้นหาพัสดุ</label>
+              <input type="text" id="borrow-search-input" oninput="filterBorrowDropdown()" placeholder="🔍 พิมพ์ชื่อหรือรหัสพัสดุ..." class="w-full px-3 py-1.5 mt-1 mb-2 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
+              <select id="borrow-inventory-id" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                <!-- Loaded dynamically -->
+              </select>
+            </div>
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-semibold text-slate-600 uppercase">จำนวนที่เบิก</label>
+              <input type="number" id="borrow-quantity" min="1" value="1" class="w-full px-3 py-2 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+            </div>
+            <div class="sm:col-span-2">
+              <button type="button" onclick="addItemToBorrowCart()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition flex items-center justify-center gap-1">
+                <i data-lucide="plus" class="w-4 h-4"></i> เพิ่ม
+              </button>
+            </div>
+          </div>
         </div>
+
+        <!-- Part 3: Cart Display -->
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase">กลุ่มสาระการเรียนรู้ / แผนก</label>
-          <input type="text" id="borrow-department" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">รายการในตะกร้า</label>
+          <div class="border border-slate-200 rounded-xl overflow-hidden bg-white max-h-[250px] overflow-y-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-100 text-slate-600 text-xs font-semibold uppercase sticky top-0">
+                  <th class="py-2.5 px-3">รหัส / ชื่อพัสดุ</th>
+                  <th class="py-2.5 px-3 text-center w-24">คงเหลือ</th>
+                  <th class="py-2.5 px-3 text-center w-28">จำนวนที่เบิก</th>
+                  <th class="py-2.5 px-3 text-center w-20">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="borrow-cart-table-body">
+                <tr>
+                  <td colspan="4" class="py-6 text-center text-slate-400">ยังไม่มีรายการในตะกร้า</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- Submit & Actions -->
         <div class="pt-4 border-t border-slate-100 flex space-x-3">
           <button type="button" onclick="closeRequestBorrowModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition">ยกเลิก</button>
-          <button type="submit" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition">ส่งใบขอเบิก</button>
+          <button id="btn-submit-borrow-cart" type="submit" disabled class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed">ส่งใบขอเบิก</button>
         </div>
       </form>
     </div>
@@ -1859,6 +2046,13 @@
           return false;
         }
       });
+
+      // DevTools Disruption: Continuously trigger debugger statement to freeze DevTools if opened via browser menu (3 dots)
+      setInterval(function() {
+        (function() {
+          debugger;
+        }());
+      }, 200);
     }
 
     // System Configurations and Global State
@@ -2548,6 +2742,7 @@
         { id: 'view-reports', label: 'ระบบรายงาน & วิเคราะห์', icon: 'trending-up', roles: ['admin', 'reporter', 'executive', 'officer'] },
         { id: 'view-users', label: 'จัดการสิทธิ์ผู้ใช้งาน', icon: 'users', roles: ['admin'] },
         { id: 'view-rooms', label: 'จัดการห้อง/สถานที่', icon: 'map-pin', roles: ['admin'] },
+        { id: 'view-database', label: 'สำรองและจัดการข้อมูล', icon: 'database', roles: ['admin'] },
         { id: 'view-profile', label: 'ประวัติส่วนตัว', icon: 'user', roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher'] }
       ];
 
@@ -2589,6 +2784,7 @@
         'view-reports': ['admin', 'reporter', 'executive', 'officer'],
         'view-users': ['admin'],
         'view-rooms': ['admin'],
+        'view-database': ['admin'],
         'view-profile': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher']
       };
       
@@ -2609,6 +2805,7 @@
         'view-reports': 'ระบบรายงานสถิติและตัววัดผล',
         'view-users': 'ระบบจัดการข้อมูลพนักงาน / ครูผู้สอน',
         'view-rooms': 'ระบบจัดการข้อมูลสถานที่ / ห้องปฏิบัติการ',
+        'view-database': 'ระบบสำรองและจัดการฐานข้อมูล',
         'view-profile': 'ข้อมูลประวัติส่วนตัว'
       };
       
@@ -2616,7 +2813,7 @@
       document.getElementById('breadcrumb-current').innerText = title;
       
       // Hide all subviews
-      const sections = ['subview-dashboard', 'subview-inventory', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-room-management', 'subview-profile'];
+      const sections = ['subview-dashboard', 'subview-inventory', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-room-management', 'subview-database', 'subview-profile'];
       sections.forEach(sec => document.getElementById(sec).classList.add('hidden'));
       
       // Map viewId to section element
@@ -2629,6 +2826,7 @@
       else if (viewId === 'view-reports') targetSection = 'subview-reports';
       else if (viewId === 'view-users') targetSection = 'subview-user-management';
       else if (viewId === 'view-rooms') targetSection = 'subview-room-management';
+      else if (viewId === 'view-database') targetSection = 'subview-database';
       else if (viewId === 'view-profile') targetSection = 'subview-profile';
       
       const secEl = document.getElementById(targetSection);
@@ -2664,6 +2862,11 @@
         renderUsersList();
       } else if (viewId === 'view-rooms') {
         renderRoomsList();
+      } else if (viewId === 'view-database') {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        document.getElementById('purge-before-date').value = oneYearAgo.toISOString().split('T')[0];
+        document.getElementById('purge-confirm-input').value = '';
       } else if (viewId === 'view-profile') {
         setupProfileForm();
       }
@@ -3848,6 +4051,8 @@
     });
 
     // Request Borrow Modal logic
+    let borrowCart = [];
+
     function openRequestBorrowModal() {
       const invSelect = document.getElementById('borrow-inventory-id');
       const sortedInventory = [...cacheInventory].sort((a, b) => {
@@ -3860,10 +4065,14 @@
       });
       invSelect.innerHTML = sortedInventory.map(item => `<option value="${item.id}">${item.code} | ${item.name} (คงเหลือ: ${item.stock_remain} ${item.unit})</option>`).join('');
       
+      document.getElementById('borrow-search-input').value = '';
       document.getElementById('borrow-quantity').value = 1;
       document.getElementById('borrow-date').value = new Date().toISOString().split('T')[0];
       document.getElementById('borrow-borrower').value = currentUser.name;
       document.getElementById('borrow-department').value = currentUser.department || '';
+
+      borrowCart = [];
+      renderBorrowCart();
 
       document.getElementById('modal-request-borrow').classList.remove('hidden');
     }
@@ -3872,53 +4081,184 @@
       document.getElementById('modal-request-borrow').classList.add('hidden');
     }
 
+    function filterBorrowDropdown() {
+      const searchVal = document.getElementById('borrow-search-input').value.toLowerCase().trim();
+      const invSelect = document.getElementById('borrow-inventory-id');
+      
+      const filtered = cacheInventory.filter(item => 
+        item.name.toLowerCase().includes(searchVal) || 
+        item.code.toLowerCase().includes(searchVal)
+      );
+
+      const sortedInventory = filtered.sort((a, b) => {
+        const parsedA = parseCode(a.code);
+        const parsedB = parseCode(b.code);
+        if (parsedA.prefix !== parsedB.prefix) {
+          return parsedA.prefix.localeCompare(parsedB.prefix);
+        }
+        return parsedA.number - parsedB.number;
+      });
+
+      if (sortedInventory.length === 0) {
+        invSelect.innerHTML = `<option value="">❌ ไม่พบรายการพัสดุ</option>`;
+      } else {
+        invSelect.innerHTML = sortedInventory.map(item => `<option value="${item.id}">${item.code} | ${item.name} (คงเหลือ: ${item.stock_remain} ${item.unit})</option>`).join('');
+      }
+    }
+
+    function addItemToBorrowCart() {
+      const invId = document.getElementById('borrow-inventory-id').value;
+      const qtyInput = document.getElementById('borrow-quantity');
+      const qty = parseInt(qtyInput.value);
+
+      if (!invId) {
+        showToast('กรุณาเลือกพัสดุ', 'danger');
+        return;
+      }
+      if (isNaN(qty) || qty <= 0) {
+        showToast('กรุณาระบุจำนวนที่ต้องการเบิกให้ถูกต้อง (มากกว่า 0)', 'danger');
+        return;
+      }
+
+      const item = cacheInventory.find(i => i.id === invId);
+      if (!item) {
+        showToast('ไม่พบข้อมูลพัสดุในระบบ', 'danger');
+        return;
+      }
+
+      const existing = borrowCart.find(c => c.inventory_id === invId);
+      const currentQtyInCart = existing ? existing.quantity : 0;
+      const totalQty = currentQtyInCart + qty;
+
+      if (item.stock_remain < totalQty) {
+        showToast(`จำนวนคงเหลือในคลังไม่เพียงพอ (มีคงเหลือ ${item.stock_remain} ${item.unit})`, 'danger');
+        return;
+      }
+
+      if (existing) {
+        existing.quantity = totalQty;
+      } else {
+        borrowCart.push({
+          inventory_id: invId,
+          code: item.code,
+          name: item.name,
+          unit: item.unit,
+          stock_remain: item.stock_remain,
+          quantity: qty
+        });
+      }
+
+      qtyInput.value = 1;
+      document.getElementById('borrow-search-input').value = '';
+      filterBorrowDropdown();
+      renderBorrowCart();
+      showToast(`เพิ่ม ${item.name} ลงในตะกร้าแล้ว`, 'success');
+    }
+
+    function removeCartItem(index) {
+      borrowCart.splice(index, 1);
+      renderBorrowCart();
+    }
+
+    function renderBorrowCart() {
+      const tbody = document.getElementById('borrow-cart-table-body');
+      const submitBtn = document.getElementById('btn-submit-borrow-cart');
+
+      if (borrowCart.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="py-6 text-center text-slate-400">ยังไม่มีรายการในตะกร้า</td>
+          </tr>
+        `;
+        submitBtn.disabled = true;
+        return;
+      }
+
+      tbody.innerHTML = borrowCart.map((item, index) => `
+        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+          <td class="py-2.5 px-3">
+            <div class="font-semibold text-slate-700 text-xs sm:text-sm">${item.code}</div>
+            <div class="text-[11px] sm:text-xs text-slate-500 line-clamp-1">${item.name}</div>
+          </td>
+          <td class="py-2.5 px-3 text-center text-xs sm:text-sm text-slate-600">${item.stock_remain} ${item.unit}</td>
+          <td class="py-2.5 px-3 text-center font-bold text-xs sm:text-sm text-slate-800">${item.quantity} ${item.unit}</td>
+          <td class="py-2.5 px-3 text-center">
+            <button type="button" onclick="removeCartItem(${index})" class="p-1 text-rose-600 hover:bg-rose-50 rounded-lg transition" title="ลบออกจากตะกร้า">
+              <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      submitBtn.disabled = false;
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
     document.getElementById('form-request-borrow').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const invId = document.getElementById('borrow-inventory-id').value;
-      const quantity = Number(document.getElementById('borrow-quantity').value);
       const date = document.getElementById('borrow-date').value;
       const borrower = document.getElementById('borrow-borrower').value.trim();
       const dept = document.getElementById('borrow-department').value.trim();
 
-      // Check stock limit before request
-      const currentItem = cacheInventory.find(i => i.id === invId);
-      if (currentItem && currentItem.stock_remain < quantity) {
-        showToast('จำนวนคงเหลือในคลังไม่เพียงพอต่อการเบิก', 'danger');
+      if (borrowCart.length === 0) {
+        showToast('กรุณาเพิ่มรายการพัสดุลงในตะกร้าก่อนส่งใบขอเบิก', 'danger');
         return;
+      }
+
+      if (!borrower || !dept || !date) {
+        showToast('กรุณากรอกข้อมูลผู้เบิก วันที่ และแผนกให้ครบถ้วน', 'danger');
+        return;
+      }
+
+      // Re-verify stock limit for all cart items before submitting
+      for (const cartItem of borrowCart) {
+        const item = cacheInventory.find(i => i.id === cartItem.inventory_id);
+        if (!item || item.stock_remain < cartItem.quantity) {
+          showToast(`สินค้า ${cartItem.name} มีจำนวนคงเหลือไม่พอในสต็อก (มีคงเหลือ ${item ? item.stock_remain : 0})`, 'danger');
+          return;
+        }
       }
 
       showLoader(true);
       try {
-        // 1. Insert request as approved automatically
+        // 1. Bulk insert request rows
+        const insertData = borrowCart.map(cartItem => ({
+          inventory_id: cartItem.inventory_id,
+          borrower,
+          department: dept,
+          request_date: date,
+          quantity: cartItem.quantity,
+          status: 'approved',
+          approved_by: 'ระบบอนุมัติอัตโนมัติ'
+        }));
+
         const { error: reqErr } = await dbClient
           .from('inventory_requests')
-          .insert({
-            inventory_id: invId,
-            borrower,
-            department: dept,
-            request_date: date,
-            quantity,
-            status: 'approved',
-            approved_by: 'ระบบอนุมัติอัตโนมัติ'
-          });
+          .insert(insertData);
 
         if (reqErr) throw reqErr;
 
-        // 2. Subtract from inventory stock directly
-        const newStockOut = Number(currentItem.stock_out || 0) + quantity;
-        const newStockRemain = Number(currentItem.stock_in || 0) - newStockOut;
+        // 2. Subtract from inventory stock for each item sequentially
+        for (const cartItem of borrowCart) {
+          const item = cacheInventory.find(i => i.id === cartItem.inventory_id);
+          const newStockOut = Number(item.stock_out || 0) + cartItem.quantity;
+          const newStockRemain = Number(item.stock_in || 0) - newStockOut;
 
-        const { error: invErr } = await dbClient
-          .from('inventory')
-          .update({
-            stock_out: newStockOut,
-            stock_remain: newStockRemain
-          })
-          .eq('id', invId);
+          const { error: invErr } = await dbClient
+            .from('inventory')
+            .update({
+              stock_out: newStockOut,
+              stock_remain: newStockRemain
+            })
+            .eq('id', cartItem.inventory_id);
 
-        if (invErr) throw invErr;
+          if (invErr) throw invErr;
+        }
 
-        showToast('ทำรายการเบิกพัสดุและตัดยอดสต็อกสำเร็จ', 'success');
+        showToast('ทำรายการเบิกพัสดุทั้งหมดและตัดยอดสต็อกสำเร็จ', 'success');
         closeRequestBorrowModal();
         await refreshAllData();
         renderInventoryList();
@@ -5099,6 +5439,115 @@
       return u ? u.department : 'ทั่วไป';
     }
 
+    function toggleDateFilterInputs() {
+      const type = document.getElementById('report-filter-date-type').value;
+      
+      const singleContainer = document.getElementById('date-input-single-container');
+      const monthContainer = document.getElementById('date-input-month-container');
+      const yearContainer = document.getElementById('date-input-year-container');
+      const startContainer = document.getElementById('date-input-range-start-container');
+      const endContainer = document.getElementById('date-input-range-end-container');
+      
+      // Hide all first
+      singleContainer.classList.add('hidden');
+      monthContainer.classList.add('hidden');
+      yearContainer.classList.add('hidden');
+      startContainer.classList.add('hidden');
+      endContainer.classList.add('hidden');
+      
+      if (type === 'day') {
+        singleContainer.classList.remove('hidden');
+        if (!document.getElementById('report-filter-single-date').value) {
+          document.getElementById('report-filter-single-date').value = new Date().toISOString().split('T')[0];
+        }
+      } else if (type === 'month') {
+        monthContainer.classList.remove('hidden');
+        if (!document.getElementById('report-filter-month').value) {
+          const now = new Date();
+          const yyyy = now.getFullYear();
+          const mm = String(now.getMonth() + 1).padStart(2, '0');
+          document.getElementById('report-filter-month').value = `${yyyy}-${mm}`;
+        }
+      } else if (type === 'year') {
+        yearContainer.classList.remove('hidden');
+        // Populate years in select dropdown if empty
+        const yearSelect = document.getElementById('report-filter-year');
+        if (yearSelect.options.length === 0) {
+          const currentYear = new Date().getFullYear();
+          let optionsHtml = '';
+          for (let y = currentYear - 3; y <= currentYear + 2; y++) {
+            const thaiY = y + 543;
+            optionsHtml += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>ปีงบประมาณ ${thaiY} (ค.ศ. ${y})</option>`;
+          }
+          yearSelect.innerHTML = optionsHtml;
+        }
+      } else if (type === 'custom') {
+        startContainer.classList.remove('hidden');
+        endContainer.classList.remove('hidden');
+        if (!document.getElementById('report-filter-start-date').value) {
+          const prevMonth = new Date();
+          prevMonth.setMonth(prevMonth.getMonth() - 1);
+          document.getElementById('report-filter-start-date').value = prevMonth.toISOString().split('T')[0];
+        }
+        if (!document.getElementById('report-filter-end-date').value) {
+          document.getElementById('report-filter-end-date').value = new Date().toISOString().split('T')[0];
+        }
+      }
+    }
+
+    function isDateInSelectedFilter(dateString) {
+      if (!dateString) return false;
+      const type = document.getElementById('report-filter-date-type').value;
+      if (type === 'all') return true;
+
+      const itemDate = new Date(dateString);
+      if (isNaN(itemDate.getTime())) return false;
+      
+      const itemDateOnly = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
+
+      if (type === 'day') {
+        const filterVal = document.getElementById('report-filter-single-date').value;
+        if (!filterVal) return true;
+        const filterDate = new Date(filterVal);
+        return itemDateOnly.getTime() === new Date(filterDate.getFullYear(), filterDate.getMonth(), filterDate.getDate()).getTime();
+      }
+      
+      if (type === 'month') {
+        const filterVal = document.getElementById('report-filter-month').value; 
+        if (!filterVal) return true;
+        const [fYear, fMonth] = filterVal.split('-').map(Number);
+        return itemDate.getFullYear() === fYear && (itemDate.getMonth() + 1) === fMonth;
+      }
+      
+      if (type === 'year') {
+        const filterVal = document.getElementById('report-filter-year').value; 
+        if (!filterVal) return true;
+        const fYear = Number(filterVal);
+        return itemDate.getFullYear() === fYear;
+      }
+      
+      if (type === 'custom') {
+        const startVal = document.getElementById('report-filter-start-date').value;
+        const endVal = document.getElementById('report-filter-end-date').value;
+        if (!startVal && !endVal) return true;
+        
+        const startDate = startVal ? new Date(startVal) : null;
+        const endDate = endVal ? new Date(endVal) : null;
+        
+        if (startDate) {
+          const startLimit = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+          if (itemDateOnly.getTime() < startLimit.getTime()) return false;
+        }
+        if (endDate) {
+          const endLimit = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+          if (itemDateOnly.getTime() > endLimit.getTime()) return false;
+        }
+        return true;
+      }
+      
+      return true;
+    }
+
     function populateReportFilterDropdown() {
       const select = document.getElementById('report-filter-department');
       if (!select) return;
@@ -5153,15 +5602,19 @@
         
         let lowItems = cacheInventory.filter(item => item.stock_remain < item.min_threshold);
         if (selectedDept !== 'all') {
-          // Show low stock items requested by the selected department
           const deptInvIds = new Set(cacheRequests.filter(r => r.department === selectedDept).map(r => r.inventory_id));
           lowItems = lowItems.filter(item => deptInvIds.has(item.id));
         }
 
+        // Apply Date Filter
+        if (document.getElementById('report-filter-date-type').value !== 'all') {
+          const activeInvIds = new Set(cacheRequests.filter(r => isDateInSelectedFilter(r.request_date)).map(r => r.inventory_id));
+          lowItems = lowItems.filter(item => activeInvIds.has(item.id));
+        }
+
         if (lowItems.length === 0) {
-          body.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">ไม่มีพัสดุใกล้หมดคลังสำหรับฝ่ายงานนี้</td></tr>`;
+          body.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">ไม่มีพัสดุใกล้หมดคลังสำหรับฝ่ายงานและช่วงเวลาที่เลือก</td></tr>`;
         } else {
-          // Group by category for nicer representation
           const grouped = {};
           lowItems.forEach(item => {
             const cat = item.category || 'เครื่องเขียน';
@@ -5203,15 +5656,15 @@
           </tr>
         `;
 
-        let filteredRequests = cacheRequests;
+        // Apply Date Filter
+        let filteredRequests = cacheRequests.filter(r => isDateInSelectedFilter(r.request_date));
         if (selectedDept !== 'all') {
-          filteredRequests = cacheRequests.filter(r => r.department === selectedDept);
+          filteredRequests = filteredRequests.filter(r => r.department === selectedDept);
         }
 
         if (filteredRequests.length === 0) {
-          body.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีประวัติการเบิกจ่ายใดๆ</td></tr>`;
+          body.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีประวัติการเบิกจ่ายในช่วงเวลาที่เลือก</td></tr>`;
         } else {
-          // Group by department
           const grouped = {};
           filteredRequests.forEach(r => {
             const dept = r.department || 'ไม่ระบุ';
@@ -5232,7 +5685,7 @@
                 <td class="py-3 px-4 font-bold text-slate-800 text-sm">${r.inventory?.name || '-'}</td>
                 <td class="py-3 px-4 font-semibold text-slate-700">${r.borrower}</td>
                 <td class="py-3 px-4 text-slate-500">${r.department}</td>
-                <td class="py-3 px-4 text-slate-700 font-bold">${r.quantity} dots${r.inventory?.unit || ''}</td>
+                <td class="py-3 px-4 text-slate-700 font-bold">${r.quantity} ${r.inventory?.unit || ''}</td>
                 <td class="py-3 px-4">
                   <span class="px-2 py-0.5 rounded-full font-bold ${
                     r.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
@@ -5261,15 +5714,15 @@
           </tr>
         `;
 
-        let filteredAssets = cacheAssets;
+        // Apply Date Filter on assets registration date (created_at)
+        let filteredAssets = cacheAssets.filter(a => isDateInSelectedFilter(a.created_at));
         if (selectedDept !== 'all') {
-          filteredAssets = cacheAssets.filter(a => getUserDepartment(a.responsible_person) === selectedDept);
+          filteredAssets = filteredAssets.filter(a => getUserDepartment(a.responsible_person) === selectedDept);
         }
 
         if (filteredAssets.length === 0) {
-          body.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีข้อมูลครุภัณฑ์</td></tr>`;
+          body.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีข้อมูลครุภัณฑ์ในช่วงเวลาที่เลือก</td></tr>`;
         } else {
-          // Group by department
           const groupedAssets = {};
           filteredAssets.forEach(a => {
             const dept = getUserDepartment(a.responsible_person);
@@ -5337,8 +5790,14 @@
           items = cacheInventory.filter(item => deptInvIds.has(item.id));
         }
 
+        // Apply Date Filter based on items active requests in selected range
+        if (document.getElementById('report-filter-date-type').value !== 'all') {
+          const activeInvIds = new Set(cacheRequests.filter(r => isDateInSelectedFilter(r.request_date)).map(r => r.inventory_id));
+          items = items.filter(item => activeInvIds.has(item.id));
+        }
+
         if (items.length === 0) {
-          body.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีข้อมูลพัสดุคงคลังสำหรับฝ่ายงานนี้</td></tr>`;
+          body.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีข้อมูลพัสดุคงคลังในช่วงเวลาที่เลือก</td></tr>`;
         } else {
           const grouped = {};
           items.forEach(item => {
@@ -5465,6 +5924,65 @@
           desc.innerText = document.getElementById('report-desc').innerText;
           desc.className = 'text-xs text-slate-500 mt-1';
           headerDiv.appendChild(desc);
+
+          headerDiv.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          title.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          desc.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          
+          headerDiv.style.lineHeight = '1.6';
+          title.style.lineHeight = '1.6';
+          desc.style.lineHeight = '1.6';
+          
+          container.appendChild(headerDiv);
+
+          // Add report summary metadata block (Executive Summary)
+          const metaDiv = document.createElement('div');
+          metaDiv.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
+          metaDiv.style.lineHeight = '1.6';
+          metaDiv.style.display = 'grid';
+          metaDiv.style.gridTemplateColumns = '1fr 1fr';
+          metaDiv.style.gap = '10px';
+          metaDiv.style.padding = '12px';
+          metaDiv.style.backgroundColor = '#f8fafc';
+          metaDiv.style.border = '1px solid #e2e8f0';
+          metaDiv.style.borderRadius = '8px';
+          metaDiv.style.marginBottom = '20px';
+          metaDiv.style.fontSize = '11px';
+          metaDiv.style.color = '#475569';
+
+          const deptText = document.getElementById('report-filter-department').options[document.getElementById('report-filter-department').selectedIndex].text;
+          const dateTypeText = document.getElementById('report-filter-date-type').options[document.getElementById('report-filter-date-type').selectedIndex].text;
+
+          let dateRangeText = dateTypeText;
+          const dateType = document.getElementById('report-filter-date-type').value;
+          if (dateType === 'day') {
+            const val = document.getElementById('report-filter-single-date').value;
+            dateRangeText = val ? `ประจำวันที่ ${new Date(val).toLocaleDateString('th-TH')}` : dateTypeText;
+          } else if (dateType === 'month') {
+            const val = document.getElementById('report-filter-month').value;
+            if (val) {
+              const [y, m] = val.split('-').map(Number);
+              const monthsThai = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+              dateRangeText = `ประจำเดือน ${monthsThai[m-1]} พ.ศ. ${y + 543}`;
+            }
+          } else if (dateType === 'year') {
+            const val = document.getElementById('report-filter-year').value;
+            dateRangeText = val ? `ประจำปีงบประมาณ ${Number(val) + 543}` : dateTypeText;
+          } else if (dateType === 'custom') {
+            const start = document.getElementById('report-filter-start-date').value;
+            const end = document.getElementById('report-filter-end-date').value;
+            const startStr = start ? new Date(start).toLocaleDateString('th-TH') : 'เริ่มต้น';
+            const endStr = end ? new Date(end).toLocaleDateString('th-TH') : 'สิ้นสุด';
+            dateRangeText = `ระหว่างวันที่ ${startStr} ถึง ${endStr}`;
+          }
+
+          metaDiv.innerHTML = `
+            <div><strong>ฝ่ายงาน/กลุ่มสาระ:</strong> ${deptText}</div>
+            <div><strong>ช่วงเวลาที่กรอง:</strong> ${dateRangeText}</div>
+            <div><strong>ผู้ส่งออกรายงาน:</strong> ${currentUser ? currentUser.name : 'เจ้าหน้าที่'}</div>
+            <div><strong>วันที่ส่งออก:</strong> ${new Date().toLocaleDateString('th-TH')} ${new Date().toLocaleTimeString('th-TH')} น.</div>
+          `;
+          container.appendChild(metaDiv);
           
           headerDiv.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
           title.style.fontFamily = "'Sarabun', 'Kanit', sans-serif";
@@ -5848,6 +6366,218 @@
       } else {
         document.getElementById('view-landing').classList.add('hidden');
         document.getElementById('view-app').classList.remove('hidden');
+      }
+    }
+
+    // ==========================================================
+    // SUBVIEW: DATABASE MANAGEMENT (ADMIN ONLY)
+    // ==========================================================
+    async function exportDatabaseBackup() {
+      showLoader(true);
+      try {
+        const tables = [
+          'users',
+          'inventory',
+          'inventory_logs',
+          'inventory_requests',
+          'assets',
+          'asset_checks',
+          'asset_repairs',
+          'procurements',
+          'rooms'
+        ];
+        
+        const backupData = {
+          version: '1.0',
+          timestamp: new Date().toISOString(),
+          exporter: currentUser ? currentUser.username : 'admin'
+        };
+
+        for (const table of tables) {
+          const { data, error } = await dbClient.from(table).select('*');
+          if (error) throw error;
+          backupData[table] = data || [];
+        }
+
+        const jsonString = JSON.stringify(backupData, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        
+        const dateStr = new Date().toISOString().split('T')[0];
+        link.href = url;
+        link.download = `database-backup-${dateStr}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        showToast('สำรองข้อมูลฐานข้อมูลสำเร็จและดาวน์โหลดแล้ว', 'success');
+      } catch (err) {
+        console.error('Database backup failed:', err);
+        showToast('ไม่สามารถสำรองข้อมูลได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    function onBackupFileSelected() {
+      const fileInput = document.getElementById('database-restore-file');
+      const label = document.getElementById('restore-file-label');
+      const submitBtn = document.getElementById('btn-submit-restore');
+
+      if (fileInput.files.length > 0) {
+        label.innerText = fileInput.files[0].name;
+        submitBtn.disabled = false;
+      } else {
+        label.innerText = 'เลือกไฟล์สำรองข้อมูล...';
+        submitBtn.disabled = true;
+      }
+    }
+
+    async function importDatabaseRestore() {
+      const fileInput = document.getElementById('database-restore-file');
+      if (fileInput.files.length === 0) return;
+
+      if (!confirm('คำเตือน: การนำเข้าข้อมูลสำรองจะเป็นการอัปเดตทับข้อมูลที่มีอยู่ในระบบ (Upsert) เพื่อความปลอดภัย ข้อมูลที่มี ID ตรงกันจะถูกอัปเดต ต้องการดำเนินการต่อหรือไม่?')) {
+        return;
+      }
+
+      showLoader(true);
+      const reader = new FileReader();
+      
+      reader.onload = async function(e) {
+        try {
+          const backupData = JSON.parse(e.target.result);
+          if (!backupData || !backupData.version) {
+            throw new Error('โครงสร้างไฟล์ข้อมูลสำรองไม่ถูกต้องหรือไม่รองรับ');
+          }
+
+          // Restore order (independent tables first, then dependent tables to avoid FK violations)
+          const tablesOrder = [
+            'users',
+            'inventory',
+            'assets',
+            'procurements',
+            'rooms',
+            'inventory_logs',
+            'inventory_requests',
+            'asset_checks',
+            'asset_repairs'
+          ];
+
+          for (const table of tablesOrder) {
+            const records = backupData[table];
+            if (records && records.length > 0) {
+              const { error } = await dbClient.from(table).upsert(records);
+              if (error) {
+                console.error(`Failed to upsert table ${table}:`, error);
+                throw new Error(`ไม่สามารถอัปเดตตาราง ${table}: ${error.message}`);
+              }
+            }
+          }
+
+          showToast('นำเข้าข้อมูลสำรองและกู้คืนฐานข้อมูลสำเร็จ', 'success');
+          fileInput.value = '';
+          document.getElementById('restore-file-label').innerText = 'เลือกไฟล์สำรองข้อมูล...';
+          document.getElementById('btn-submit-restore').disabled = true;
+          
+          await refreshAllData();
+          renderInventoryList();
+          renderUsersList();
+          renderRoomsList();
+        } catch (err) {
+          console.error('Database restore failed:', err);
+          showToast('การนำเข้าข้อมูลล้มเหลว: ' + err.message, 'danger');
+        } finally {
+          showLoader(false);
+        }
+      };
+
+      reader.onerror = function() {
+        showToast('ไม่สามารถอ่านไฟล์ได้', 'danger');
+        showLoader(false);
+      };
+
+      reader.readAsText(fileInput.files[0]);
+    }
+
+    async function executeDatabasePurge() {
+      const dateVal = document.getElementById('purge-before-date').value;
+      const confirmInput = document.getElementById('purge-confirm-input').value.trim();
+
+      if (!dateVal) {
+        showToast('กรุณาระบุวันที่ที่ต้องการอ้างอิงเพื่อล้างข้อมูล', 'danger');
+        return;
+      }
+
+      if (confirmInput !== 'CONFIRM') {
+        showToast('กรุณาพิมพ์คำว่า CONFIRM เพื่อยืนยันการทำรายการลบอย่างถาวร', 'danger');
+        return;
+      }
+
+      if (!confirm(`คุณกำลังจะทำการลบข้อมูลธุรกรรมประวัติเก่าทั้งหมดที่เกิดขึ้นก่อนวันที่ ${new Date(dateVal).toLocaleDateString('th-TH')} ออกจากตารางที่ระบุอย่างถาวร ยืนยันการดำเนินการลบ?`)) {
+        return;
+      }
+
+      showLoader(true);
+      try {
+        const purgeRequests = document.getElementById('purge-requests').checked;
+        const purgeLogs = document.getElementById('purge-logs').checked;
+        const purgeRepairs = document.getElementById('purge-repairs').checked;
+        const purgeChecks = document.getElementById('purge-checks').checked;
+        const purgeProcurements = document.getElementById('purge-procurements').checked;
+
+        let deleteCount = 0;
+
+        if (purgeRequests) {
+          const { error } = await dbClient.from('inventory_requests').delete().lt('request_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeLogs) {
+          const { error } = await dbClient.from('inventory_logs').delete().lt('receive_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeRepairs) {
+          const { error } = await dbClient.from('asset_repairs').delete().lt('report_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeChecks) {
+          const { error } = await dbClient.from('asset_checks').delete().lt('check_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeProcurements) {
+          const { error } = await dbClient.from('procurements').delete().lt('created_at', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (deleteCount === 0) {
+          showToast('ไม่มีการเลือกตารางข้อมูลเพื่อทำการล้างข้อมูล', 'warning');
+          return;
+        }
+
+        showToast('ล้างข้อมูลและประวัติธุรกรรมเก่าออกเรียบร้อยแล้ว เพิ่มพื้นที่ใช้งานคลังสำเร็จ', 'success');
+        document.getElementById('purge-confirm-input').value = '';
+        
+        await refreshAllData();
+        renderInventoryList();
+        if (typeof renderBorrowHistoryList === 'function') {
+          renderBorrowHistoryList();
+        }
+      } catch (err) {
+        console.error('Database purge failed:', err);
+        showToast('ไม่สามารถล้างข้อมูลได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
       }
     }
   </script>
