@@ -2327,12 +2327,40 @@
     // Chart references
     let monthlyChart = null;
 
-    // PWA Service Worker Registration
+    // PWA Service Worker Registration & Auto-Update Handler
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('Service Worker registered successfully!', reg))
+          .then((reg) => {
+            console.log('Service Worker registered successfully!', reg);
+            // Actively check for updates when opening the app
+            reg.update();
+
+            reg.onupdatefound = () => {
+              const installingWorker = reg.installing;
+              if (installingWorker == null) return;
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed') {
+                  if (navigator.serviceWorker.controller) {
+                    console.log('New PWA update available! Reloading...');
+                    showToast('ระบบได้รับการอัปเดตเวอร์ชันใหม่ กำลังรีโหลดระบบ...', 'info');
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 1500);
+                  }
+                }
+              };
+            };
+          })
           .catch((err) => console.warn('Service worker registration failed:', err));
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
     }
 

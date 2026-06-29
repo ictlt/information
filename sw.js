@@ -1,4 +1,4 @@
-const CACHE_NAME = 'school-inventory-cache-v2';
+const CACHE_NAME = 'school-inventory-cache-v3';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.json',
@@ -21,6 +21,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
+            console.log('[ServiceWorker] Removing old cache:', cache);
             return caches.delete(cache);
           }
         })
@@ -35,13 +36,41 @@ self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('supabase.co')) {
     return;
   }
-  
+
+  const requestUrl = new URL(event.request.url);
+
+  // Network-First Strategy for HTML pages & navigation requests
+  // Ensures PWA always fetches the latest index.html from GitHub/Server when online!
+  if (event.request.mode === 'navigate' || requestUrl.pathname.endsWith('.html') || requestUrl.pathname.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // Offline fallback
+          return caches.match(event.request).then((cached) => cached || caches.match('./index.html'));
+        })
+    );
+    return;
+  }
+
+  // Cache-First with Network Revalidation fallback for static assets
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request);
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+        }
+        return networkResponse;
+      }).catch((err) => console.log('[SW] Fetch failed, fallback to cache', err));
+
+      return cachedResponse || fetchPromise;
     })
   );
 });
@@ -92,4 +121,3 @@ self.addEventListener('push', (event) => {
     self.registration.showNotification(title, options)
   );
 });
-
