@@ -416,7 +416,7 @@
               </div>
             </div>
             <!-- Config gear removed -->
-            <span id="app-user-role-badge" class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full border border-indigo-100">ผู้ดูแลระบบ</span>
+            <span id="app-user-role-badge" class="hidden md:inline-block px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full border border-indigo-100">ผู้ดูแลระบบ</span>
           </div>
         </header>
 
@@ -425,6 +425,52 @@
           
           <!-- VIEW 1: EXECUTIVE DASHBOARD -->
           <section id="subview-dashboard" class="space-y-6 view-transition hidden">
+            <!-- Welcome Banner Card -->
+            <div class="relative bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-5 sm:p-6 text-white shadow-xl overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-4 border border-indigo-500/20">
+              <div class="absolute -top-12 -right-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div class="flex items-center space-x-4 z-10 min-w-0">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-pink-500 text-white font-black text-lg sm:text-xl flex items-center justify-center shadow-lg flex-shrink-0 border border-white/20" id="dash-user-avatar">
+                  U
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 flex-wrap mb-1">
+                    <span class="text-xs font-semibold text-indigo-300 tracking-wide uppercase">ยินดีต้อนรับเข้าสู่ระบบ</span>
+                    <span id="dash-user-role-badge" class="px-2.5 py-0.5 bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 text-[11px] font-bold rounded-full backdrop-blur-md">
+                      ผู้ดูแลระบบ
+                    </span>
+                  </div>
+                  <h2 class="text-base sm:text-2xl font-black truncate text-white tracking-tight" id="dash-user-welcome-title">
+                    คุณ...
+                  </h2>
+                </div>
+              </div>
+
+              <!-- Date and Time Card Slot -->
+              <div class="z-10 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 flex items-center justify-between md:justify-end gap-4 flex-shrink-0 text-slate-100 shadow-inner">
+                <div class="flex items-center space-x-2.5">
+                  <div class="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-300">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">วันที่ปัจจุบัน</p>
+                    <p class="text-xs sm:text-sm font-bold text-white whitespace-nowrap" id="dash-current-date">...</p>
+                  </div>
+                </div>
+                <div class="h-8 w-[1px] bg-white/10 hidden sm:block"></div>
+                <div class="flex items-center space-x-2.5">
+                  <div class="w-8 h-8 rounded-xl bg-pink-500/20 flex items-center justify-center text-pink-300">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <p class="text-[10px] text-pink-200 uppercase font-bold tracking-wider">เวลา</p>
+                    <p class="text-xs sm:text-sm font-bold text-white whitespace-nowrap" id="dash-current-time">...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Top stats -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <div class="bg-white p-2.5 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-2 sm:space-x-4 min-w-0">
@@ -601,7 +647,7 @@
             </div>
 
             <!-- Items Catalog Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="catalog-items-grid">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6" id="catalog-items-grid">
               <!-- Loaded dynamically via JS -->
             </div>
           </section>
@@ -621,22 +667,22 @@
                   </select>
                 </div>
               </div>
-              <div class="flex flex-wrap gap-2">
-                <button onclick="openAddInventoryModal()" class="px-4 py-2 bg-indigo-500 text-white text-xs font-semibold rounded-xl hover:bg-indigo-600 flex items-center gap-1.5 transition shadow-sm officer-admin-only">
-                  <i data-lucide="plus" class="w-4 h-4"></i>
-                  ลงทะเบียนพัสดุใหม่
+              <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2.5 w-full sm:w-auto">
+                <button onclick="openAddInventoryModal()" class="w-full sm:w-auto px-3.5 py-3 sm:py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-2xl sm:rounded-xl flex items-center justify-center gap-2 transition shadow-sm active:scale-95 officer-admin-only">
+                  <i data-lucide="plus" class="w-4 h-4 flex-shrink-0"></i>
+                  <span class="truncate">ลงทะเบียนพัสดุใหม่</span>
                 </button>
-                <button onclick="openReceiveStockModal()" class="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-xl hover:bg-indigo-700 flex items-center gap-1.5 transition shadow-sm officer-admin-only">
-                  <i data-lucide="package-plus" class="w-4 h-4"></i>
-                  รับพัสดุเข้าคลัง
+                <button onclick="openReceiveStockModal()" class="w-full sm:w-auto px-3.5 py-3 sm:py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-2xl sm:rounded-xl flex items-center justify-center gap-2 transition shadow-sm active:scale-95 officer-admin-only">
+                  <i data-lucide="package-plus" class="w-4 h-4 flex-shrink-0"></i>
+                  <span class="truncate">รับพัสดุเข้าคลัง</span>
                 </button>
-                 <button onclick="switchView('view-borrow-catalog')" class="px-4 py-2 bg-pink-600 text-white text-xs font-semibold rounded-xl hover:bg-pink-700 flex items-center gap-1.5 transition shadow-sm">
-                   <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                   ขอเบิกพัสดุ
-                 </button>
-                <button onclick="openReturnStockModal()" class="px-4 py-2 bg-slate-600 text-white text-xs font-semibold rounded-xl hover:bg-slate-700 flex items-center gap-1.5 transition shadow-sm">
-                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                  คืนพัสดุ (กรณีเบิกเกิน)
+                <button onclick="switchView('view-borrow-catalog')" class="w-full sm:w-auto px-3.5 py-3 sm:py-2.5 bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold rounded-2xl sm:rounded-xl flex items-center justify-center gap-2 transition shadow-sm active:scale-95">
+                  <i data-lucide="shopping-bag" class="w-4 h-4 flex-shrink-0"></i>
+                  <span class="truncate">ขอเบิกพัสดุ</span>
+                </button>
+                <button onclick="openReturnStockModal()" class="w-full sm:w-auto px-3.5 py-3 sm:py-2.5 bg-slate-600 hover:bg-slate-700 text-white text-xs font-bold rounded-2xl sm:rounded-xl flex items-center justify-center gap-2 transition shadow-sm active:scale-95">
+                  <i data-lucide="refresh-cw" class="w-4 h-4 flex-shrink-0"></i>
+                  <span class="truncate">คืนพัสดุ</span>
                 </button>
               </div>
             </div>
@@ -1596,7 +1642,7 @@
       <div class="flex justify-between items-center pb-3 border-b border-slate-100">
         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
           <i data-lucide="refresh-cw" class="w-5 h-5 text-indigo-600"></i>
-          ส่งคืนพัสดุ (กรณีเบิกเกิน)
+          ส่งคืนพัสดุ
         </h3>
         <button onclick="closeReturnStockModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
@@ -3427,6 +3473,25 @@
     // SUBVIEW 1: DASHBOARD & GRAPH
     // ==========================================================
     async function renderDashboardStats() {
+      // Update Welcome Banner
+      if (currentUser) {
+        const titleEl = document.getElementById('dash-user-welcome-title');
+        const roleBadgeEl = document.getElementById('dash-user-role-badge');
+        const avatarEl = document.getElementById('dash-user-avatar');
+        if (titleEl) titleEl.innerText = currentUser.name;
+        if (roleBadgeEl) roleBadgeEl.innerText = getRoleLabel(currentUser.role);
+        if (avatarEl) avatarEl.innerText = currentUser.name.charAt(0).toUpperCase();
+      }
+
+      const now = new Date();
+      const thaiDate = now.toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const thaiTime = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
+      
+      const dateEl = document.getElementById('dash-current-date');
+      const timeEl = document.getElementById('dash-current-time');
+      if (dateEl) dateEl.innerText = thaiDate;
+      if (timeEl) timeEl.innerText = thaiTime;
+
       // Calculate values
       document.getElementById('stat-total-inventory').innerText = cacheInventory.length;
       document.getElementById('stat-total-assets').innerText = cacheAssets.length;
@@ -4259,37 +4324,39 @@
         return `
           <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300 relative group">
             <!-- Stock Badge -->
-            <span class="absolute top-3 right-3 z-10 px-2.5 py-1 bg-slate-900/60 backdrop-blur-md text-white text-[11px] font-bold rounded-full">
+            <span class="absolute top-2 right-2 z-10 px-2 py-0.5 bg-slate-900/70 backdrop-blur-md text-white text-[10px] sm:text-[11px] font-bold rounded-full shadow-sm">
               มี ${item.stock_remain} ${item.unit}
             </span>
             
-            <!-- Product Image -->
-            <div class="h-40 bg-slate-50 border-b border-slate-100 flex items-center justify-center overflow-hidden relative">
+            <!-- Product Image Slot -->
+            <div class="aspect-square bg-slate-50 border-b border-slate-100 flex items-center justify-center overflow-hidden relative">
               ${imgHtml}
             </div>
 
             <!-- Product details -->
-            <div class="p-4 flex-1 flex flex-col justify-between">
+            <div class="p-2.5 sm:p-4 flex-1 flex flex-col justify-between">
               <div class="space-y-1">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-pink-500 bg-pink-50 px-2 py-0.5 rounded-md w-max block">
+                <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-pink-600 bg-pink-50 px-1.5 py-0.5 rounded w-max block">
                   ${item.category}
                 </span>
-                <h4 class="font-bold text-slate-800 text-sm line-clamp-2" title="${item.name}">${item.name}</h4>
-                <p class="text-xs text-slate-400 font-mono">${item.code}</p>
+                <h4 class="font-bold text-slate-800 text-xs sm:text-sm line-clamp-2 leading-snug" title="${item.name}">${item.name}</h4>
+                <p class="text-[10px] sm:text-xs text-slate-400 font-mono">${item.code}</p>
               </div>
 
               <!-- Action Bar -->
-              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
+              <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5">
                 ${isOutOfStock ? `
-                  <button disabled class="w-full py-2 bg-slate-100 text-slate-400 text-xs font-bold rounded-lg cursor-not-allowed">
+                  <button disabled class="w-full py-1.5 bg-slate-100 text-slate-400 text-xs font-bold rounded-lg cursor-not-allowed">
                     สินค้าหมด
                   </button>
                 ` : `
-                  <div class="w-16">
-                    <input type="number" id="qty-input-${item.id}" min="1" max="${maxAvailable}" value="${maxAvailable > 0 ? 1 : 0}" ${maxAvailable === 0 ? 'disabled' : ''} class="w-full px-1.5 py-1.5 border border-slate-200 rounded-lg text-center text-xs focus:outline-none focus:ring-2 focus:ring-pink-500 font-bold text-slate-700">
+                  <div class="w-10 sm:w-14 flex-shrink-0">
+                    <input type="number" id="qty-input-${item.id}" min="1" max="${maxAvailable}" value="${maxAvailable > 0 ? 1 : 0}" ${maxAvailable === 0 ? 'disabled' : ''} class="w-full px-1 py-1 sm:py-1.5 border border-slate-200 rounded-lg text-center text-xs focus:outline-none focus:ring-2 focus:ring-pink-500 font-bold text-slate-700">
                   </div>
-                  <button onclick="addToCartFromCatalog('${item.id}')" ${maxAvailable === 0 ? 'disabled' : ''} class="flex-1 py-1.5 bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1 shadow-sm hover:shadow-pink-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> เพิ่มลงตะกร้า
+                  <button onclick="addToCartFromCatalog('${item.id}')" ${maxAvailable === 0 ? 'disabled' : ''} class="flex-1 py-1 sm:py-1.5 bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1 shadow-sm hover:shadow-pink-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-lucide="plus" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                    <span class="hidden sm:inline">เพิ่มลงตะกร้า</span>
+                    <span class="sm:hidden">+ เบิก</span>
                   </button>
                 `}
               </div>
