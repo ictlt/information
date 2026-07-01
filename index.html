@@ -13,10 +13,10 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
 
-  <!-- Google Fonts: Kanit -->
+  <!-- Google Fonts: Kanit & Sarabun (for TH Sarabun fallback) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -736,6 +736,152 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+          </section>
+
+          <!-- VIEW 2.5: QUICK BORROW FORM (Page View) -->
+          <section id="subview-quick-borrow" class="space-y-6 view-transition hidden">
+            <!-- Header -->
+            <div class="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+              <button type="button" onclick="switchView('view-inventory')" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-slate-50 rounded-xl transition">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+              </button>
+              <div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-800">ฟอร์มขอเบิกพัสดุด่วน (รายการเดียว)</h3>
+                <p class="text-xs text-slate-500">กรอกรายละเอียดเพื่อทำการเบิกพัสดุรายการนี้โดยตรง</p>
+              </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 max-w-xl mx-auto">
+              <form id="form-quick-borrow" class="space-y-5">
+                <!-- Parcel detail (Disabled fields/Display card) -->
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center space-x-3">
+                  <div id="quick-borrow-item-image-container" class="relative w-12 h-12 rounded-lg bg-white overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200">
+                    <i data-lucide="package" class="w-6 h-6 text-slate-400"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-800 text-sm" id="quick-borrow-item-name">ชื่อพัสดุ</h4>
+                    <p class="text-xs text-slate-400 font-mono" id="quick-borrow-item-code">รหัสพัสดุ</p>
+                    <p class="text-[11px] font-bold text-pink-600 mt-0.5" id="quick-borrow-item-stock">คงเหลือ: ...</p>
+                  </div>
+                </div>
+
+                <!-- Hidden Input to store inventory ID -->
+                <input type="hidden" id="quick-borrow-inventory-id">
+
+                <!-- Borrower Fields (Requested to be initially blank) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">ผู้เบิก (ชื่ออาจารย์) <span class="text-rose-500">*</span></label>
+                    <input type="text" id="quick-borrow-borrower" required placeholder="พิมพ์ระบุชื่อผู้เบิก..." class="w-full px-4 py-2.5 mt-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm font-semibold text-slate-700 bg-white">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">กลุ่มสาระการเรียนรู้ / แผนก <span class="text-rose-500">*</span></label>
+                    <input type="text" id="quick-borrow-department" required placeholder="พิมพ์ระบุแผนก..." class="w-full px-4 py-2.5 mt-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm font-semibold text-slate-700 bg-white">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">วันที่ขอเบิก <span class="text-rose-500">*</span></label>
+                    <input type="date" id="quick-borrow-date" required class="w-full px-4 py-2.5 mt-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm font-semibold text-slate-700 bg-white">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">จำนวนที่ต้องการเบิก <span class="text-rose-500">*</span></label>
+                    <div class="flex items-center mt-1.5">
+                      <input type="number" id="quick-borrow-quantity" required min="1" value="1" class="w-full px-4 py-2.5 border border-slate-200 rounded-l-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm font-bold text-slate-700 bg-white text-center">
+                      <span class="px-4 py-2.5 bg-slate-100 border border-l-0 border-slate-200 rounded-r-xl text-slate-500 text-xs font-bold whitespace-nowrap" id="quick-borrow-unit">หน่วย</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Submit and Cancel Buttons -->
+                <div class="pt-4 border-t border-slate-100 flex space-x-3">
+                  <button type="button" onclick="switchView('view-inventory')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+                    ยกเลิก
+                  </button>
+                  <button type="submit" class="flex-1 py-2.5 bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold rounded-xl transition shadow-sm hover:shadow-pink-200">
+                    ยืนยันการเบิกพัสดุ
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- VIEW 2.6: CART CHECKOUT FORM (Page View) -->
+          <section id="subview-cart-checkout" class="space-y-6 view-transition hidden">
+            <!-- Header -->
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+              <div class="flex items-center gap-3">
+                <button type="button" onclick="switchView('view-borrow-catalog')" class="p-2 text-slate-500 hover:text-pink-600 hover:bg-slate-50 rounded-xl transition">
+                  <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
+                <div>
+                  <h3 class="text-base sm:text-lg font-bold text-slate-800">ตะกร้าขอเบิกพัสดุ (Checkout)</h3>
+                  <p class="text-xs text-slate-500">กรอกข้อมูลผู้เบิกและตรวจสอบรายการเพื่อส่งใบขอเบิกพัสดุ</p>
+                </div>
+              </div>
+              <span class="px-3 py-1 bg-pink-50 text-pink-600 text-xs font-bold rounded-full border border-pink-100 flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                <span id="checkout-total-items-badge">0 รายการ</span>
+              </span>
+            </div>
+
+            <!-- Form Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 max-w-2xl mx-auto">
+              <form id="form-cart-checkout" class="space-y-6">
+                <!-- Part 1: Borrower Info -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">วันที่ขอเบิก <span class="text-rose-500">*</span></label>
+                    <input type="date" id="checkout-date" required class="w-full px-3 py-2 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none font-semibold text-slate-700 bg-white">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">ผู้เบิก (ชื่ออาจารย์) <span class="text-rose-500">*</span></label>
+                    <input type="text" id="checkout-borrower" required placeholder="พิมพ์ระบุชื่อผู้เบิก..." class="w-full px-3 py-2 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none font-semibold text-slate-700 bg-white">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">กลุ่มสาระการเรียนรู้ / แผนก <span class="text-rose-500">*</span></label>
+                    <input type="text" id="checkout-department" required placeholder="พิมพ์ระบุแผนก..." class="w-full px-3 py-2 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none font-semibold text-slate-700 bg-white">
+                  </div>
+                </div>
+
+                <!-- Part 2: Cart Display -->
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">รายการในตะกร้า</label>
+                  <div class="border border-slate-200 rounded-xl overflow-hidden bg-white max-h-[350px] overflow-y-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                      <thead>
+                        <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs font-bold uppercase sticky top-0">
+                          <th class="py-2.5 px-3">รหัส / ชื่อพัสดุ</th>
+                          <th class="py-2.5 px-3 text-center w-24">คงเหลือ</th>
+                          <th class="py-2.5 px-3 text-center w-32">จำนวนที่เบิก</th>
+                          <th class="py-2.5 px-3 text-center w-20">จัดการ</th>
+                        </tr>
+                      </thead>
+                      <tbody id="checkout-cart-table-body" class="divide-y divide-slate-100">
+                        <tr>
+                          <td colspan="4" class="py-12 text-center text-slate-400">
+                            <i data-lucide="shopping-bag" class="w-10 h-10 mx-auto mb-2 opacity-40"></i>
+                            ยังไม่มีรายการในตะกร้า
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Submit & Actions -->
+                <div class="pt-4 border-t border-slate-100 flex space-x-3">
+                  <button type="button" onclick="switchView('view-borrow-catalog')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+                    ช็อปปิ้งต่อ
+                  </button>
+                  <button id="btn-submit-cart-checkout" type="submit" disabled class="flex-1 py-2.5 bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-pink-200">
+                    ยืนยันการส่งใบเบิก
+                  </button>
+                </div>
+              </form>
             </div>
           </section>
 
@@ -1552,63 +1698,7 @@
     </div>
   </div>
 
-  <!-- Modal: Cart Checkout (ตะกร้าขอเบิกพัสดุ) -->
-  <div id="modal-cart-checkout" class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 mx-4 max-h-[95vh] overflow-y-auto custom-scrollbar">
-      <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-          <i data-lucide="shopping-cart" class="w-5 h-5 text-pink-600"></i>
-          ตะกร้าขอเบิกพัสดุ (Checkout)
-        </h3>
-        <button type="button" onclick="closeCartDrawer()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form id="form-cart-checkout" class="mt-4 space-y-4">
-        <!-- Part 1: Borrower Info -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase">วันที่ขอเบิก</label>
-            <input type="date" id="checkout-date" required class="w-full px-3 py-1.5 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase">ผู้เบิก (ชื่ออาจารย์)</label>
-            <input type="text" id="checkout-borrower" required class="w-full px-3 py-1.5 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase">กลุ่มสาระการเรียนรู้ / แผนก</label>
-            <input type="text" id="checkout-department" required class="w-full px-3 py-1.5 mt-1 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none">
-          </div>
-        </div>
 
-        <!-- Part 2: Cart Display -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">รายการในตะกร้า</label>
-          <div class="border border-slate-200 rounded-xl overflow-hidden bg-white max-h-[300px] overflow-y-auto custom-scrollbar">
-            <table class="w-full text-left border-collapse text-sm">
-              <thead>
-                <tr class="bg-slate-50 border-b border-slate-100 text-slate-600 text-xs font-semibold uppercase sticky top-0">
-                  <th class="py-2.5 px-3">รหัส / ชื่อพัสดุ</th>
-                  <th class="py-2.5 px-3 text-center w-24">คงเหลือ</th>
-                  <th class="py-2.5 px-3 text-center w-32">จำนวนที่เบิก</th>
-                  <th class="py-2.5 px-3 text-center w-20">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="checkout-cart-table-body">
-                <tr>
-                  <td colspan="4" class="py-6 text-center text-slate-400">ยังไม่มีรายการในตะกร้า</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Submit & Actions -->
-        <div class="pt-4 border-t border-slate-100 flex space-x-3">
-          <button type="button" onclick="closeCartDrawer()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition">ช็อปปิ้งต่อ</button>
-          <button id="btn-submit-cart-checkout" type="submit" disabled class="flex-1 py-2.5 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed">ยืนยันการส่งใบเบิก</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Modal: Borrow Slip (ใบเบิกพัสดุ) -->
   <div id="modal-borrow-slip" class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden">
@@ -2977,6 +3067,8 @@
         'view-dashboard': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher'],
         'view-inventory': ['admin', 'officer', 'teacher'],
         'view-borrow-catalog': ['admin', 'officer', 'teacher'],
+        'view-quick-borrow': ['admin', 'officer', 'teacher'],
+        'view-cart-checkout': ['admin', 'officer', 'teacher'],
         'view-assets': ['admin', 'asset_officer'],
         'view-asset-checks': ['admin', 'asset_officer'],
         'view-repairs': ['admin', 'officer', 'asset_officer', 'teacher'],
@@ -2999,9 +3091,11 @@
         'view-dashboard': 'แดชบอร์ดผู้บริหาร',
         'view-inventory': 'ระบบจัดการพัสดุ (วัสดุสิ้นเปลือง)',
         'view-borrow-catalog': 'แค็ตตาล็อกและระบบเบิกพัสดุ',
+        'view-quick-borrow': 'ฟอร์มขอเบิกพัสดุด่วน (รายการเดียว)',
+        'view-cart-checkout': 'ตะกร้าขอเบิกพัสดุ (Checkout)',
         'view-assets': 'ระบบจัดการทะเบียนครุภัณฑ์',
         'view-asset-checks': 'ตรวจสอบครุภัณฑ์ประจำปี',
-        'view-repairs': 'ระบบแจ้งซ่อมและบำรุงรักษา',
+        'view-repairs': 'ระบบแจ้งซ่อมและบำมรุงรักษา',
         'view-procurements': 'ระบบจัดซื้อจัดจ้างและการนำเข้า',
         'view-reports': 'ระบบรายงานสถิติและตัววัดผล',
         'view-users': 'ระบบจัดการข้อมูลพนักงาน / ครูผู้สอน',
@@ -3014,13 +3108,15 @@
       document.getElementById('breadcrumb-current').innerText = title;
       
       // Hide all subviews
-      const sections = ['subview-dashboard', 'subview-inventory', 'subview-borrow-catalog', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-room-management', 'subview-profile'];
+      const sections = ['subview-dashboard', 'subview-inventory', 'subview-borrow-catalog', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-room-management', 'subview-profile', 'subview-quick-borrow', 'subview-cart-checkout'];
       sections.forEach(sec => document.getElementById(sec).classList.add('hidden'));
       
       // Map viewId to section element
       let targetSection = 'subview-dashboard';
       if (viewId === 'view-inventory') targetSection = 'subview-inventory';
       else if (viewId === 'view-borrow-catalog') targetSection = 'subview-borrow-catalog';
+      else if (viewId === 'view-quick-borrow') targetSection = 'subview-quick-borrow';
+      else if (viewId === 'view-cart-checkout') targetSection = 'subview-cart-checkout';
       else if (viewId === 'view-assets') targetSection = 'subview-assets';
       else if (viewId === 'view-asset-checks') targetSection = 'subview-asset-checks';
       else if (viewId === 'view-repairs') targetSection = 'subview-asset-repairs';
@@ -3881,7 +3977,7 @@
                 `}
               </div>
               <div class="flex flex-col">
-                <span onclick="onInventoryItemClick('${item.name.replace(/'/g, `\\'`)}')" class="font-bold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer transition flex items-center gap-1.5 w-max select-none" title="คลิกเพื่อขอเบิกพัสดุ">
+                <span onclick="onInventoryItemClick('${item.id}')" class="font-bold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer transition flex items-center gap-1.5 w-max select-none" title="คลิกเพื่อขอเบิกพัสดุ">
                   ${item.name}
                   <i data-lucide="shopping-cart" class="w-3.5 h-3.5 opacity-60 hover:opacity-100"></i>
                 </span>
@@ -4396,13 +4492,132 @@
       lucide.createIcons();
     }
 
-    function onInventoryItemClick(name) {
-      const searchInput = document.getElementById('catalog-search');
-      if (searchInput) {
-        searchInput.value = name;
+    function onInventoryItemClick(itemId) {
+      const item = cacheInventory.find(i => i.id === itemId);
+      if (!item) {
+        showToast('ไม่พบข้อมูลพัสดุที่ต้องการเบิก', 'danger');
+        return;
       }
-      switchView('view-borrow-catalog', false);
+      
+      // Populate fields on the quick borrow form
+      document.getElementById('quick-borrow-inventory-id').value = item.id;
+      document.getElementById('quick-borrow-item-name').innerText = item.name;
+      document.getElementById('quick-borrow-item-code').innerText = item.code;
+      document.getElementById('quick-borrow-item-stock').innerText = `คงเหลือ: ${item.stock_remain} ${item.unit}`;
+      document.getElementById('quick-borrow-unit').innerText = item.unit;
+      
+      // Make borrower and department fields completely blank
+      document.getElementById('quick-borrow-borrower').value = '';
+      document.getElementById('quick-borrow-department').value = '';
+      
+      // Reset inputs
+      document.getElementById('quick-borrow-date').value = new Date().toISOString().split('T')[0];
+      const qtyInput = document.getElementById('quick-borrow-quantity');
+      qtyInput.value = 1;
+      qtyInput.max = item.stock_remain;
+      
+      // Update image
+      const imageContainer = document.getElementById('quick-borrow-item-image-container');
+      if (item.image_url) {
+        imageContainer.innerHTML = `<img src="${item.image_url}" alt="${item.name}" class="w-full h-full object-cover">`;
+      } else {
+        imageContainer.innerHTML = `<i data-lucide="package" class="w-6 h-6 text-slate-400"></i>`;
+      }
+      
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+      
+      // Switch view to quick-borrow
+      switchView('view-quick-borrow');
     }
+
+    // Bind form-quick-borrow submit handler
+    document.getElementById('form-quick-borrow').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const itemId = document.getElementById('quick-borrow-inventory-id').value;
+      const borrower = document.getElementById('quick-borrow-borrower').value.trim();
+      const department = document.getElementById('quick-borrow-department').value.trim();
+      const date = document.getElementById('quick-borrow-date').value;
+      const qty = parseInt(document.getElementById('quick-borrow-quantity').value);
+
+      if (!itemId || !borrower || !department || !date || isNaN(qty) || qty <= 0) {
+        showToast('กรุณากรอกข้อมูลให้ครบถ้วนถูกต้อง', 'danger');
+        return;
+      }
+
+      const item = cacheInventory.find(i => i.id === itemId);
+      if (!item) {
+        showToast('ไม่พบข้อมูลพัสดุในระบบ', 'danger');
+        return;
+      }
+
+      if (item.stock_remain < qty) {
+        showToast(`จำนวนคงเหลือในคลังไม่เพียงพอ (มีคงเหลือ ${item.stock_remain} ${item.unit})`, 'danger');
+        return;
+      }
+
+      showLoader(true);
+      try {
+        // 1. Insert borrow request
+        const { data: reqData, error: reqErr } = await dbClient
+          .from('inventory_requests')
+          .insert([{
+            inventory_id: itemId,
+            borrower,
+            department,
+            request_date: date,
+            quantity: qty,
+            status: 'approved',
+            approved_by: 'ระบบอนุมัติอัตโนมัติ'
+          }])
+          .select();
+
+        if (reqErr) throw reqErr;
+
+        // 2. Subtract from inventory stock
+        const newStockOut = Number(item.stock_out || 0) + qty;
+        const newStockRemain = item.stock_remain - qty;
+        
+        const { error: invErr } = await dbClient
+          .from('inventory')
+          .update({
+            stock_out: newStockOut,
+            stock_remain: newStockRemain
+          })
+          .eq('id', itemId);
+
+        if (invErr) throw invErr;
+
+        showToast('บันทึกการขอเบิกพัสดุด่วนสำเร็จ', 'success');
+
+        // Refresh all local data
+        await refreshAllData();
+
+        // Show printable slip modal automatically
+        if (reqData && reqData.length > 0) {
+          // Wrap request object with inventory info for printable slip format
+          const formattedRequest = {
+            ...reqData[0],
+            inventory: {
+              name: item.name,
+              unit: item.unit
+            }
+          };
+          viewBorrowSlip([formattedRequest]);
+        }
+
+        // Return back to inventory list view
+        switchView('view-inventory');
+
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || 'เกิดข้อผิดพลาดในการบันทึกการขอเบิก', 'danger');
+      } finally {
+        showLoader(false);
+      }
+    });
 
     function addToCartFromCatalog(itemId) {
       const qtyInput = document.getElementById(`qty-input-${itemId}`);
@@ -4464,15 +4679,24 @@
 
     function openCartDrawer() {
       document.getElementById('checkout-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('checkout-borrower').value = currentUser.name;
-      document.getElementById('checkout-department').value = currentUser.department || '';
+      // Make borrower and department fields completely blank
+      document.getElementById('checkout-borrower').value = '';
+      document.getElementById('checkout-department').value = '';
 
       renderCheckoutCartTable();
-      document.getElementById('modal-cart-checkout').classList.remove('hidden');
+      
+      // Update header checkout badge
+      const totalQty = borrowCart.reduce((sum, item) => sum + item.quantity, 0);
+      const itemsBadge = document.getElementById('checkout-total-items-badge');
+      if (itemsBadge) {
+        itemsBadge.innerText = `${totalQty} รายการ`;
+      }
+      
+      switchView('view-cart-checkout');
     }
 
     function closeCartDrawer() {
-      document.getElementById('modal-cart-checkout').classList.add('hidden');
+      switchView('view-borrow-catalog');
     }
 
     function renderCheckoutCartTable() {
@@ -4724,10 +4948,10 @@
       const formattedDate = formatThaiDateTime(first.created_at || first.request_date);
 
       const html = `
-        <div class="bg-white p-8 shadow-sm border border-slate-200 rounded-lg max-w-xl mx-auto text-slate-800" style="font-family: 'Sarabun', sans-serif;">
+        <div class="bg-white p-8 shadow-sm border border-slate-200 rounded-lg max-w-xl mx-auto text-slate-800" style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">
           <div class="text-center space-y-1 mb-6">
-            <h2 class="text-2xl font-bold text-slate-900">ใบเบิกพัสดุ</h2>
-            <h3 class="text-sm text-slate-500 font-medium">โรงเรียนบ้านครูดา</h3>
+            <h2 class="text-2xl font-bold text-slate-900" style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">ใบเบิกพัสดุ</h2>
+            <h3 class="text-sm text-slate-500 font-medium" style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">โรงเรียนแหลมทอง วิทยา ตำบลตันหยงมัส อำเภอระแงะ จังหวัดนราธิวาส</h3>
           </div>
           
           <div class="flex justify-end mb-6 text-xs">
@@ -4825,10 +5049,10 @@
       const formattedDate = formatThaiDateTime(first.created_at || first.request_date);
 
       const htmlContent = `
-        <div style="font-family: 'Sarabun', 'Helvetica Neue', Arial, sans-serif; padding: 20px; color: #000; background: #fff;">
+        <div style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', 'Helvetica Neue', Arial, sans-serif; padding: 20px; color: #000; background: #fff;">
           <div style="text-align: center; margin-bottom: 20px;">
-            <h2 style="font-size: 24px; font-weight: bold; margin: 0 0 5px 0;">ใบเบิกพัสดุ</h2>
-            <h3 style="font-size: 16px; margin: 0; font-weight: normal; color: #555;">โรงเรียนบ้านครูดา</h3>
+            <h2 style="font-size: 24px; font-weight: bold; margin: 0 0 5px 0; font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">ใบเบิกพัสดุ</h2>
+            <h3 style="font-size: 16px; margin: 0; font-weight: normal; color: #555; font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">โรงเรียนแหลมทอง วิทยา ตำบลตันหยงมัส อำเภอระแงะ จังหวัดนราธิวาส</h3>
           </div>
           
           <table style="width: 100%; border: none; margin-bottom: 20px; font-size: 14px;">
@@ -4891,9 +5115,12 @@
         <html>
           <head>
             <title>ใบเบิกพัสดุ</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
             <style>
               body {
-                font-family: 'Sarabun', 'Helvetica Neue', Arial, sans-serif;
+                font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', 'Helvetica Neue', Arial, sans-serif;
                 padding: 40px;
                 color: #000;
                 background: #fff;
