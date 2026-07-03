@@ -96,6 +96,71 @@
         max-width: none !important;
       }
     }
+
+    /* Sidebar styling & spacing tweaks as requested */
+    #desktop-nav {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    .nav-btn-item {
+      font-size: 0.72rem !important; /* Smaller text size */
+      padding: 0.45rem 0.65rem !important; /* Less vertical spacing */
+      margin-bottom: 0.2rem !important;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    /* Collapsed Sidebar adjustments */
+    #sidebar-app.collapsed {
+      width: 72px;
+    }
+    #sidebar-app.collapsed .sidebar-text {
+      display: none;
+    }
+    #sidebar-app.collapsed .px-6 {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+    #sidebar-app.collapsed .p-4 {
+      padding: 1rem;
+    }
+    #sidebar-app.collapsed #desktop-nav {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    #sidebar-app.collapsed .nav-btn-item {
+      justify-content: center;
+      padding: 0.45rem !important;
+    }
+
+    /* Hover to expand collapsed sidebar */
+    #sidebar-app.collapsed:hover {
+      width: 256px;
+    }
+    #sidebar-app.collapsed:hover .sidebar-text {
+      display: block;
+      animation: sidebarFadeIn 0.15s ease-in-out;
+    }
+    #sidebar-app.collapsed:hover .px-6 {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    #sidebar-app.collapsed:hover .p-4 {
+      padding: 1rem;
+    }
+    #sidebar-app.collapsed:hover #desktop-nav {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    #sidebar-app.collapsed:hover .nav-btn-item {
+      justify-content: flex-start;
+      padding: 0.45rem 0.65rem !important;
+    }
+
+    @keyframes sidebarFadeIn {
+      from { opacity: 0; transform: translateX(-5px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
   </style>
 </head>
 <body class="h-full text-slate-800">
@@ -328,8 +393,8 @@
       <aside id="sidebar-app" class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-200 flex-shrink-0 border-r border-slate-800 transition-all duration-300">
         <!-- Logo Header -->
         <div class="px-6 py-5 border-b border-slate-800 flex items-center space-x-3 bg-slate-950">
-          <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain rounded-lg">
-          <div>
+          <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain rounded-lg flex-shrink-0">
+          <div class="sidebar-text">
             <h1 class="text-sm font-bold text-white leading-none">งานพัสดุโรงเรียน</h1>
             <span class="text-[10px] text-indigo-400">Inventory & Asset App</span>
           </div>
@@ -337,10 +402,10 @@
 
         <!-- User profile panel -->
         <div class="p-4 border-b border-slate-800 flex items-center space-x-3 bg-slate-900/50">
-          <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold text-lg" id="desktop-avatar">
+          <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold text-lg flex-shrink-0" id="desktop-avatar">
             U
           </div>
-          <div class="overflow-hidden">
+          <div class="overflow-hidden sidebar-text">
             <h4 id="desktop-user-name" class="text-sm font-semibold text-white truncate">ชื่อผู้ใช้งาน</h4>
             <p id="desktop-user-role" class="text-xs text-slate-400 truncate">บทบาท</p>
           </div>
@@ -354,8 +419,8 @@
         <!-- Logout button -->
         <div class="p-4 border-t border-slate-800">
           <button onclick="confirmLogout()" class="w-full flex items-center space-x-3 px-4 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition">
-            <i data-lucide="log-out" class="w-5 h-5"></i>
-            <span class="text-sm font-semibold">ออกจากระบบ</span>
+            <i data-lucide="log-out" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="text-sm font-semibold sidebar-text">ออกจากระบบ</span>
           </button>
         </div>
       </aside>
@@ -2398,10 +2463,10 @@
           toggleMobileAdminPanel(isHidden);
         }
       } else {
-        // Toggle sidebar visible state on desktop view
+        // Toggle collapsed state on desktop view
         const sidebar = document.getElementById('sidebar-app');
         if (sidebar) {
-          sidebar.classList.toggle('md:flex');
+          sidebar.classList.toggle('collapsed');
         }
       }
     }
@@ -3051,7 +3116,7 @@
           btn.setAttribute('data-target', menu.id);
           btn.innerHTML = `
             <i data-lucide="${menu.icon}" class="w-5 h-5 flex-shrink-0"></i>
-            <span class="text-sm font-semibold">${menu.label}</span>
+            <span class="text-sm font-semibold sidebar-text">${menu.label}</span>
           `;
           nav.appendChild(btn);
         }
@@ -3171,6 +3236,12 @@
         setupProfileForm();
       }
       
+      // Auto-collapse sidebar on menu click on desktop as requested
+      const sidebar = document.getElementById('sidebar-app');
+      if (sidebar && window.innerWidth >= 768) {
+        sidebar.classList.add('collapsed');
+      }
+
       // Scroll content to top
       document.getElementById('main-content-scroll').scrollTop = 0;
       
