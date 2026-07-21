@@ -111,26 +111,89 @@
     }
 
     /* Collapsed Sidebar adjustments */
+    #sidebar-app {
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .sidebar-text {
+      display: inline-block;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 180px;
+      opacity: 1;
+      transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     #sidebar-app.collapsed {
       width: 72px;
     }
     #sidebar-app.collapsed .sidebar-text {
-      display: none;
+      max-width: 0;
+      opacity: 0;
+      margin-left: 0 !important;
+    }
+    
+    /* Transition padding-left of submenus to align icons when collapsed */
+    #sidebar-app div.space-y-1.mt-1 {
+      transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #sidebar-app.collapsed div.space-y-1.mt-1 {
+      padding-left: 0 !important;
+    }
+    #sidebar-app.collapsed:hover div.space-y-1.mt-1 {
+      padding-left: 1rem !important; /* equivalent to pl-4 */
+    }
+
+    #sidebar-app .px-6 {
+      transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     #sidebar-app.collapsed .px-6 {
       padding-left: 1.25rem;
       padding-right: 1.25rem;
     }
+    #sidebar-app.collapsed:hover .px-6 {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    #sidebar-app .p-4 {
+      transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     #sidebar-app.collapsed .p-4 {
       padding: 1rem;
+    }
+    #sidebar-app.collapsed:hover .p-4 {
+      padding: 1rem;
+    }
+
+    #sidebar-app #desktop-nav {
+      transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     #sidebar-app.collapsed #desktop-nav {
       padding-left: 0.5rem;
       padding-right: 0.5rem;
     }
+    #sidebar-app.collapsed:hover #desktop-nav {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+
+    /* Keep button padding and alignment consistent to prevent jumps */
+    .nav-btn-item {
+      padding: 0.45rem 0.65rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      transition: background-color 0.2s ease, color 0.2s ease, padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     #sidebar-app.collapsed .nav-btn-item {
-      justify-content: center;
-      padding: 0.45rem !important;
+      padding: 0.45rem 0.65rem !important;
+      justify-content: flex-start !important;
+    }
+    #sidebar-app.collapsed:hover .nav-btn-item {
+      padding: 0.45rem 0.65rem !important;
+      justify-content: flex-start !important;
     }
 
     /* Hover to expand collapsed sidebar */
@@ -138,28 +201,10 @@
       width: 256px;
     }
     #sidebar-app.collapsed:hover .sidebar-text {
-      display: block;
-      animation: sidebarFadeIn 0.15s ease-in-out;
-    }
-    #sidebar-app.collapsed:hover .px-6 {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-    #sidebar-app.collapsed:hover .p-4 {
-      padding: 1rem;
-    }
-    #sidebar-app.collapsed:hover #desktop-nav {
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-    }
-    #sidebar-app.collapsed:hover .nav-btn-item {
-      justify-content: flex-start;
-      padding: 0.45rem 0.65rem !important;
-    }
-
-    @keyframes sidebarFadeIn {
-      from { opacity: 0; transform: translateX(-5px); }
-      to { opacity: 1; transform: translateX(0); }
+      max-width: 180px;
+      opacity: 1;
+      margin-left: 0.75rem !important;
+      transition-delay: 0.05s;
     }
   </style>
 </head>
@@ -1051,10 +1096,16 @@
                 <i data-lucide="wrench" class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 flex-shrink-0"></i>
                 <span class="truncate">การแจ้งซ่อมครุภัณฑ์</span>
               </h3>
-              <button onclick="openScanQrModal('report_repair')" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-rose-600 hover:bg-rose-700 text-white text-[10px] sm:text-xs font-semibold rounded-xl flex items-center gap-1 sm:gap-1.5 transition shadow-sm whitespace-nowrap flex-shrink-0">
-                <i data-lucide="alert-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i>
-                แจ้งซ่อมด่วน (สแกน QR)
-              </button>
+              <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                <button onclick="openPublicRepairModal()" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-semibold rounded-xl flex items-center gap-1 sm:gap-1.5 transition shadow-sm whitespace-nowrap">
+                  <i data-lucide="plus" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i>
+                  แจ้งซ่อมแบบเลือกครุภัณฑ์
+                </button>
+                <button onclick="openScanQrModal('report_repair')" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-rose-600 hover:bg-rose-700 text-white text-[10px] sm:text-xs font-semibold rounded-xl flex items-center gap-1 sm:gap-1.5 transition shadow-sm whitespace-nowrap">
+                  <i data-lucide="alert-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"></i>
+                  แจ้งซ่อมด่วน (สแกน QR)
+                </button>
+              </div>
             </div>
 
             <!-- Repairs grid/list -->
@@ -1481,6 +1532,466 @@
             </div>
           </section>
 
+          <!-- VIEW 10: TUTORING REGISTRY VIEW (งานทะเบียนเรียนพิเศษ ภ.1_69-3) -->
+          <section id="subview-tutoring" class="space-y-6 view-transition hidden">
+            <!-- Tabs Menu -->
+            <div class="border-b border-slate-200">
+              <nav class="flex space-x-6" aria-label="Tabs">
+                <button type="button" onclick="switchTutoringTab('monthly')" id="tab-btn-tutoring-monthly" class="border-indigo-500 text-indigo-600 border-b-2 py-3 px-1 text-sm font-bold flex items-center gap-2 select-none">
+                  <i data-lucide="users" class="w-4 h-4"></i>
+                  <span>ทะเบียนรายเดือน (ภ.1_69-3)</span>
+                </button>
+                <button type="button" onclick="switchTutoringTab('daily')" id="tab-btn-tutoring-daily" class="border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 border-b-2 py-3 px-1 text-sm font-bold flex items-center gap-2 select-none">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                  <span>ใบลงชื่อครูและยอดรายวัน</span>
+                </button>
+                <button type="button" onclick="switchTutoringTab('settings')" id="tab-btn-tutoring-settings" class="border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 border-b-2 py-3 px-1 text-sm font-bold flex items-center gap-2 select-none">
+                  <i data-lucide="settings" class="w-4 h-4"></i>
+                  <span>ตั้งค่าห้องเรียนและผู้สอน</span>
+                </button>
+              </nav>
+            </div>
+
+            <!-- TAB 1: MONTHLY REGISTRATION (ภ.1_69-3) -->
+            <div id="tab-content-tutoring-monthly" class="space-y-6">
+              <!-- Header Filter & Action Panel -->
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-3">
+                  <!-- Month Filter -->
+                  <div>
+                    <label class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">เลือกเดือนประจำเดือน</label>
+                    <select id="tutoring-filter-month" onchange="loadTutoringData()" class="px-3 py-2 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold focus:outline-none">
+                      <option value="01">มกราคม</option>
+                      <option value="02">กุมภาพันธ์</option>
+                      <option value="03">มีนาคม</option>
+                      <option value="04">เมษายน</option>
+                      <option value="05">พฤษภาคม</option>
+                      <option value="06">มิถุนายน</option>
+                      <option value="07" selected>กรกฎาคม</option>
+                      <option value="08">สิงหาคม</option>
+                      <option value="09">กันยายน</option>
+                      <option value="10">ตุลาคม</option>
+                      <option value="11">พฤศจิกายน</option>
+                      <option value="12">ธันวาคม</option>
+                    </select>
+                  </div>
+                  <!-- Year Filter -->
+                  <div>
+                    <label class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">ปีการศึกษา</label>
+                    <select id="tutoring-filter-year" onchange="loadTutoringData()" class="px-3 py-2 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold focus:outline-none">
+                      <option value="2569" selected>2569</option>
+                      <option value="2570">2570</option>
+                      <option value="2571">2571</option>
+                    </select>
+                  </div>
+                  <!-- Classroom Filter -->
+                  <div>
+                    <label class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">ระดับชั้นเรียน</label>
+                    <select id="tutoring-filter-class" onchange="filterTutoringClassroom()" class="px-3 py-2 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold focus:outline-none">
+                      <option value="">ทั้งหมด (ป.1 - ป.6)</option>
+                      <option value="ป.1">ชั้น ป.1</option>
+                      <option value="ป.2">ชั้น ป.2</option>
+                      <option value="ป.3">ชั้น ป.3</option>
+                      <option value="ป.4">ชั้น ป.4</option>
+                      <option value="ป.5">ชั้น ป.5</option>
+                      <option value="ป.6">ชั้น ป.6</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex flex-wrap items-center gap-2">
+                  <input type="file" id="tutoring-import-file" accept=".xlsx, .xls" class="hidden" onchange="handleTutoringExcelImport(event)">
+                  
+                  <button type="button" onclick="document.getElementById('tutoring-import-file').click()" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-200">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                    <span>นำเข้าไฟล์ Excel (.xlsx)</span>
+                  </button>
+                  
+                  <button type="button" onclick="openAddTutoringModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    <span>เพิ่มชื่อนักเรียน</span>
+                  </button>
+                  
+                  <button type="button" onclick="triggerTutoringPrint()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-200">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span>พิมพ์รายงาน (ภ.1_69-3)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dashboard Summary Cards -->
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500">นักเรียนเรียนพิเศษ</p>
+                    <h3 id="tutoring-stat-total-students" class="text-xl sm:text-2xl font-black text-slate-800 mt-1">0 คน</h3>
+                  </div>
+                  <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                  </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500">ยอดจัดเก็บทั้งหมด</p>
+                    <h3 id="tutoring-stat-expected-amount" class="text-xl sm:text-2xl font-black text-indigo-600 mt-1">฿0</h3>
+                  </div>
+                  <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <i data-lucide="banknote" class="w-6 h-6"></i>
+                  </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500">ชำระเงินแล้ว</p>
+                    <h3 id="tutoring-stat-paid-amount" class="text-xl sm:text-2xl font-black text-emerald-600 mt-1">฿0</h3>
+                  </div>
+                  <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                  </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500">ยอดเงินค้างชำระ</p>
+                    <h3 id="tutoring-stat-outstanding-amount" class="text-xl sm:text-2xl font-black text-rose-600 mt-1">฿0</h3>
+                  </div>
+                  <div class="p-3 bg-rose-50 text-rose-600 rounded-xl">
+                    <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search and Filter Options -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="relative flex-1 max-w-md">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                  </span>
+                  <input type="text" id="tutoring-search-input" oninput="filterTutoringTable()" placeholder="ค้นหาชื่อนักเรียน..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs">
+                </div>
+                
+                <div class="flex items-center gap-3">
+                  <label class="flex items-center gap-2 text-xs font-semibold text-slate-600 cursor-pointer">
+                    <input type="checkbox" id="tutoring-filter-unpaid" onchange="filterTutoringTable()" class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                    <span>แสดงเฉพาะยอดค้างชำระ</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Student List Table Card -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto max-h-[60vh] custom-scrollbar">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="bg-slate-50/70 border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase tracking-wider sticky top-0 bg-white z-10">
+                        <th class="py-3 px-4 w-12 text-center">ที่</th>
+                        <th class="py-3 px-4 min-w-[150px]">ชื่อ-สกุลนักเรียน</th>
+                        <th class="py-3 px-4 w-20 text-center">ชั้น</th>
+                        <th class="py-3 px-2 text-center w-14">คณิต</th>
+                        <th class="py-3 px-2 text-center w-14">วิทย์</th>
+                        <th class="py-3 px-2 text-center w-14">ไทย</th>
+                        <th class="py-3 px-2 text-center w-14">Eng</th>
+                        <th class="py-3 px-3 text-right w-24">ยอดจัดเก็บ</th>
+                        <th class="py-3 px-3 text-center min-w-[90px]">สถานะ</th>
+                        <th class="py-3 px-3 w-24">จำนวนที่ชำระ</th>
+                        <th class="py-3 px-3 w-28">ว.ด.ป. ชำระ</th>
+                        <th class="py-3 px-3 w-24">ช่องทาง</th>
+                        <th class="py-3 px-4 w-20 text-center">จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tutoring-records-tbody" class="divide-y divide-slate-100 text-xs">
+                      <tr>
+                        <td colspan="13" class="py-8 text-center text-slate-400">กำลังโหลดข้อมูล... หรือ กรุณานำเข้าไฟล์ Excel</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: DAILY SUMMARY & PRINTS -->
+            <div id="tab-content-tutoring-daily" class="space-y-6 hidden">
+              <!-- Filter & print actions -->
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <div>
+                    <label class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">เลือกวันที่</label>
+                    <input type="date" id="registry-tutoring-daily-date" onchange="loadDailySummarySheet()" class="px-3 py-2 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold focus:outline-none">
+                  </div>
+                </div>
+                
+                <button type="button" onclick="triggerDailyTutoringPrint()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                  <i data-lucide="printer" class="w-4 h-4"></i>
+                  <span>พิมพ์ใบลงชื่อครูและรายการเก็บเงิน (PDF)</span>
+                </button>
+              </div>
+
+              <!-- Summary Table -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">สรุปการแจ้งยอดรายวันของครูผู้สอน</h4>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="bg-slate-50/30 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <th class="py-3 px-4 w-12 text-center" rowspan="2">ที่</th>
+                        <th class="py-3 px-4" rowspan="2">ชื่อ-สกุล ครู</th>
+                        <th class="py-3 px-4" rowspan="2">กลุ่มสาระการเรียนรู้</th>
+                        <th class="py-3 px-4 w-20 text-center" rowspan="2">ชั้น</th>
+                        <th class="py-3 px-4 text-center" colspan="2">นักเรียนรายเดือน</th>
+                        <th class="py-3 px-4 text-center" colspan="3">นักเรียนรายวัน</th>
+                        <th class="py-3 px-4 text-center" colspan="2">ยอดค้างจ่าย</th>
+                        <th class="py-3 px-4 w-24 text-center" rowspan="2">สถานะการเช็คชื่อ</th>
+                      </tr>
+                      <tr class="bg-slate-50/30 border-b border-slate-100 text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                        <th class="py-2 px-2 text-center">ทั้งหมด</th>
+                        <th class="py-2 px-2 text-center">เข้าเรียน</th>
+                        <th class="py-2 px-2 text-center">เข้าเรียน</th>
+                        <th class="py-2 px-2 text-center">จ่ายเงิน</th>
+                        <th class="py-2 px-2 text-right">ยอดรับ (บาท)</th>
+                        <th class="py-2 px-2 text-center">ค้าง (คน)</th>
+                        <th class="py-2 px-2 text-right">ค้าง (บาท)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="registry-tutoring-daily-tbody" class="divide-y divide-slate-100 text-xs">
+                      <!-- daily reports rows -->
+                      <tr>
+                        <td colspan="12" class="py-8 text-center text-slate-400">กรุณาเลือกวันที่ เพื่อโหลดข้อมูล...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Unpaid list summary -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">รายชื่อนักเรียนค้างชำระเงินรายเดือน (ประจำเดือนนี้)</h4>
+                </div>
+                <div class="overflow-x-auto max-h-[40vh] custom-scrollbar">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="bg-slate-50/30 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <th class="py-3 px-4 w-12 text-center">ที่</th>
+                        <th class="py-3 px-4">ชื่อ-สกุล นักเรียน</th>
+                        <th class="py-3 px-4 w-24 text-center">ชั้น</th>
+                        <th class="py-3 px-4 w-32 text-right">จำนวนค้างจ่าย</th>
+                        <th class="py-3 px-4">หมายเหตุ</th>
+                      </tr>
+                    </thead>
+                    <tbody id="registry-tutoring-unpaid-tbody" class="divide-y divide-slate-100 text-xs">
+                      <!-- unpaid list -->
+                      <tr>
+                        <td colspan="5" class="py-6 text-center text-slate-400">ไม่มีข้อมูลนักเรียนค้างชำระ หรือกรุณาเลือกวันที่ด้านบน</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: SETTINGS -->
+            <div id="tab-content-tutoring-settings" class="space-y-6 hidden">
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm max-w-3xl">
+                <h4 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                  <i data-lucide="settings" class="w-5 h-5 text-indigo-600"></i>
+                  <span>ตั้งค่าคลาสเรียนพิเศษและผู้สอนหลัก</span>
+                </h4>
+                
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="bg-slate-50/30 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <th class="py-3 px-4 w-24 text-center">ที่</th>
+                        <th class="py-3 px-4">ห้องเรียน</th>
+                        <th class="py-3 px-4">กลุ่มสาระฯ / วิชาที่สอน</th>
+                        <th class="py-3 px-4">ครูผู้สอนหลัก</th>
+                      </tr>
+                    </thead>
+                    <tbody id="registry-tutoring-settings-tbody" class="divide-y divide-slate-100 text-xs">
+                      <!-- settings row entries -->
+                      <tr>
+                        <td colspan="4" class="py-6 text-center text-slate-400">กำลังโหลดรายการวิชาเรียน...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                
+                <div class="mt-5 pt-4 border-t border-slate-100 text-right">
+                  <button type="button" onclick="saveTutoringClassAssignments()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm inline-flex">
+                    <i data-lucide="save" class="w-4 h-4"></i>
+                    <span>บันทึกการตั้งค่า</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Modal: Add/Edit Tutoring Student -->
+          <div id="modal-tutoring-student" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden">
+            <div class="bg-white text-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6 mx-4 border border-slate-100">
+              <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                <h3 id="tutoring-modal-title" class="text-base font-bold text-slate-800">เพิ่มชื่อนักเรียนเรียนพิเศษ</h3>
+                <button type="button" onclick="closeTutoringModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-50 transition">
+                  <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+              </div>
+              
+              <form id="form-tutoring-student" class="mt-4 space-y-4" onsubmit="saveTutoringStudentForm(event)">
+                <input type="hidden" id="tutoring-student-id">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 uppercase">ชื่อ - นามสกุล นักเรียน <span class="text-rose-500">*</span></label>
+                  <input type="text" id="tutoring-student-name" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs" placeholder="ด.ช./ด.ญ. ชื่อ นามสกุล">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 uppercase">ชั้นเรียน (เช่น ป.1/2, ป.4/5) <span class="text-rose-500">*</span></label>
+                  <input type="text" id="tutoring-student-classroom" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs" placeholder="ป.1/2">
+                </div>
+                
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">เลือกวิชาที่เรียนพิเศษ (วิชาละ 50 บาท/เดือน)</label>
+                  <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <label class="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer py-1">
+                      <input type="checkbox" id="tutoring-subject-math" class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                      <span>คณิตศาสตร์</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer py-1">
+                      <input type="checkbox" id="tutoring-subject-sci" class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                      <span>วิทยาศาสตร์</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer py-1">
+                      <input type="checkbox" id="tutoring-subject-thai" class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                      <span>ภาษาไทย</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer py-1">
+                      <input type="checkbox" id="tutoring-subject-eng" class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                      <span>ภาษาอังกฤษ</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex space-x-3">
+                  <button type="button" onclick="closeTutoringModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">ยกเลิก</button>
+                  <button type="submit" class="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs transition">บันทึกข้อมูล</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <!-- VIEW 11: TEACHER TUTORING VIEW (เช็คชื่อและส่งยอดเรียนพิเศษประจำวัน) -->
+          <section id="subview-teacher-tutoring" class="space-y-6 view-transition hidden">
+            <!-- Header Filter & Action Panel -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+              <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                <i data-lucide="clipboard-list" class="w-5 h-5 text-indigo-600"></i>
+                <span>เช็คชื่อและบันทึกยอดเงินเรียนพิเศษประจำวัน</span>
+              </h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <!-- Date selection -->
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">ประจำวันที่</label>
+                  <input type="date" id="teacher-tutoring-date" onchange="onTeacherTutoringClassChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold focus:outline-none">
+                </div>
+                
+                <!-- Class selection -->
+                <div class="md:col-span-2">
+                  <label class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">เลือกห้องเรียน/วิชาที่สอน</label>
+                  <select id="teacher-tutoring-class-select" onchange="onTeacherTutoringClassChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold focus:outline-none">
+                    <option value="">-- โปรดเลือกห้องเรียน --</option>
+                  </select>
+                </div>
+
+                <!-- Substitute toggle -->
+                <div class="pb-2">
+                  <label class="flex items-center gap-2 text-xs font-semibold text-slate-600 cursor-pointer font-bold select-none">
+                    <input type="checkbox" id="teacher-tutoring-substitute" onchange="loadTeacherTutoringClasses()" class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                    <span>สอนแทน (เลือกคลาสของครูท่านอื่น)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attendance Sheet Form (Hidden until class selected) -->
+            <div id="teacher-tutoring-sheet-container" class="hidden space-y-6">
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Student Attendance Table -->
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+                  <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">รายชื่อนักเรียนรายเดือน (เช็คชื่อเข้าเรียน)</h4>
+                    <span id="teacher-tutoring-count-badge" class="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-full text-[10px] font-bold">0 คน</span>
+                  </div>
+                  
+                  <div class="overflow-x-auto max-h-[50vh] custom-scrollbar flex-1">
+                    <table class="w-full text-left border-collapse">
+                      <thead>
+                        <tr class="bg-slate-50/30 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider sticky top-0 bg-white z-10">
+                          <th class="py-2.5 px-4 w-12 text-center">ที่</th>
+                          <th class="py-2.5 px-4">ชื่อ-สกุลนักเรียน</th>
+                          <th class="py-2.5 px-4 w-20 text-center">ห้องเรียน</th>
+                          <th class="py-2.5 px-4 w-28 text-center">สถานะชำระเงิน</th>
+                          <th class="py-2.5 px-4 w-44 text-center">เช็คชื่อเข้าเรียน</th>
+                        </tr>
+                      </thead>
+                      <tbody id="teacher-attendance-tbody" class="divide-y divide-slate-100 text-xs">
+                        <!-- rows here -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Right: Daily Collections & Statistics Report -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-3">บันทึกยอดเงินประจำวัน</h4>
+                  
+                  <!-- Monthly paid summaries (Read-only / computed) -->
+                  <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 space-y-2">
+                    <div class="flex justify-between text-xs">
+                      <span class="text-slate-500 font-semibold">นักเรียนรายเดือนทั้งหมด:</span>
+                      <span id="teacher-stat-monthly-total" class="font-bold text-slate-700">0 คน</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                      <span class="text-slate-500 font-semibold">มาเรียนวันนี้:</span>
+                      <span id="teacher-stat-monthly-present" class="font-bold text-indigo-600">0 คน</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                      <span class="text-slate-500 font-semibold">ค้างชำระเงินสะสม (ในระบบ):</span>
+                      <span id="teacher-stat-monthly-unpaid" class="font-bold text-rose-600">0 คน</span>
+                    </div>
+                  </div>
+
+                  <!-- Daily Walk-ins -->
+                  <div class="space-y-3">
+                    <h5 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">นักเรียนเรียนพิเศษประเภทรายวัน</h5>
+                    
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-600">จำนวนรายวันเข้าเรียน (คน)</label>
+                      <input type="number" id="teacher-daily-present" value="0" min="0" oninput="calculateTeacherDailyAmount()" class="w-full px-3 py-2 mt-1 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-600">จำนวนจ่ายรายวัน (คน)</label>
+                      <input type="number" id="teacher-daily-paid-count" value="0" min="0" oninput="calculateTeacherDailyAmount()" class="w-full px-3 py-2 mt-1 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-600">จำนวนเงินที่เก็บได้รายวัน (บาท)</label>
+                      <input type="number" id="teacher-daily-amount-paid" value="0" min="0" class="w-full px-3 py-2 mt-1 bg-white border border-slate-200 rounded-xl text-xs font-bold text-emerald-600 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                      <p class="text-[10px] text-slate-400 mt-1">* ค่าเรียน 50 บาท/คน/วัน (คำนวณอัตโนมัติแต่แก้ไขได้)</p>
+                    </div>
+                  </div>
+
+                  <div class="pt-4 border-t border-slate-100">
+                    <button type="button" onclick="submitDailyTutoringReport()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md">
+                      <i data-lucide="check-circle" class="w-4 h-4"></i>
+                      <span>บันทึกและส่งรายงานประจำวัน</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
         </div>
 
         <!-- BOTTOM NAVIGATION - Mobile View -->
@@ -1649,6 +2160,10 @@
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase">สถานที่จัดเก็บ</label>
           <input type="text" id="inventory-location" required class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="เช่น ห้องพัสดุ อาคาร 1">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase">อัปโหลดรูปภาพพัสดุ</label>
+          <input type="file" id="inventory-image-file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer mt-1">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase">อัปโหลดรูปภาพพัสดุ</label>
@@ -2254,7 +2769,7 @@
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase">สิทธิ์และบทบาท</label>
-          <select id="user-role" class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+           <select id="user-role" class="w-full px-4 py-2 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
             <option value="admin">ผู้ดูแลระบบ (Admin)</option>
             <option value="officer">เจ้าหน้าที่พัสดุ (Officer)</option>
             <option value="asset_officer">เจ้าหน้าที่ครุภัณฑ์ (Asset Officer)</option>
@@ -2262,6 +2777,7 @@
             <option value="reporter">เจ้าหน้าที่รายงาน (Reporter)</option>
             <option value="teacher">ครูผู้ใช้ทั่วไป (Teacher)</option>
             <option value="executive">ผู้บริหาร (Executive)</option>
+            <option value="registry_officer">เจ้าหน้าที่ทะเบียน (Registry Officer)</option>
           </select>
         </div>
         <div class="pt-4 border-t border-slate-100 flex space-x-3">
@@ -2530,26 +3046,26 @@
     function updateActiveViewData() {
       const activeViewEl = document.querySelector('section:not(.hidden)');
       if (!activeViewEl) return;
-      const viewId = activeViewEl.id;
+      const secId = activeViewEl.id;
       
-      if (viewId === 'view-dashboard') {
+      if (secId === 'subview-dashboard') {
         renderDashboardStats();
-      } else if (viewId === 'view-inventory') {
+      } else if (secId === 'subview-inventory') {
         renderInventoryList();
         renderBorrowHistoryList();
-      } else if (viewId === 'view-assets') {
+      } else if (secId === 'subview-assets') {
         renderAssetsList();
-      } else if (viewId === 'view-asset-checks') {
+      } else if (secId === 'subview-asset-checks') {
         renderAssetChecksHistory();
-      } else if (viewId === 'view-repairs') {
+      } else if (secId === 'subview-asset-repairs') {
         renderAssetRepairsList();
-      } else if (viewId === 'view-procurements') {
+      } else if (secId === 'subview-procurements') {
         renderProcurementsList();
-      } else if (viewId === 'view-users') {
+      } else if (secId === 'subview-user-management') {
         renderUsersList();
-      } else if (viewId === 'view-rooms') {
+      } else if (secId === 'subview-room-management') {
         renderRoomsList();
-      } else if (viewId === 'view-profile') {
+      } else if (secId === 'subview-profile') {
         setupProfileForm();
       }
       
@@ -2586,8 +3102,8 @@
     
     async function openPublicRepairModal() {
       // Reset input fields
-      document.getElementById('public-repair-reporter').value = '';
-      document.getElementById('public-repair-position').value = '';
+      document.getElementById('public-repair-reporter').value = currentUser ? currentUser.name : '';
+      document.getElementById('public-repair-position').value = currentUser ? (currentUser.department || '') : '';
       document.getElementById('public-repair-phone').value = '';
       document.getElementById('public-repair-description').value = '';
       document.getElementById('public-repair-image-file').value = '';
@@ -2979,7 +3495,8 @@
         'procure_officer': 'เจ้าหน้าที่จัดซื้อจัดจ้าง (Procurement Officer)',
         'reporter': 'เจ้าหน้าที่รายงาน (Reporter)',
         'teacher': 'ครูผู้สอน (Teacher)',
-        'executive': 'ผู้บริหาร (Executive)'
+        'executive': 'ผู้บริหาร (Executive)',
+        'registry_officer': 'เจ้าหน้าที่ทะเบียน (Registry Officer)'
       };
       return labels[role] || 'ครูผู้สอน';
     }
@@ -2991,18 +3508,56 @@
       
       // Core menus for everyone
       const menus = [
-        { id: 'view-dashboard', label: 'แดชบอร์ดสรุปงาน', icon: 'pie-chart', roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher'] },
-        { id: 'view-inventory', label: 'ระบบจัดการพัสดุ', icon: 'package', roles: ['admin', 'officer', 'teacher'] },
-        { id: 'view-borrow-catalog', label: 'ขอเบิกพัสดุ', icon: 'shopping-bag', roles: ['admin', 'officer', 'teacher'] },
-        { id: 'view-assets', label: 'ระบบทะเบียนครุภัณฑ์', icon: 'cpu', roles: ['admin', 'asset_officer'] },
-        { id: 'view-asset-checks', label: 'ตรวจสอบครุภัณฑ์ประจำปี', icon: 'clipboard-check', roles: ['admin', 'asset_officer'] },
+        { id: 'view-dashboard', label: 'แดชบอร์ดสรุปงาน', icon: 'pie-chart', roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher', 'registry_officer'] },
+        {
+          id: 'group-inventory',
+          label: 'งานพัสดุ',
+          icon: 'package',
+          roles: ['admin', 'officer', 'teacher'],
+          isGroup: true,
+          submenus: [
+            { id: 'view-inventory', label: 'ระบบจัดการพัสดุ', icon: 'box', roles: ['admin', 'officer', 'teacher'] },
+            { id: 'view-borrow-catalog', label: 'ขอเบิกพัสดุ', icon: 'shopping-bag', roles: ['admin', 'officer', 'teacher'] }
+          ]
+        },
+        {
+          id: 'group-assets',
+          label: 'งานครุภัณฑ์',
+          icon: 'cpu',
+          roles: ['admin', 'asset_officer', 'procure_officer'],
+          isGroup: true,
+          submenus: [
+            { id: 'view-assets', label: 'ทะเบียนครุภัณฑ์', icon: 'table', roles: ['admin', 'asset_officer'] },
+            { id: 'view-asset-checks', label: 'ตรวจสอบครุภัณฑ์ประจำปี', icon: 'clipboard-check', roles: ['admin', 'asset_officer'] },
+            { id: 'view-procurements', label: 'ระบบจัดซื้อจัดจ้าง', icon: 'file-text', roles: ['admin', 'procure_officer'] }
+          ]
+        },
         { id: 'view-repairs', label: 'ระบบแจ้งซ่อมบำรุง', icon: 'wrench', roles: ['admin', 'officer', 'asset_officer', 'teacher'] },
-        { id: 'view-procurements', label: 'ระบบจัดซื้อจัดจ้าง', icon: 'file-text', roles: ['admin', 'procure_officer'] },
+        {
+          id: 'group-registry',
+          label: 'งานทะเบียน',
+          icon: 'archive',
+          roles: ['admin', 'registry_officer', 'teacher'],
+          isGroup: true,
+          submenus: [
+            { id: 'view-tutoring', label: 'เรียนพิเศษ', icon: 'book-open', roles: ['admin', 'registry_officer'] },
+            { id: 'view-teacher-tutoring', label: 'เช็คชื่อเรียนพิเศษ', icon: 'clipboard-list', roles: ['admin', 'teacher', 'registry_officer'] }
+          ]
+        },
         { id: 'view-reports', label: 'ระบบรายงาน & วิเคราะห์', icon: 'trending-up', roles: ['admin', 'reporter', 'executive', 'officer'] },
-        { id: 'view-users', label: 'จัดการสิทธิ์ผู้ใช้งาน', icon: 'users', roles: ['admin'] },
-        { id: 'view-rooms', label: 'จัดการห้อง/สถานที่', icon: 'map-pin', roles: ['admin'] },
-        { id: 'view-database', label: 'สำรองและจัดการข้อมูล', icon: 'database', roles: ['admin'] },
-        { id: 'view-profile', label: 'ประวัติส่วนตัว', icon: 'user', roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher'] }
+        {
+          id: 'group-system',
+          label: 'จัดการระบบ',
+          icon: 'settings',
+          roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher', 'registry_officer'],
+          isGroup: true,
+          submenus: [
+            { id: 'view-users', label: 'จัดการสิทธิ์ผู้ใช้งาน', icon: 'users', roles: ['admin'] },
+            { id: 'view-rooms', label: 'จัดการห้อง/สถานที่', icon: 'map-pin', roles: ['admin'] },
+            { id: 'view-database', label: 'สำรองและจัดการข้อมูล', icon: 'database', roles: ['admin'] },
+            { id: 'view-profile', label: 'ประวัติส่วนตัว', icon: 'user', roles: ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher', 'registry_officer'] }
+          ]
+        }
       ];
 
       // Hide or show special bottom mobile elements
@@ -3014,7 +3569,62 @@
       }
 
       menus.forEach(menu => {
-        if (menu.roles.includes(currentUser.role)) {
+        if (!menu.roles.includes(currentUser.role)) return;
+
+        if (menu.isGroup) {
+          // Render group header button with collapsible submenu container
+          const groupContainer = document.createElement('div');
+          groupContainer.className = 'w-full mb-1 flex flex-col items-stretch';
+          
+          const headerBtn = document.createElement('button');
+          headerBtn.className = `w-full flex items-center justify-between px-4 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition text-left`;
+          
+          const isCollapsed = localStorage.getItem(`group-collapsed-${menu.id}`) === 'true';
+          
+          headerBtn.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <i data-lucide="${menu.icon}" class="w-5 h-5 flex-shrink-0"></i>
+              <span class="text-sm font-semibold sidebar-text">${menu.label}</span>
+            </div>
+            <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text transition-transform duration-200 group-chevron ${isCollapsed ? '-rotate-90' : ''}"></i>
+          `;
+          
+          const subContainer = document.createElement('div');
+          subContainer.className = `space-y-1 mt-1 pl-4 ${isCollapsed ? 'hidden' : ''}`;
+          
+          headerBtn.onclick = () => {
+            const nowHidden = subContainer.classList.toggle('hidden');
+            localStorage.setItem(`group-collapsed-${menu.id}`, nowHidden ? 'true' : 'false');
+            const chevron = headerBtn.querySelector('.group-chevron');
+            if (chevron) {
+              if (nowHidden) {
+                chevron.classList.add('-rotate-90');
+              } else {
+                chevron.classList.remove('-rotate-90');
+              }
+            }
+          };
+          
+          // Render submenus
+          menu.submenus.forEach(sub => {
+            if (sub.roles.includes(currentUser.role)) {
+              const subBtn = document.createElement('button');
+              subBtn.onclick = () => switchView(sub.id);
+              subBtn.className = `w-full flex items-center space-x-3 px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition text-left nav-btn-item`;
+              subBtn.setAttribute('data-target', sub.id);
+              subBtn.innerHTML = `
+                <i data-lucide="${sub.icon}" class="w-4 h-4 flex-shrink-0"></i>
+                <span class="text-xs font-semibold sidebar-text">${sub.label}</span>
+              `;
+              subContainer.appendChild(subBtn);
+            }
+          });
+          
+          groupContainer.appendChild(headerBtn);
+          groupContainer.appendChild(subContainer);
+          nav.appendChild(groupContainer);
+        } else {
+          // Regular menu button
           const btn = document.createElement('button');
           btn.onclick = () => switchView(menu.id);
           btn.className = `w-full flex items-center space-x-3 px-4 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition mb-1 text-left nav-btn-item`;
@@ -3034,7 +3644,7 @@
     function switchView(viewId, clearSearch = true) {
       // Check if user has role permission for this view
       const viewPermissions = {
-        'view-dashboard': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher'],
+        'view-dashboard': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher', 'registry_officer'],
         'view-inventory': ['admin', 'officer', 'teacher'],
         'view-borrow-catalog': ['admin', 'officer', 'teacher'],
         'view-quick-borrow': ['admin', 'officer', 'teacher'],
@@ -3047,7 +3657,9 @@
         'view-users': ['admin'],
         'view-rooms': ['admin'],
         'view-database': ['admin'],
-        'view-profile': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher']
+        'view-profile': ['admin', 'officer', 'asset_officer', 'procure_officer', 'reporter', 'executive', 'teacher', 'registry_officer'],
+        'view-tutoring': ['admin', 'registry_officer'],
+        'view-teacher-tutoring': ['admin', 'teacher', 'registry_officer']
       };
       
       const allowedRoles = viewPermissions[viewId] || [];
@@ -3071,14 +3683,16 @@
         'view-users': 'ระบบจัดการข้อมูลพนักงาน / ครูผู้สอน',
         'view-rooms': 'ระบบจัดการข้อมูลสถานที่ / ห้องปฏิบัติการ',
         'view-database': 'ระบบสำรองและจัดการฐานข้อมูล',
-        'view-profile': 'ข้อมูลประวัติส่วนตัว'
+        'view-profile': 'ข้อมูลประวัติส่วนตัว',
+        'view-tutoring': 'งานบัญชีการเงินเรียนพิเศษ (ภ.1_69-3)',
+        'view-teacher-tutoring': 'เช็คชื่อและแจ้งยอดเรียนพิเศษประจำวัน'
       };
       
       const title = breadcrumbs[viewId] || 'ระบบงานพัสดุ';
       document.getElementById('breadcrumb-current').innerText = title;
       
       // Hide all subviews
-      const sections = ['subview-dashboard', 'subview-inventory', 'subview-borrow-catalog', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-room-management', 'subview-profile', 'subview-quick-borrow', 'subview-cart-checkout'];
+      const sections = ['subview-dashboard', 'subview-inventory', 'subview-borrow-catalog', 'subview-assets', 'subview-asset-checks', 'subview-asset-repairs', 'subview-procurements', 'subview-reports', 'subview-user-management', 'subview-room-management', 'subview-profile', 'subview-quick-borrow', 'subview-cart-checkout', 'subview-tutoring', 'subview-teacher-tutoring', 'subview-database'];
       sections.forEach(sec => document.getElementById(sec).classList.add('hidden'));
       
       // Map viewId to section element
@@ -3095,6 +3709,9 @@
       else if (viewId === 'view-users') targetSection = 'subview-user-management';
       else if (viewId === 'view-rooms') targetSection = 'subview-room-management';
       else if (viewId === 'view-profile') targetSection = 'subview-profile';
+      else if (viewId === 'view-tutoring') targetSection = 'subview-tutoring';
+      else if (viewId === 'view-teacher-tutoring') targetSection = 'subview-teacher-tutoring';
+      else if (viewId === 'view-database') targetSection = 'subview-database';
       
       const secEl = document.getElementById(targetSection);
       if (secEl) {
@@ -3137,8 +3754,14 @@
         renderProcurementsList();
       } else if (viewId === 'view-users') {
         renderUsersList();
+      } else if (viewId === 'view-rooms') {
+        renderRoomsList();
       } else if (viewId === 'view-profile') {
         setupProfileForm();
+      } else if (viewId === 'view-tutoring') {
+        initTutoringView();
+      } else if (viewId === 'view-teacher-tutoring') {
+        initTeacherTutoringView();
       }
       
       // Auto-collapse sidebar on menu click on desktop as requested
@@ -4927,7 +5550,7 @@
         <div class="bg-white p-8 shadow-sm border border-slate-200 rounded-lg max-w-xl mx-auto text-slate-800" style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">
           <div class="text-center space-y-1 mb-6">
             <h2 class="text-2xl font-bold text-slate-900" style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">ใบเบิกพัสดุ</h2>
-            <h3 class="text-sm text-slate-500 font-medium" style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">โรงเรียนแหลมทองวิทยา ตำบลตันหยงมัส อำเภอระแงะ จังหวัดนราธิวาส</h3>
+            <h3 class="text-sm text-slate-500 font-medium" style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">โรงเรียนแหลมทอง วิทยา ตำบลตันหยงมัส อำเภอระแงะ จังหวัดนราธิวาส</h3>
           </div>
           
           <div class="flex justify-end mb-6 text-xs">
@@ -5028,7 +5651,7 @@
         <div style="font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', 'Helvetica Neue', Arial, sans-serif; padding: 20px; color: #000; background: #fff;">
           <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="font-size: 24px; font-weight: bold; margin: 0 0 5px 0; font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">ใบเบิกพัสดุ</h2>
-            <h3 style="font-size: 16px; margin: 0; font-weight: normal; color: #555; font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">โรงเรียนแหลมทองวิทยา ตำบลตันหยงมัส อำเภอระแงะ จังหวัดนราธิวาส</h3>
+            <h3 style="font-size: 16px; margin: 0; font-weight: normal; color: #555; font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;">โรงเรียนแหลมทอง วิทยา ตำบลตันหยงมัส อำเภอระแงะ จังหวัดนราธิวาส</h3>
           </div>
           
           <table style="width: 100%; border: none; margin-bottom: 20px; font-size: 14px;">
@@ -7007,7 +7630,11 @@
     // SUBVIEW: ROOM MANAGEMENT (ADMIN ONLY)
     // ==========================================================
     async function fetchRooms() {
-      if (!dbClient) return;
+      console.log('fetchRooms: starting query...');
+      if (!dbClient) {
+        console.warn('fetchRooms: dbClient is null!');
+        return;
+      }
       try {
         const { data, error } = await dbClient
           .from('rooms')
@@ -7015,22 +7642,29 @@
           .order('name');
         if (error) throw error;
         cacheRooms = data || [];
+        console.log('fetchRooms: success, rooms count =', cacheRooms.length);
       } catch (err) {
         console.error('Error fetching rooms:', err);
         // Fallback: Populate cacheRooms with unique rooms from assets
         const uniqueRoomNames = [...new Set(publicCacheAssets.map(a => a.room).filter(Boolean))].sort();
         cacheRooms = uniqueRoomNames.map((name, index) => ({ id: `temp-${index}`, name }));
+        console.log('fetchRooms: fallback count =', cacheRooms.length);
       }
     }
 
     async function renderRoomsList() {
+      console.log('renderRoomsList: starting render...');
       showLoader(true);
       await fetchRooms();
       showLoader(false);
 
       const container = document.getElementById('rooms-list');
-      if (!container) return;
+      if (!container) {
+        console.error('renderRoomsList: container with id "rooms-list" not found!');
+        return;
+      }
       container.innerHTML = '';
+      console.log('renderRoomsList: rendering rooms =', cacheRooms);
 
       cacheRooms.forEach(room => {
         const row = document.createElement('tr');
@@ -7359,6 +7993,1434 @@
       };
 
       reader.readAsText(fileInput.files[0]);
+    }
+
+    async function executeDatabasePurge() {
+      const dateVal = document.getElementById('purge-before-date').value;
+      const confirmInput = document.getElementById('purge-confirm-input').value.trim();
+
+      if (!dateVal) {
+        showToast('กรุณาระบุวันที่ที่ต้องการอ้างอิงเพื่อล้างข้อมูล', 'danger');
+        return;
+      }
+
+      if (confirmInput !== 'CONFIRM') {
+        showToast('กรุณาพิมพ์คำว่า CONFIRM เพื่อยืนยันการทำรายการลบอย่างถาวร', 'danger');
+        return;
+      }
+
+      if (!confirm(`คุณกำลังจะทำการลบข้อมูลธุรกรรมประวัติเก่าทั้งหมดที่เกิดขึ้นก่อนวันที่ ${new Date(dateVal).toLocaleDateString('th-TH')} ออกจากตารางที่ระบุอย่างถาวร ยืนยันการดำเนินการลบ?`)) {
+        return;
+      }
+
+      showLoader(true);
+      try {
+        const purgeRequests = document.getElementById('purge-requests').checked;
+        const purgeLogs = document.getElementById('purge-logs').checked;
+        const purgeRepairs = document.getElementById('purge-repairs').checked;
+        const purgeChecks = document.getElementById('purge-checks').checked;
+        const purgeProcurements = document.getElementById('purge-procurements').checked;
+
+        let deleteCount = 0;
+
+        if (purgeRequests) {
+          const { error } = await dbClient.from('inventory_requests').delete().lt('request_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeLogs) {
+          const { error } = await dbClient.from('inventory_logs').delete().lt('receive_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeRepairs) {
+          const { error } = await dbClient.from('asset_repairs').delete().lt('report_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeChecks) {
+          const { error } = await dbClient.from('asset_checks').delete().lt('check_date', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (purgeProcurements) {
+          const { error } = await dbClient.from('procurements').delete().lt('created_at', dateVal);
+          if (error) throw error;
+          deleteCount++;
+        }
+
+        if (deleteCount === 0) {
+          showToast('ไม่มีการเลือกตารางข้อมูลเพื่อทำการล้างข้อมูล', 'warning');
+          return;
+        }
+
+        showToast('ล้างข้อมูลและประวัติธุรกรรมเก่าออกเรียบร้อยแล้ว เพิ่มพื้นที่ใช้งานคลังสำเร็จ', 'success');
+        document.getElementById('purge-confirm-input').value = '';
+        
+        await refreshAllData();
+        renderInventoryList();
+        if (typeof renderBorrowHistoryList === 'function') {
+          renderBorrowHistoryList();
+        }
+      } catch (err) {
+        console.error('Database purge failed:', err);
+        showToast('ไม่สามารถล้างข้อมูลได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // ==========================================
+    // 10. TUTORING REGISTRY LOGIC (เรียนพิเศษ)
+    // ==========================================
+    let tutoringCacheData = [];
+
+    // Initialize tutoring view
+    async function initTutoringView() {
+      // Set default month/year filter to current month if not set
+      const filterMonth = document.getElementById('tutoring-filter-month');
+      const filterYear = document.getElementById('tutoring-filter-year');
+      
+      const now = new Date();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+      const currentYear = now.getFullYear() + 543;
+      
+      if (filterMonth && !filterMonth.value) {
+        filterMonth.value = currentMonth;
+      }
+      if (filterYear && !filterYear.value) {
+        if ([2569, 2570, 2571].map(String).includes(String(currentYear))) {
+          filterYear.value = String(currentYear);
+        } else {
+          filterYear.value = '2569';
+        }
+      }
+      
+      // Default to monthly tab
+      switchTutoringTab('monthly');
+    }
+
+    // Toggle Tab view in Registry panel
+    function switchTutoringTab(tabId) {
+      const tabs = ['monthly', 'daily', 'settings'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-tutoring-${t}`);
+        const content = document.getElementById(`tab-content-tutoring-${t}`);
+        if (t === tabId) {
+          btn.classList.add('border-indigo-500', 'text-indigo-600');
+          btn.classList.remove('border-transparent', 'text-slate-500');
+          content.classList.remove('hidden');
+        } else {
+          btn.classList.remove('border-indigo-500', 'text-indigo-600');
+          btn.classList.add('border-transparent', 'text-slate-500');
+          content.classList.add('hidden');
+        }
+      });
+      
+      if (tabId === 'monthly') {
+        loadTutoringData();
+      } else if (tabId === 'daily') {
+        const dateInput = document.getElementById('registry-tutoring-daily-date');
+        if (!dateInput.value) {
+          dateInput.value = new Date().toISOString().split('T')[0];
+        }
+        loadDailySummarySheet();
+      } else if (tabId === 'settings') {
+        loadTutoringSettings();
+      }
+    }
+
+    // Load tutoring data from Supabase
+    async function loadTutoringData() {
+      if (!dbClient) return;
+      
+      const month = document.getElementById('tutoring-filter-month').value;
+      const year = document.getElementById('tutoring-filter-year').value;
+      const monthYear = `${year}-${month}`;
+      
+      showLoader(true);
+      try {
+        const { data, error } = await dbClient
+          .from('tutoring_records')
+          .select('*')
+          .eq('month_year', monthYear)
+          .order('classroom')
+          .order('student_name');
+          
+        if (error) throw error;
+        tutoringCacheData = data || [];
+        
+        filterTutoringClassroom();
+      } catch (err) {
+        console.error('Error loading tutoring data:', err);
+        showToast('ไม่สามารถดึงข้อมูลทะเบียนเรียนพิเศษได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // Filter classroom
+    function filterTutoringClassroom() {
+      filterTutoringTable();
+    }
+
+    // Apply search and status filters
+    function filterTutoringTable() {
+      const classFilter = document.getElementById('tutoring-filter-class').value;
+      const searchQuery = document.getElementById('tutoring-search-input').value.toLowerCase().trim();
+      const unpaidFilter = document.getElementById('tutoring-filter-unpaid').checked;
+      
+      let filtered = tutoringCacheData;
+      
+      if (classFilter) {
+        filtered = filtered.filter(item => item.classroom && item.classroom.startsWith(classFilter));
+      }
+      
+      if (searchQuery) {
+        filtered = filtered.filter(item => item.student_name && item.student_name.toLowerCase().includes(searchQuery));
+      }
+      
+      if (unpaidFilter) {
+        filtered = filtered.filter(item => item.payment_status !== 'จ่ายแล้ว');
+      }
+      
+      renderTutoringTableData(filtered);
+      calculateTutoringSummary(filtered);
+    }
+
+    // Calculate totals
+    function calculateTutoringSummary(data) {
+      const totalStudents = data.length;
+      let totalExpected = 0;
+      let totalPaid = 0;
+      
+      data.forEach(item => {
+        totalExpected += item.total_amount || 0;
+        totalPaid += item.paid_amount || 0;
+      });
+      
+      const totalOutstanding = totalExpected - totalPaid;
+      
+      document.getElementById('tutoring-stat-total-students').innerText = `${totalStudents.toLocaleString()} คน`;
+      document.getElementById('tutoring-stat-expected-amount').innerText = `฿${totalExpected.toLocaleString()}`;
+      document.getElementById('tutoring-stat-paid-amount').innerText = `฿${totalPaid.toLocaleString()}`;
+      document.getElementById('tutoring-stat-outstanding-amount').innerText = `฿${totalOutstanding.toLocaleString()}`;
+    }
+
+    // Render table rows
+    function renderTutoringTableData(data) {
+      const tbody = document.getElementById('tutoring-records-tbody');
+      tbody.innerHTML = '';
+      
+      if (data.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="13" class="py-8 text-center text-slate-400">ไม่พบข้อมูลทะเบียนเรียนพิเศษในกลุ่มที่เลือก</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      data.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/50 transition';
+        
+        const mathCheck = item.study_math ? '<span class="text-indigo-600 font-bold">50</span>' : '-';
+        const sciCheck = item.study_sci ? '<span class="text-indigo-600 font-bold">50</span>' : '-';
+        const thaiCheck = item.study_thai ? '<span class="text-indigo-600 font-bold">50</span>' : '-';
+        const engCheck = item.study_eng ? '<span class="text-indigo-600 font-bold">50</span>' : '-';
+        
+        const isPaid = item.payment_status === 'จ่ายแล้ว';
+        const statusBadge = isPaid 
+          ? `<button onclick="toggleTutoringPaymentStatus('${item.id}', false)" class="px-2.5 py-1 bg-emerald-105 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200 transition hover:bg-emerald-200 select-none">จ่ายแล้ว</button>`
+          : `<button onclick="toggleTutoringPaymentStatus('${item.id}', true)" class="px-2.5 py-1 bg-amber-105 text-amber-800 text-[10px] font-bold rounded-full border border-amber-200 transition hover:bg-amber-200 select-none">ยังไม่จ่าย</button>`;
+          
+        const paidAmountInput = `<input type="number" value="${item.paid_amount || 0}" min="0" onblur="updateTutoringPaidAmount('${item.id}', this.value)" class="w-20 px-2 py-1 bg-white border border-slate-200 rounded text-right text-xs focus:ring-1 focus:ring-indigo-500 focus:outline-none">`;
+        
+        const payDateValue = item.payment_date ? item.payment_date : '';
+        const payDateInput = `<input type="date" value="${payDateValue}" onchange="updateTutoringPaymentDate('${item.id}', this.value)" class="w-28 px-2 py-1 bg-white border border-slate-200 rounded text-xs focus:ring-1 focus:ring-indigo-500 focus:outline-none">`;
+        
+        const methodSelect = `
+          <select onchange="updateTutoringPaymentMethod('${item.id}', this.value)" class="px-2 py-1 bg-white border border-slate-200 rounded text-xs focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            <option value="" ${!item.payment_method ? 'selected' : ''}>-</option>
+            <option value="โอน" ${item.payment_method === 'โอน' ? 'selected' : ''}>โอน</option>
+            <option value="เงินสด" ${item.payment_method === 'เงินสด' ? 'selected' : ''}>เงินสด</option>
+          </select>
+        `;
+        
+        tr.innerHTML = `
+          <td class="py-3 px-4 text-center text-slate-400 font-semibold">${index + 1}</td>
+          <td class="py-3 px-4 font-bold text-slate-800">${item.student_name}</td>
+          <td class="py-3 px-4 text-center text-slate-600 font-semibold">${item.classroom || '-'}</td>
+          <td class="py-3 px-2 text-center">${mathCheck}</td>
+          <td class="py-3 px-2 text-center">${sciCheck}</td>
+          <td class="py-3 px-2 text-center">${thaiCheck}</td>
+          <td class="py-3 px-2 text-center">${engCheck}</td>
+          <td class="py-3 px-3 text-right font-bold text-slate-700">฿${(item.total_amount || 0).toLocaleString()}</td>
+          <td class="py-3 px-3 text-center">${statusBadge}</td>
+          <td class="py-3 px-3">${paidAmountInput}</td>
+          <td class="py-3 px-3">${payDateInput}</td>
+          <td class="py-3 px-3">${methodSelect}</td>
+          <td class="py-3 px-4 text-center flex items-center justify-center gap-1.5">
+            <button onclick="editTutoringStudent('${item.id}')" class="p-1 text-slate-500 hover:text-indigo-600 transition" title="แก้ไขวิชา/ห้อง">
+              <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteTutoringRecord('${item.id}')" class="p-1 text-slate-500 hover:text-rose-600 transition" title="ลบ">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    // Toggle status
+    async function toggleTutoringPaymentStatus(id, newPaidState) {
+      if (!dbClient) return;
+      
+      const record = tutoringCacheData.find(r => r.id === id);
+      if (!record) return;
+      
+      let updateData = {};
+      if (newPaidState) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        updateData = {
+          payment_status: 'จ่ายแล้ว',
+          paid_amount: record.total_amount,
+          payment_date: todayStr,
+          payment_method: record.payment_method || 'โอน'
+        };
+      } else {
+        updateData = {
+          payment_status: 'ยังไม่จ่าย',
+          paid_amount: 0,
+          payment_date: null,
+          payment_method: null
+        };
+      }
+      
+      await saveTutoringFieldUpdates(id, updateData);
+    }
+
+    // Update paid amount
+    async function updateTutoringPaidAmount(id, val) {
+      const record = tutoringCacheData.find(r => r.id === id);
+      if (!record) return;
+      
+      const newPaidAmt = parseInt(val) || 0;
+      if (record.paid_amount === newPaidAmt) return;
+      
+      const isFull = newPaidAmt >= record.total_amount && record.total_amount > 0;
+      const todayStr = new Date().toISOString().split('T')[0];
+      
+      const updateData = {
+        paid_amount: newPaidAmt,
+        payment_status: isFull ? 'จ่ายแล้ว' : 'ยังไม่จ่าย',
+        payment_date: (isFull && !record.payment_date) ? todayStr : record.payment_date,
+        payment_method: (isFull && !record.payment_method) ? 'โอน' : record.payment_method
+      };
+      
+      await saveTutoringFieldUpdates(id, updateData);
+    }
+
+    // Update payment date
+    async function updateTutoringPaymentDate(id, dateStr) {
+      const record = tutoringCacheData.find(r => r.id === id);
+      if (!record) return;
+      
+      const normalizedDate = dateStr ? dateStr : null;
+      if (record.payment_date === normalizedDate) return;
+      
+      await saveTutoringFieldUpdates(id, { payment_date: normalizedDate });
+    }
+
+    // Update payment method
+    async function updateTutoringPaymentMethod(id, method) {
+      const record = tutoringCacheData.find(r => r.id === id);
+      if (!record) return;
+      
+      const normalizedMethod = method ? method : null;
+      if (record.payment_method === normalizedMethod) return;
+      
+      await saveTutoringFieldUpdates(id, { payment_method: normalizedMethod });
+    }
+
+    // Update fields helper
+    async function saveTutoringFieldUpdates(id, fields) {
+      if (!dbClient) return;
+      
+      try {
+        const { error } = await dbClient
+          .from('tutoring_records')
+          .update(fields)
+          .eq('id', id);
+          
+        if (error) throw error;
+        
+        const index = tutoringCacheData.findIndex(r => r.id === id);
+        if (index !== -1) {
+          tutoringCacheData[index] = { ...tutoringCacheData[index], ...fields };
+        }
+        
+        filterTutoringTable();
+        showToast('อัปเดตสถานะการเงินนักเรียนเรียบร้อย', 'success');
+      } catch (err) {
+        console.error('Error saving tutoring fields:', err);
+        showToast('อัปเดตล้มเหลว: ' + err.message, 'danger');
+      }
+    }
+
+    // Open add modal
+    function openAddTutoringModal() {
+      document.getElementById('tutoring-modal-title').innerText = 'เพิ่มรายชื่อนักเรียนเรียนพิเศษ';
+      document.getElementById('tutoring-student-id').value = '';
+      document.getElementById('tutoring-student-name').value = '';
+      
+      const classFilter = document.getElementById('tutoring-filter-class').value;
+      document.getElementById('tutoring-student-classroom').value = classFilter ? `${classFilter}/` : '';
+      
+      document.getElementById('tutoring-subject-math').checked = false;
+      document.getElementById('tutoring-subject-sci').checked = false;
+      document.getElementById('tutoring-subject-thai').checked = false;
+      document.getElementById('tutoring-subject-eng').checked = false;
+      
+      document.getElementById('modal-tutoring-student').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // Open edit modal
+    function editTutoringStudent(id) {
+      const student = tutoringCacheData.find(r => r.id === id);
+      if (!student) return;
+      
+      document.getElementById('tutoring-modal-title').innerText = 'แก้ไขวิชา/ห้องเรียนนักเรียน';
+      document.getElementById('tutoring-student-id').value = student.id;
+      document.getElementById('tutoring-student-name').value = student.student_name;
+      document.getElementById('tutoring-student-classroom').value = student.classroom;
+      
+      document.getElementById('tutoring-subject-math').checked = student.study_math;
+      document.getElementById('tutoring-subject-sci').checked = student.study_sci;
+      document.getElementById('tutoring-subject-thai').checked = student.study_thai;
+      document.getElementById('tutoring-subject-eng').checked = student.study_eng;
+      
+      document.getElementById('modal-tutoring-student').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeTutoringModal() {
+      document.getElementById('modal-tutoring-student').classList.add('hidden');
+    }
+
+    // Submit form (add/edit)
+    async function saveTutoringStudentForm(e) {
+      e.preventDefault();
+      if (!dbClient) return;
+      
+      const id = document.getElementById('tutoring-student-id').value;
+      const name = document.getElementById('tutoring-student-name').value.trim();
+      const classroom = document.getElementById('tutoring-student-classroom').value.trim();
+      
+      const math = document.getElementById('tutoring-subject-math').checked;
+      const sci = document.getElementById('tutoring-subject-sci').checked;
+      const thai = document.getElementById('tutoring-subject-thai').checked;
+      const eng = document.getElementById('tutoring-subject-eng').checked;
+      
+      const subjectCount = [math, sci, thai, eng].filter(Boolean).length;
+      const totalAmount = subjectCount * 50;
+      
+      const month = document.getElementById('tutoring-filter-month').value;
+      const year = document.getElementById('tutoring-filter-year').value;
+      const monthYear = `${year}-${month}`;
+      
+      showLoader(true);
+      try {
+        if (id) {
+          const original = tutoringCacheData.find(r => r.id === id);
+          const newPaid = (original.payment_status === 'จ่ายแล้ว') ? totalAmount : original.paid_amount;
+          
+          const updateObj = {
+            student_name: name,
+            classroom: classroom,
+            study_math: math,
+            study_sci: sci,
+            study_thai: thai,
+            study_eng: eng,
+            total_amount: totalAmount,
+            paid_amount: Math.min(newPaid, totalAmount)
+          };
+          
+          const { error } = await dbClient
+            .from('tutoring_records')
+            .update(updateObj)
+            .eq('id', id);
+            
+          if (error) throw error;
+          showToast('แก้ไขข้อมูลนักเรียนสำเร็จ 🚀', 'success');
+        } else {
+          const insertObj = {
+            student_name: name,
+            classroom: classroom,
+            month_year: monthYear,
+            study_math: math,
+            study_sci: sci,
+            study_thai: thai,
+            study_eng: eng,
+            total_amount: totalAmount,
+            payment_status: 'ยังไม่จ่าย',
+            paid_amount: 0
+          };
+          
+          const { error } = await dbClient
+            .from('tutoring_records')
+            .insert([insertObj]);
+            
+          if (error) throw error;
+          showToast('เพิ่มรายชื่อนักเรียนสำเร็จ 🚀', 'success');
+        }
+        
+        closeTutoringModal();
+        await loadTutoringData();
+      } catch (err) {
+        console.error('Error saving tutoring student:', err);
+        showToast('ไม่สามารถบันทึกข้อมูลได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // Excel file parsing via client-side SheetJS
+    function handleTutoringExcelImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      showLoader(true);
+      
+      reader.onload = async function(evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          
+          const sheetName = 'รายชื่อนักเรียน ก.ค. 69';
+          if (!workbook.SheetNames.includes(sheetName)) {
+            throw new Error(`ไม่พบชีตชื่อ "${sheetName}" ในไฟล์ Excel กรุณาตรวจสอบชื่อชีตให้ถูกต้อง`);
+          }
+          
+          const sheet = workbook.Sheets[sheetName];
+          const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          
+          const filterMonth = document.getElementById('tutoring-filter-month').value;
+          const filterYear = document.getElementById('tutoring-filter-year').value;
+          const monthYear = `${filterYear}-${filterMonth}`;
+          
+          let parsedStudents = [];
+          
+          for (let r = 0; r < rows.length; r++) {
+            const row = rows[r];
+            if (!row || row.length === 0) continue;
+            
+            const firstCell = String(row[0] || '').trim();
+            const indexNo = parseInt(firstCell);
+            
+            if (!isNaN(indexNo) && row[1]) {
+              const name = String(row[1]).trim();
+              const classroom = String(row[2] || '').trim();
+              
+              const studyMath = parseInt(row[3]) === 50;
+              const studySci = parseInt(row[4]) === 50;
+              const studyThai = parseInt(row[5]) === 50;
+              const studyEng = parseInt(row[6]) === 50;
+              
+              const subjectCount = [studyMath, studySci, studyThai, studyEng].filter(Boolean).length;
+              const totalAmount = subjectCount * 50;
+              
+              const paymentStatus = String(row[8] || '').trim() === 'จ่ายแล้ว' ? 'จ่ายแล้ว' : 'ยังไม่จ่าย';
+              const paidAmount = parseInt(row[9]) || 0;
+              
+              let paymentDate = null;
+              if (row[10]) {
+                const dateVal = row[10];
+                if (typeof dateVal === 'number') {
+                  const jsDate = new Date((dateVal - 25569) * 86400 * 1000);
+                  paymentDate = jsDate.toISOString().split('T')[0];
+                } else {
+                  const match = String(dateVal).match(/^(\d{4})[./-](\d{2})[./-](\d{2})/);
+                  if (match) {
+                    paymentDate = `${match[1]}-${match[2]}-${match[3]}`;
+                  }
+                }
+              }
+              
+              const paymentMethod = String(row[11] || '').trim() || null;
+              
+              parsedStudents.push({
+                student_name: name,
+                classroom: classroom,
+                month_year: monthYear,
+                study_math: studyMath,
+                study_sci: studySci,
+                study_thai: studyThai,
+                study_eng: studyEng,
+                total_amount: totalAmount,
+                payment_status: paymentStatus,
+                paid_amount: paymentStatus === 'จ่ายแล้ว' && paidAmount === 0 ? totalAmount : paidAmount,
+                payment_date: paymentDate,
+                payment_method: paymentMethod
+              });
+            }
+          }
+          
+          if (parsedStudents.length === 0) {
+            throw new Error('ไม่พบข้อมูลนักเรียนเรียนพิเศษในชีตดังกล่าว');
+          }
+          
+          if (!dbClient) throw new Error('ฐานข้อมูลยังไม่ได้เชื่อมต่อ');
+          
+          const chunkSize = 50;
+          for (let i = 0; i < parsedStudents.length; i += chunkSize) {
+            const chunk = parsedStudents.slice(i, i + chunkSize);
+            const { error } = await dbClient
+              .from('tutoring_records')
+              .upsert(chunk, { onConflict: 'student_name,month_year' });
+              
+            if (error) {
+              const { error: insError } = await dbClient
+                .from('tutoring_records')
+                .insert(chunk);
+              if (insError) throw insError;
+            }
+          }
+          
+          showToast(`นำเข้าข้อมูลเรียนพิเศษเด็กทั้งหมด ${parsedStudents.length} คนสำเร็จ! 🎉`, 'success');
+          document.getElementById('tutoring-import-file').value = '';
+          await loadTutoringData();
+        } catch (err) {
+          console.error('Excel import failed:', err);
+          showToast('นำเข้าข้อมูลล้มเหลว: ' + err.message, 'danger');
+        } finally {
+          showLoader(false);
+        }
+      };
+      
+      reader.onerror = function() {
+        showToast('ไม่สามารถอ่านไฟล์ได้', 'danger');
+        showLoader(false);
+      };
+      
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Render print layout
+    function triggerTutoringPrint() {
+      const monthSelect = document.getElementById('tutoring-filter-month');
+      const monthText = monthSelect.options[monthSelect.selectedIndex].text;
+      const yearText = document.getElementById('tutoring-filter-year').value;
+      const classFilter = document.getElementById('tutoring-filter-class').value || 'ทั้งหมด (ป.1 - ป.6)';
+      
+      const classFilterVal = document.getElementById('tutoring-filter-class').value;
+      let printData = tutoringCacheData;
+      if (classFilterVal) {
+        printData = printData.filter(item => item.classroom && item.classroom.startsWith(classFilterVal));
+      }
+      
+      const grades = ['ป.1', 'ป.2', 'ป.3', 'ป.4', 'ป.5', 'ป.6'];
+      let grandTotalExpected = 0;
+      let grandTotalPaid = 0;
+      let htmlTables = '';
+      
+      grades.forEach(grade => {
+        const gradeStudents = printData.filter(s => s.classroom && s.classroom.startsWith(grade));
+        if (gradeStudents.length === 0) return;
+        
+        let gradeExpected = 0;
+        let gradePaid = 0;
+        
+        let rowsHtml = gradeStudents.map((s, idx) => {
+          gradeExpected += s.total_amount || 0;
+          gradePaid += s.paid_amount || 0;
+          
+          return `
+            <tr>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${idx + 1}</td>
+              <td style="border: 1px solid #aaa; padding: 6px;">${s.student_name}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.classroom}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.study_math ? '50' : ''}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.study_sci ? '50' : ''}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.study_thai ? '50' : ''}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.study_eng ? '50' : ''}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: right;">${s.total_amount || 0}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.payment_status}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: right;">${s.paid_amount || 0}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.payment_date || ''}</td>
+              <td style="border: 1px solid #aaa; padding: 6px; text-align: center;">${s.payment_method || ''}</td>
+            </tr>
+          `;
+        }).join('');
+        
+        grandTotalExpected += gradeExpected;
+        grandTotalPaid += gradePaid;
+        
+        htmlTables += `
+          <h4 style="margin: 20px 0 10px 0; font-family: 'TH Sarabun PSK', sans-serif; font-size: 16pt;">ระดับชั้นประถมศึกษาปีที่ ${grade.replace('ป.', '')}</h4>
+          <table style="width: 100%; border-collapse: collapse; font-family: 'TH Sarabun PSK', sans-serif; font-size: 14pt; margin-bottom: 20px;">
+            <thead>
+              <tr style="background-color: #f1f5f9;">
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 5%;">ที่</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: left; width: 25%;">ชื่อ-สกุล</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 10%;">ชั้น</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 8%;">คณิต</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 8%;">วิทย์</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 8%;">ไทย</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 8%;">อังกฤษ</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: right; width: 10%;">รวมจัดเก็บ</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 8%;">สถานะ</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: right; width: 10%;">ชำระจริง</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 12%;">ว.ด.ป.</th>
+                <th style="border: 1px solid #aaa; padding: 6px; text-align: center; width: 10%;">ช่องทาง</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+              <tr style="background-color: #f8fafc; font-weight: bold;">
+                <td colspan="3" style="border: 1px solid #aaa; padding: 6px; text-align: center;">รวมระดับชั้น ${grade}</td>
+                <td colspan="4" style="border: 1px solid #aaa; padding: 6px;"></td>
+                <td style="border: 1px solid #aaa; padding: 6px; text-align: right; color: #4338ca;">฿${gradeExpected.toLocaleString()}</td>
+                <td style="border: 1px solid #aaa; padding: 6px;"></td>
+                <td style="border: 1px solid #aaa; padding: 6px; text-align: right; color: #047857;">฿${gradePaid.toLocaleString()}</td>
+                <td colspan="2" style="border: 1px solid #aaa; padding: 6px; text-align: center; color: #b91c1c;">ค้างชำระ: ฿${(gradeExpected - gradePaid).toLocaleString()}</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      });
+      
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>รายงาน ภ.1_69-3 เรียนพิเศษ</title>
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
+              @media print {
+                body { margin: 1.5cm; }
+                .no-print { display: none; }
+              }
+              body {
+                font-family: 'Sarabun', sans-serif;
+                color: #333;
+                padding: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="no-print" style="margin-bottom: 20px; text-align: right;">
+              <button onclick="window.print()" style="padding: 10px 20px; background-color: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">พิมพ์เอกสาร (Print)</button>
+              <button onclick="window.close()" style="padding: 10px 20px; background-color: #64748b; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 10px;">ปิดหน้าต่าง</button>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0; font-size: 20pt; font-weight: bold;">รายชื่อนักเรียนเรียนพิเศษ (รายเดือน)</h2>
+              <h3 style="margin: 5px 0 0 0; font-size: 16pt;">โรงเรียนแหลมทอง วิทยา ตำบลตันหยงมัส อำเภอระแงะ จังหวัดนราธิวาส</h3>
+              <p style="margin: 5px 0 0 0; font-size: 14pt; font-weight: bold;">
+                ภาคเรียนที่ 1 ปีการศึกษา ${yearText} &nbsp;&nbsp;|&nbsp;&nbsp; ประจำเดือน ${monthText} &nbsp;&nbsp;|&nbsp;&nbsp; กรองระดับชั้น: ${classFilter}
+              </p>
+            </div>
+            
+            \${htmlTables || '<p style="text-align:center;">ไม่พบข้อมูลในการสั่งพิมพ์</p>'}
+            
+            <div style="margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; font-size: 14pt;">
+              <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                <div>รวมยอดเงินจัดเก็บทั้งสิ้น: ฿\${grandTotalExpected.toLocaleString()}</div>
+                <div style="color: #047857;">รวมยอดเงินชำระแล้วทั้งสิ้น: ฿\${grandTotalPaid.toLocaleString()}</div>
+                <div style="color: #b91c1c;">รวมยอดค้างชำระทั้งสิ้น: ฿\${(grandTotalExpected - grandTotalPaid).toLocaleString()}</div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 60px; display: flex; justify-content: space-between; font-size: 14pt;">
+              <div style="text-align: center; width: 40%;">
+                <p>ลงชื่อ............................................................ผู้รับเงิน</p>
+                <p>(............................................................)</p>
+                <p>ตำแหน่ง เจ้าหน้าที่งานทะเบียน</p>
+              </div>
+              <div style="text-align: center; width: 40%;">
+                <p>ลงชื่อ............................................................ผู้ตรวจสอบ</p>
+                <p>(............................................................)</p>
+                <p>ตำแหน่ง หัวหน้างานบริหารงานบุคคล/การเงิน</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    // ==========================================
+    // 10.5 TEACHER TUTORING LOGIC (เช็คชื่อเรียนพิเศษของครู)
+    // ==========================================
+    let teacherAssignedClasses = [];
+    let teacherSelectedClass = null;
+    let teacherCurrentStudents = [];
+
+    async function initTeacherTutoringView() {
+      const dateInput = document.getElementById('teacher-tutoring-date');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+      await loadTeacherTutoringClasses();
+    }
+
+    async function loadTeacherTutoringClasses() {
+      if (!dbClient) return;
+      const showAll = document.getElementById('teacher-tutoring-substitute').checked;
+      
+      try {
+        let query = dbClient.from('tutoring_classes').select('*, users(name)');
+        
+        if (!showAll && currentUser.role === 'teacher') {
+          query = query.eq('primary_teacher_id', currentUser.id);
+        }
+        
+        const { data, error } = await query;
+        if (error) throw error;
+        
+        teacherAssignedClasses = data || [];
+        const select = document.getElementById('teacher-tutoring-class-select');
+        select.innerHTML = '<option value="">-- โปรดเลือกห้องเรียน --</option>';
+        
+        teacherAssignedClasses.forEach(c => {
+          const teacherName = c.users ? c.users.name : 'ไม่มีครูผู้สอนหลัก';
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.innerText = `${c.classroom} - ${c.subject} (${teacherName})`;
+          select.appendChild(opt);
+        });
+        
+        document.getElementById('teacher-tutoring-sheet-container').classList.add('hidden');
+      } catch (err) {
+        console.error('Error loading classes:', err);
+        showToast('ไม่สามารถโหลดข้อมูลห้องเรียนได้: ' + err.message, 'danger');
+      }
+    }
+
+    async function onTeacherTutoringClassChange() {
+      const select = document.getElementById('teacher-tutoring-class-select');
+      const classId = select.value;
+      const dateStr = document.getElementById('teacher-tutoring-date').value;
+      
+      if (!classId || !dateStr) {
+        document.getElementById('teacher-tutoring-sheet-container').classList.add('hidden');
+        return;
+      }
+      
+      const cls = teacherAssignedClasses.find(c => c.id === classId);
+      if (!cls) return;
+      
+      teacherSelectedClass = cls;
+      showLoader(true);
+      
+      try {
+        const dateObj = new Date(dateStr);
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const yearBE = dateObj.getFullYear() + 543;
+        const monthYear = `${yearBE}-${month}`;
+        
+        let subjectFilterCol = '';
+        if (cls.subject === 'วิทยาศาสตร์') subjectFilterCol = 'study_sci';
+        else if (cls.subject === 'ภาษาอังกฤษ') subjectFilterCol = 'study_eng';
+        else if (cls.subject === 'ภาษาไทย') subjectFilterCol = 'study_thai';
+        else if (cls.subject === 'คณิตศาสตร์') subjectFilterCol = 'study_math';
+        
+        let query = dbClient.from('tutoring_records')
+          .select('*')
+          .eq('month_year', monthYear)
+          .eq(subjectFilterCol, true);
+          
+        const { data: students, error: stdError } = await query;
+        if (stdError) throw stdError;
+        
+        teacherCurrentStudents = (students || []).filter(s => s.classroom && s.classroom.startsWith(cls.classroom));
+        
+        const { data: report, error: repError } = await dbClient.from('tutoring_daily_reports')
+          .select('*')
+          .eq('report_date', dateStr)
+          .eq('classroom', cls.classroom)
+          .eq('subject', cls.subject)
+          .maybeSingle();
+          
+        if (repError) throw repError;
+        
+        let attendanceMap = {};
+        if (report) {
+          const { data: attList, error: attError } = await dbClient.from('tutoring_daily_attendance')
+            .select('*')
+            .eq('report_id', report.id);
+          if (attError) throw attError;
+          (attList || []).forEach(a => {
+            attendanceMap[a.student_name] = a.is_present;
+          });
+          
+          document.getElementById('teacher-daily-present').value = report.daily_present;
+          document.getElementById('teacher-daily-paid-count').value = report.daily_paid_count;
+          document.getElementById('teacher-daily-amount-paid').value = report.daily_amount_paid;
+        } else {
+          document.getElementById('teacher-daily-present').value = 0;
+          document.getElementById('teacher-daily-paid-count').value = 0;
+          document.getElementById('teacher-daily-amount-paid').value = 0;
+        }
+        
+        const tbody = document.getElementById('teacher-attendance-tbody');
+        tbody.innerHTML = '';
+        
+        document.getElementById('teacher-tutoring-count-badge').innerText = `${teacherCurrentStudents.length} คน`;
+        document.getElementById('teacher-stat-monthly-total').innerText = `${teacherCurrentStudents.length} คน`;
+        
+        if (teacherCurrentStudents.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" class="py-6 text-center text-slate-400">ไม่พบรายชื่อนักเรียนรายเดือนลงเรียนในวิชานี้ประจำเดือน</td>
+            </tr>
+          `;
+        } else {
+          teacherCurrentStudents.forEach((std, idx) => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50/50 transition';
+            
+            const isPresent = attendanceMap[std.student_name] !== undefined ? attendanceMap[std.student_name] : true;
+            const isPaid = std.payment_status === 'จ่ายแล้ว';
+            const payBadge = isPaid 
+              ? `<span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded border border-emerald-100">จ่ายแล้ว</span>`
+              : `<span class="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded border border-amber-100">ยังไม่จ่าย</span>`;
+              
+            tr.innerHTML = `
+              <td class="py-3 px-4 text-center text-slate-400 font-semibold">${idx + 1}</td>
+              <td class="py-3 px-4 font-bold text-slate-800">${std.student_name}</td>
+              <td class="py-3 px-4 text-center text-slate-600">${std.classroom}</td>
+              <td class="py-3 px-4 text-center">${payBadge}</td>
+              <td class="py-3 px-4 text-center">
+                <div class="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50">
+                  <button type="button" onclick="setTeacherStudentPresent('${std.student_name}', true)" id="att-btn-${idx}-present" class="px-3 py-1 text-[10px] font-bold rounded-md select-none transition ${isPresent ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'}">มาเรียน</button>
+                  <button type="button" onclick="setTeacherStudentPresent('${std.student_name}', false)" id="att-btn-${idx}-absent" class="px-3 py-1 text-[10px] font-bold rounded-md select-none transition ${!isPresent ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'}">ขาดเรียน</button>
+                </div>
+              </td>
+            `;
+            tbody.appendChild(tr);
+            tr.setAttribute('data-student-name', std.student_name);
+            tr.setAttribute('data-classroom-detail', std.classroom);
+            tr.setAttribute('data-present', isPresent ? 'true' : 'false');
+          });
+        }
+        
+        updateTeacherAttendanceStats();
+        document.getElementById('teacher-tutoring-sheet-container').classList.remove('hidden');
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Error loading attendance sheet:', err);
+        showToast('ไม่สามารถโหลดบันทึกการเช็คชื่อได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    function setTeacherStudentPresent(name, isPresent) {
+      const rows = document.getElementById('teacher-attendance-tbody').rows;
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        if (row.getAttribute('data-student-name') === name) {
+          row.setAttribute('data-present', isPresent ? 'true' : 'false');
+          const presBtn = document.getElementById(`att-btn-${i}-present`);
+          const absBtn = document.getElementById(`att-btn-${i}-absent`);
+          if (isPresent) {
+            presBtn.className = 'px-3 py-1 text-[10px] font-bold rounded-md select-none transition bg-indigo-600 text-white shadow-sm';
+            absBtn.className = 'px-3 py-1 text-[10px] font-bold rounded-md select-none transition text-slate-400 hover:text-slate-700';
+          } else {
+            presBtn.className = 'px-3 py-1 text-[10px] font-bold rounded-md select-none transition text-slate-400 hover:text-slate-700';
+            absBtn.className = 'px-3 py-1 text-[10px] font-bold rounded-md select-none transition bg-rose-600 text-white shadow-sm';
+          }
+          break;
+        }
+      }
+      updateTeacherAttendanceStats();
+    }
+
+    function calculateTeacherDailyAmount() {
+      const paidCount = parseInt(document.getElementById('teacher-daily-paid-count').value) || 0;
+      document.getElementById('teacher-daily-amount-paid').value = paidCount * 50;
+    }
+
+    function updateTeacherAttendanceStats() {
+      const rows = document.getElementById('teacher-attendance-tbody').rows;
+      let presentCount = 0;
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].getAttribute('data-present') === 'true') {
+          presentCount++;
+        }
+      }
+      document.getElementById('teacher-stat-monthly-present').innerText = `${presentCount} คน`;
+      const unpaidCount = teacherCurrentStudents.filter(s => s.payment_status !== 'จ่ายแล้ว').length;
+      document.getElementById('teacher-stat-monthly-unpaid').innerText = `${unpaidCount} คน`;
+    }
+
+    async function submitDailyTutoringReport() {
+      if (!dbClient || !teacherSelectedClass) return;
+      const dateStr = document.getElementById('teacher-tutoring-date').value;
+      const isSub = document.getElementById('teacher-tutoring-substitute').checked;
+      
+      const monthlyTotal = teacherCurrentStudents.length;
+      const rows = document.getElementById('teacher-attendance-tbody').rows;
+      let monthlyPresent = 0;
+      let attendanceData = [];
+      
+      for (let i = 0; i < rows.length; i++) {
+        const stdName = rows[i].getAttribute('data-student-name');
+        const classDetail = rows[i].getAttribute('data-classroom-detail');
+        const present = rows[i].getAttribute('data-present') === 'true';
+        if (present) monthlyPresent++;
+        attendanceData.push({
+          student_name: stdName,
+          classroom_detail: classDetail,
+          is_present: present,
+          is_monthly: true
+        });
+      }
+      
+      const dailyPresent = parseInt(document.getElementById('teacher-daily-present').value) || 0;
+      const dailyPaidCount = parseInt(document.getElementById('teacher-daily-paid-count').value) || 0;
+      const dailyAmountPaid = parseInt(document.getElementById('teacher-daily-amount-paid').value) || 0;
+      
+      const unpaidMonthlyList = teacherCurrentStudents.filter(s => s.payment_status !== 'จ่ายแล้ว');
+      const monthlyUnpaidCount = unpaidMonthlyList.length;
+      const monthlyUnpaidAmount = monthlyUnpaidCount * 50;
+      const totalStudents = monthlyTotal + dailyPresent;
+      
+      showLoader(true);
+      try {
+        const reportObj = {
+          report_date: dateStr,
+          classroom: teacherSelectedClass.classroom,
+          subject: teacherSelectedClass.subject,
+          teacher_id: currentUser.id,
+          is_substitute: isSub,
+          total_students: totalStudents,
+          monthly_total: monthlyTotal,
+          monthly_present: monthlyPresent,
+          daily_present: dailyPresent,
+          daily_paid_count: dailyPaidCount,
+          daily_amount_paid: dailyAmountPaid,
+          monthly_unpaid_count: monthlyUnpaidCount,
+          monthly_unpaid_amount: monthlyUnpaidAmount,
+          teacher_signature_status: true
+        };
+        
+        const { data: existingReport, error: checkError } = await dbClient.from('tutoring_daily_reports')
+          .select('id')
+          .eq('report_date', dateStr)
+          .eq('classroom', teacherSelectedClass.classroom)
+          .eq('subject', teacherSelectedClass.subject)
+          .maybeSingle();
+          
+        if (checkError) throw checkError;
+        
+        let reportId = null;
+        if (existingReport) {
+          const { error: updError } = await dbClient.from('tutoring_daily_reports')
+            .update(reportObj)
+            .eq('id', existingReport.id);
+          if (updError) throw updError;
+          reportId = existingReport.id;
+        } else {
+          const { data: newReport, error: insError } = await dbClient.from('tutoring_daily_reports')
+            .insert([reportObj])
+            .select();
+          if (insError) throw insError;
+          reportId = newReport[0].id;
+        }
+        
+        const { error: delError } = await dbClient.from('tutoring_daily_attendance')
+          .delete()
+          .eq('report_id', reportId);
+        if (delError) throw delError;
+        
+        if (attendanceData.length > 0) {
+          const insertRows = attendanceData.map(a => ({ ...a, report_id: reportId }));
+          const { error: attInsError } = await dbClient.from('tutoring_daily_attendance').insert(insertRows);
+          if (attInsError) throw attInsError;
+        }
+        
+        showToast('บันทึกและแจ้งยอดเงินประจำวันสำเร็จ 🎉', 'success');
+      } catch (err) {
+        console.error('Error submitting report:', err);
+        showToast('ไม่สามารถบันทึกรายงานได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // ==========================================
+    // 10.6 REGISTRY DAILY SUMMARY & PRINTS (ฝ่ายทะเบียนสรุปและจัดพิมพ์)
+    // ==========================================
+    let registryDailySummaryData = [];
+    let registryMonthlyUnpaidList = [];
+
+    async function loadDailySummarySheet() {
+      if (!dbClient) return;
+      const dateStr = document.getElementById('registry-tutoring-daily-date').value;
+      if (!dateStr) return;
+      
+      showLoader(true);
+      try {
+        const { data: classes, error: clsError } = await dbClient.from('tutoring_classes')
+          .select('*, users(name)')
+          .order('classroom');
+          
+        if (clsError) throw clsError;
+        
+        const { data: reports, error: repError } = await dbClient.from('tutoring_daily_reports')
+          .select('*, users(name)')
+          .eq('report_date', dateStr);
+          
+        if (repError) throw repError;
+        
+        const dateObj = new Date(dateStr);
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const yearBE = dateObj.getFullYear() + 543;
+        const monthYear = `${yearBE}-${month}`;
+        
+        const { data: unpaidStudents, error: unpaidError } = await dbClient.from('tutoring_records')
+          .select('*')
+          .eq('month_year', monthYear)
+          .eq('payment_status', 'ยังไม่จ่าย')
+          .order('classroom')
+          .order('student_name');
+          
+        if (unpaidError) throw unpaidError;
+        registryMonthlyUnpaidList = unpaidStudents || [];
+        
+        const tbody = document.getElementById('registry-tutoring-daily-tbody');
+        tbody.innerHTML = '';
+        
+        let grandMonthlyTotal = 0;
+        let grandMonthlyPresent = 0;
+        let grandDailyPresent = 0;
+        let grandDailyPaid = 0;
+        let grandDailyAmount = 0;
+        let grandUnpaidCount = 0;
+        let grandUnpaidAmount = 0;
+        
+        classes.forEach((cls, idx) => {
+          const rep = (reports || []).find(r => r.classroom === cls.classroom && r.subject === cls.subject);
+          const teacherName = cls.users ? cls.users.name : 'ไม่ระบุ';
+          const dept = cls.subject;
+          
+          let monthlyTotal = '-';
+          let monthlyPresent = '-';
+          let dailyPresent = '-';
+          let dailyPaid = '-';
+          let dailyAmount = '-';
+          let unpaidCount = '-';
+          let unpaidAmount = '-';
+          let statusLabel = `<span class="px-2 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded border border-rose-100">ยังไม่แจ้ง</span>`;
+          
+          let subjectCol = '';
+          if (cls.subject === 'วิทยาศาสตร์') subjectCol = 'study_sci';
+          else if (cls.subject === 'ภาษาอังกฤษ') subjectCol = 'study_eng';
+          else if (cls.subject === 'ภาษาไทย') subjectCol = 'study_thai';
+          else if (cls.subject === 'คณิตศาสตร์') subjectCol = 'study_math';
+          
+          const unpaidForClass = registryMonthlyUnpaidList.filter(s => s.classroom && s.classroom.startsWith(cls.classroom) && s[subjectCol] === true);
+          unpaidCount = unpaidForClass.length;
+          unpaidAmount = unpaidCount * 50;
+          
+          if (rep) {
+            monthlyTotal = rep.monthly_total;
+            monthlyPresent = rep.monthly_present;
+            dailyPresent = rep.daily_present;
+            dailyPaid = rep.daily_paid_count;
+            dailyAmount = rep.daily_amount_paid;
+            
+            grandMonthlyTotal += rep.monthly_total || 0;
+            grandMonthlyPresent += rep.monthly_present || 0;
+            grandDailyPresent += rep.daily_present || 0;
+            grandDailyPaid += rep.daily_paid_count || 0;
+            grandDailyAmount += rep.daily_amount_paid || 0;
+            
+            const subText = rep.is_substitute ? ' (สอนแทน)' : '';
+            statusLabel = `<span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded border border-emerald-100">แจ้งแล้ว${subText}</span>`;
+          }
+          
+          grandUnpaidCount += unpaidCount;
+          grandUnpaidAmount += unpaidAmount;
+          
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50/50 transition';
+          tr.innerHTML = `
+            <td class="py-2.5 px-4 text-center text-slate-400 font-semibold">${idx + 1}</td>
+            <td class="py-2.5 px-4 font-bold text-slate-800">${teacherName}</td>
+            <td class="py-2.5 px-4 text-slate-600">${dept}</td>
+            <td class="py-2.5 px-4 text-center font-semibold text-slate-600">${cls.classroom}</td>
+            <td class="py-2.5 px-2 text-center">${monthlyTotal}</td>
+            <td class="py-2.5 px-2 text-center text-indigo-600 font-bold">${monthlyPresent}</td>
+            <td class="py-2.5 px-2 text-center">${dailyPresent}</td>
+            <td class="py-2.5 px-2 text-center">${dailyPaid}</td>
+            <td class="py-2.5 px-2 text-right font-bold text-emerald-600">${dailyAmount !== '-' ? `฿${dailyAmount.toLocaleString()}` : '-'}</td>
+            <td class="py-2.5 px-2 text-center text-rose-500">${unpaidCount}</td>
+            <td class="py-2.5 px-2 text-right font-bold text-rose-600">${unpaidAmount !== '-' ? `฿${unpaidAmount.toLocaleString()}` : '-'}</td>
+            <td class="py-2.5 px-4 text-center">${statusLabel}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+        
+        const trTotal = document.createElement('tr');
+        trTotal.className = 'bg-slate-100/50 font-bold text-slate-700';
+        trTotal.innerHTML = `
+          <td class="py-3 px-4 text-center" colspan="4">รวมทั้งหมด</td>
+          <td class="py-3 px-2 text-center">${grandMonthlyTotal}</td>
+          <td class="py-3 px-2 text-center text-indigo-600">${grandMonthlyPresent}</td>
+          <td class="py-3 px-2 text-center">${grandDailyPresent}</td>
+          <td class="py-3 px-2 text-center">${grandDailyPaid}</td>
+          <td class="py-3 px-2 text-right text-emerald-600">฿${grandDailyAmount.toLocaleString()}</td>
+          <td class="py-3 px-2 text-center text-rose-500">${grandUnpaidCount}</td>
+          <td class="py-3 px-2 text-right text-rose-600">฿${grandUnpaidAmount.toLocaleString()}</td>
+          <td class="py-3 px-4 text-center"></td>
+        `;
+        tbody.appendChild(trTotal);
+        
+        const unpaidTbody = document.getElementById('registry-tutoring-unpaid-tbody');
+        unpaidTbody.innerHTML = '';
+        
+        if (registryMonthlyUnpaidList.length === 0) {
+          unpaidTbody.innerHTML = `
+            <tr>
+              <td colspan="5" class="py-6 text-center text-slate-400">ไม่มีข้อมูลนักเรียนรายเดือนค้างชำระเงินในเดือนนี้</td>
+            </tr>
+          `;
+        } else {
+          registryMonthlyUnpaidList.forEach((std, idx) => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50/50 transition';
+            tr.innerHTML = `
+              <td class="py-3 px-4 text-center text-slate-400 font-semibold">${idx + 1}</td>
+              <td class="py-3 px-4 font-bold text-slate-800">${std.student_name}</td>
+              <td class="py-3 px-4 text-center text-slate-600 font-semibold">${std.classroom}</td>
+              <td class="py-3 px-4 text-right font-bold text-rose-600">฿${(std.total_amount || 0).toLocaleString()}</td>
+              <td class="py-3 px-4 text-slate-500">ค้างชำระค่าเรียนพิเศษประจำเดือน</td>
+            `;
+            unpaidTbody.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        console.error('Error daily summary:', err);
+        showToast('ไม่สามารถดึงข้อมูลสรุปประจำวันได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    function triggerDailyTutoringPrint() {
+      const dateVal = document.getElementById('registry-tutoring-daily-date').value;
+      if (!dateVal) {
+        showToast('โปรดเลือกวันที่ต้องการจัดพิมพ์รายงาน', 'warning');
+        return;
+      }
+      
+      const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+      const months = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+      
+      const dateObj = new Date(dateVal);
+      const dayName = days[dateObj.getDay()];
+      const dayNum = dateObj.getDate();
+      const monthName = months[dateObj.getMonth()];
+      const yearBE = dateObj.getFullYear() + 543;
+      
+      const dateThai = `วัน${dayName} ที่ ${dayNum}  ${monthName}  ${yearBE}`;
+      const printWindow = window.open('', '_blank');
+      
+      const tableRows = document.getElementById('registry-tutoring-daily-tbody').innerHTML;
+      const unpaidRows = document.getElementById('registry-tutoring-unpaid-tbody').innerHTML;
+      
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>ใบลงชื่อครูสอนพิเศษและยอดเงินประจำวัน</title>
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
+              @media print {
+                body { margin: 1cm; }
+                .no-print { display: none; }
+              }
+              body {
+                font-family: 'Sarabun', sans-serif;
+                color: #222;
+                padding: 10px;
+                line-height: 1.3;
+              }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                font-size: 11pt;
+              }
+              th, td {
+                border: 1px solid #777;
+                padding: 5px;
+              }
+              th {
+                background-color: #f5f5f5;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="no-print" style="margin-bottom: 20px; text-align: right;">
+              <button onclick="window.print()" style="padding: 10px 20px; background-color: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">พิมพ์เอกสาร (Print)</button>
+              <button onclick="window.close()" style="padding: 10px 20px; background-color: #64748b; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 10px;">ปิดหน้าต่าง</button>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 15px;">
+              <h2 style="margin: 0; font-size: 15pt; font-weight: bold;">ใบลงชื่อชื่อครูสอนพิเศษ และเอกสารสรุปรายการเก็บยอดเงินค่าเรียนพิเศษประจำวัน</h2>
+              <h3 style="margin: 5px 0 0 0; font-size: 13pt; font-weight: bold;">ประจำ  ${dateThai}</h3>
+            </div>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 4%; text-align: center;" rowspan="2">ที่</th>
+                  <th style="width: 20%; text-align: left;" rowspan="2">ชื่อ-สกุล ครู</th>
+                  <th style="width: 18%; text-align: left;" rowspan="2">กลุ่มสาระการเรียนรู้</th>
+                  <th style="width: 6%; text-align: center;" rowspan="2">ชั้น</th>
+                  <th style="text-align: center;" colspan="2">นักเรียนรายเดือน</th>
+                  <th style="text-align: center;" colspan="3">นักเรียนรายวัน</th>
+                  <th style="text-align: center;" colspan="2">ยอดค้างจ่าย</th>
+                  <th style="width: 12%; text-align: center;" rowspan="2">ลายมือชื่อ<br>ครูผู้สอน</th>
+                </tr>
+                <tr style="font-size: 9pt;">
+                  <th style="width: 6%; text-align: center;">ทั้งหมด</th>
+                  <th style="width: 6%; text-align: center;">เข้าเรียน</th>
+                  <th style="width: 6%; text-align: center;">เข้าเรียน</th>
+                  <th style="width: 6%; text-align: center;">จ่ายเงิน</th>
+                  <th style="width: 8%; text-align: right;">จำนวนเงิน</th>
+                  <th style="width: 6%; text-align: center;">ค้าง (คน)</th>
+                  <th style="width: 8%; text-align: right;">จำนวนเงิน</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRows}
+              </tbody>
+            </table>
+            
+            <div style="margin-top: 20px;">
+              <h3 style="margin: 0; font-size: 12pt; font-weight: bold;">รายชื่อนักเรียนค้างชำระเงินรายเดือน (ประจำเดือนนี้)</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 8%; text-align: center;">ที่</th>
+                    <th style="width: 45%; text-align: left;">ชื่อ-สกุล นักเรียน</th>
+                    <th style="width: 15%; text-align: center;">ชั้น</th>
+                    <th style="width: 17%; text-align: right;">จำนวนเงิน</th>
+                    <th style="width: 15%;">หมายเหตุ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${unpaidRows}
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 35px; display: flex; justify-content: flex-end;">
+              <div style="text-align: center; width: 40%; font-size: 11pt;">
+                <p>......................................................................</p>
+                <p>(......................................................................)</p>
+                <p style="font-weight: bold;">ผู้จัดเก็บเงิน / เจ้าหน้าที่ทะเบียน</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    // ==========================================
+    // 10.7 REGISTRY TUTORING SETTINGS (ตั้งค่าครูผู้สอนเรียนพิเศษ)
+    // ==========================================
+    let settingsClasses = [];
+    let settingsTeachers = [];
+
+    async function loadTutoringSettings() {
+      if (!dbClient) return;
+      
+      showLoader(true);
+      try {
+        const { data: teachers, error: tError } = await dbClient.from('users')
+          .select('id, name')
+          .in('role', ['admin', 'teacher'])
+          .order('name');
+        if (tError) throw tError;
+        settingsTeachers = teachers || [];
+        
+        const { data: classes, error: cError } = await dbClient.from('tutoring_classes')
+          .select('*')
+          .order('classroom');
+        if (cError) throw cError;
+        settingsClasses = classes || [];
+        
+        const tbody = document.getElementById('registry-tutoring-settings-tbody');
+        tbody.innerHTML = '';
+        
+        settingsClasses.forEach((cls, idx) => {
+          const selectHtml = `
+            <select id="setting-teacher-select-${cls.id}" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-800 rounded-xl text-xs focus:ring-1 focus:ring-indigo-500 focus:outline-none w-64 font-semibold">
+              <option value="">-- ยังไม่กำหนดผู้สอน --</option>
+              ${settingsTeachers.map(t => `<option value="${t.id}" ${t.id === cls.primary_teacher_id ? 'selected' : ''}>${t.name}</option>`).join('')}
+            </select>
+          `;
+          
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50/50 transition';
+          tr.innerHTML = `
+            <td class="py-3 px-4 text-center text-slate-400 font-semibold">${idx + 1}</td>
+            <td class="py-3 px-4 font-bold text-slate-800">${cls.classroom}</td>
+            <td class="py-3 px-4 text-slate-600 font-semibold">${cls.subject}</td>
+            <td class="py-3 px-4">${selectHtml}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Error loading settings:', err);
+        showToast('ไม่สามารถโหลดข้อมูลการตั้งค่าได้: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    async function saveTutoringClassAssignments() {
+      if (!dbClient) return;
+      
+      showLoader(true);
+      try {
+        const promises = settingsClasses.map(async cls => {
+          const selectEl = document.getElementById(`setting-teacher-select-${cls.id}`);
+          const teacherId = selectEl.value ? selectEl.value : null;
+          
+          return dbClient.from('tutoring_classes')
+            .update({ primary_teacher_id: teacherId })
+            .eq('id', cls.id);
+        });
+        
+        const results = await Promise.all(promises);
+        const failed = results.find(r => r.error);
+        if (failed) throw failed.error;
+        
+        showToast('บันทึกการตั้งค่าครูผู้สอนเรียบร้อย! 🚀', 'success');
+        loadTutoringSettings();
+      } catch (err) {
+        console.error('Error saving assignments:', err);
+        showToast('บันทึกการตั้งค่าล้มเหลว: ' + err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
     }
 
     async function executeDatabasePurge() {
